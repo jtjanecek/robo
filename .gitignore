@@ -1,0 +1,6 @@
+*.db
+*.db-journal
+*.swp
+logs/
+cloud/cloud.json
+*.pyc

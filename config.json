@@ -1,0 +1,48 @@
+{
+	"mas": {
+		"ip": "192.168.1.2",
+		"port": 10075
+	},
+	"mls": {
+		"ip": "192.168.1.2",
+		"port": 10076
+	},
+	"dmetcp": {
+		"ip": "192.168.1.2",
+		"port": 10079
+	},
+	"dmeudp": {
+		"ip": "192.168.1.2",
+		"port": 50000
+	},
+	"nat": {
+		"ip": "192.168.1.2",
+		"port": 10090
+	},
+	"app_id": 10684,
+    "channels": [
+        {
+            "id": 123,
+            "name": "CY00000000-00",
+            "max_players": 256
+        },
+        {
+            "id": 124,
+            "name": "CY00000001-00",
+            "max_players": 256
+        }
+    ],
+    "locations": [
+        {
+            "id": 40,
+            "name": "Location 1"
+        },
+        {
+            "id": 41,
+            "name": "Location 2"
+        }
+    ],
+	"policy": "Test policy",
+	"announcement": "Test announcement",
+	"console_log_level": "DEBUG"
+}
