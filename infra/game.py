@@ -98,3 +98,12 @@ class Game:
 
 	def set_stats(self, stats):
 		self._stats = stats
+
+	def get_players(self):
+		res = []
+		for player in self._players.values():
+			res.append({
+				'account_id': player.get_account_id(),
+				'username': player.get_username()
+			})
+		return res
