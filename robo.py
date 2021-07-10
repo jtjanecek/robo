@@ -5,6 +5,7 @@ import json
 from servers.tcpserver import TCPServer
 from servers.udpserver import UDPServer
 from infra.monolith import Monolith
+import requests
 
 import logging
 
@@ -42,6 +43,20 @@ class Robo():
 	def read_config(self) -> dict:
 		with open('config.json', 'r') as f:
 			config = json.loads(f.read())
+
+		if config['mls']['ip'] == '0.0.0.0':
+			public_ip = requests.get('https://checkip.amazonaws.com').text.strip()
+			config['mls']['public_ip'] = public_ip
+			config['mas']['public_ip'] = public_ip
+			config['nat']['public_ip'] = public_ip
+			config['dmetcp']['public_ip'] = public_ip
+			config['dmeudp']['public_ip'] = public_ip
+		else:
+			config['mls']['public_ip'] = config['mls']['ip']
+			config['mas']['public_ip'] = config['mas']['ip']
+			config['nat']['public_ip'] = config['nat']['ip']
+			config['dmetcp']['public_ip'] = config['dmetcp']['ip']
+			config['dmeudp']['public_ip'] = config['dmeudp']['ip']
 		return config
 
 if __name__ == '__main__':

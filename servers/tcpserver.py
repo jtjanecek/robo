@@ -4,7 +4,6 @@ import time
 import asyncio
 from infra.connection import Connection
 import traceback
-import requests
 
 import logging
 logger = logging.getLogger("robo.tcp")
@@ -66,9 +65,6 @@ class TCPServer:
 	async def looper(self):
 		server = await asyncio.start_server(
 		self.handle_incoming, self._ip, self._port)
-
-		if self._ip == '0.0.0.0':
-			self._ip = requests.get('https://checkip.amazonaws.com').text.strip()
 	
 		addr = server.sockets[0].getsockname()
 		logger.info(f'{self._name} | Serving on {addr} ...')

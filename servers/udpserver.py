@@ -5,7 +5,6 @@ import threading
 import asyncio
 from infra.connection import UdpConnection
 import traceback
-import requests
 
 import logging
 logger = logging.getLogger("robo.udp")
@@ -47,8 +46,6 @@ class UDPServer:
 		loop = asyncio.new_event_loop()
 		asyncio.set_event_loop(loop)
 		task = loop.create_datagram_endpoint(lambda: self, local_addr=(self._ip, self._port))
-		if self._ip == '0.0.0.0':
-			self._ip = requests.get('https://checkip.amazonaws.com').text.strip()
 		logger.info(f'{self._name} | Serving on {(self._ip, self._port)} ...')
 		loop.run_until_complete(task) # Server starts listening
 		loop.run_forever()

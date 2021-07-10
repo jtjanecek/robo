@@ -189,31 +189,31 @@ class Monolith:
 # Misc
 
 	def get_mas_ip(self) -> str:
-		return self._config['mas']['ip']
+		return self._config['mas']['public_ip']
 
 	def get_mas_port(self) -> int:
 		return self._config['mas']['port']
 
 	def get_mls_ip(self) -> str:
-		return self._config['mls']['ip']
+		return self._config['mls']['public_ip']
 
 	def get_mls_port(self) -> int:
 		return self._config['mls']['port']
 
 	def get_dmetcp_ip(self) -> str:
-		return self._config['dmetcp']['ip']
+		return self._config['dmetcp']['public_ip']
 
 	def get_dmetcp_port(self) -> int:
 		return self._config['dmetcp']['port']
 
 	def get_dmeudp_ip(self) -> str:
-		return self._config['dmeudp']['ip']
+		return self._config['dmeudp']['public_ip']
 
 	def get_dmeudp_port(self) -> int:
 		return self._config['dmeudp']['port']
 
 	def get_nat_ip(self) -> str:
-		return self._config['nat']['ip']
+		return self._config['nat']['public_ip']
 
 	def get_nat_port(self) -> int:
 		return self._config['nat']['port']
