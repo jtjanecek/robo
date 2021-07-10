@@ -4,3 +4,4 @@
 logs/
 cloud/cloud.json
 *.pyc
+*.zip

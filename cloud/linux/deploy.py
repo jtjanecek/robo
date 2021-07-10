@@ -22,3 +22,5 @@ os.system(command)
 print("Executing init script ...")
 command = f"ssh -i {ssh_key_location} {username}@{ip} 'bash -s' < commands.sh"
 os.system(command)
+
+os.system('rm robo.zip')
