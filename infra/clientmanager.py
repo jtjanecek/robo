@@ -42,7 +42,7 @@ class ClientManager:
 			if connection in self._dmetcp_cons.keys():
 				return self._dmetcp_cons[connection]
 		elif connection.server_name == 'dmeudp':
-			if connection in self._dmeudp_cons.keys():
+			if connection.hash() in self._dmeudp_cons.keys():
 				return self._dmeudp_cons[connection.hash()]
 		else:
 			return None

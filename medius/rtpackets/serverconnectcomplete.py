@@ -13,11 +13,11 @@ class ServerConnectCompleteSerializer:
 		return utils.serialize(data, self.data_dict)
 
 	@classmethod
-	def build(self):
+	def build(self, player_count=1):
 		packet = [
 			{'name': __name__},
 			{'rtid': RtIdEnum.SERVER_CONNECT_COMPLETE},
-			{'connect_complete': utils.int_to_bytes_little(2, 1)}
+			{'connect_complete': utils.int_to_bytes_little(2, player_count)}
 		]
 		return packet
 

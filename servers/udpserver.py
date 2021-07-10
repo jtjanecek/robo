@@ -31,11 +31,17 @@ class UDPServer:
 	def datagram_received(self, data, addr):
 		connection = UdpConnection(self._name, self.transport, addr)
 		logger.debug(f"{self._name} | {connection} | I | {data.hex().upper()}")
-		packets = self._monolith.process_udp(connection, data)
 
-		for packet in packets:
-			logger.debug(f"{self._name} | {connection} | O | {data.hex().upper()}")
-			self.transport.sendto(packet, addr)
+		try:
+			packets = self._monolith.process_udp(connection, data)
+
+			for packet in packets:
+				logger.debug(f"{self._name} | {connection} | O | {data.hex().upper()}")
+				self.transport.sendto(packet, addr)
+
+		except Exception as e:
+			logger.error(f"Exception on connection: {connection}")
+			logger.error(e, exc_info=True)
 
 	def start(self):
 		loop = asyncio.new_event_loop()

@@ -3,6 +3,9 @@ import asyncio
 from queue import Queue
 from enums.enums import MediusPlayerStatus
 
+import logging
+logger = logging.getLogger("robo.player")
+
 class Player():
 	def __init__(self, account_id, username, session_key, mls_world_id, mls_con):
 		# Basic info
@@ -56,10 +59,11 @@ class Player():
 	async def udpflusher(self):
 	    while True:
 	    	size = self._dmeudp_queue.qsize()
+	    	
 	    	for i in range(size):
-	    		self._dmeudp_con.send(self._dmeudp_queue.get())
+	       		data = self._dmeudp_queue.get()
+	       		self._dmeudp_connection.send(data)
 	    	await asyncio.sleep(self._dmeudp_aggtime)
-	    	print(datetime.now())
 
 	def deframe(self, connection, data: [bytes]):
 		'''
@@ -106,3 +110,6 @@ class Player():
 
 	def __str__(self):
 		return f'Player(account_id={self._account_id},username={self._username},status={self._status},mls_world_id={self._mls_world_id},dme={self._game})'
+
+	def get_dmetcp_ip(self):
+		return self._dmetcp_connection.addr

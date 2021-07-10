@@ -38,8 +38,8 @@ class Monolith:
 		# Player has been identified
 		if player != None:
 			packets = player.deframe(con, packets)
-			for packet in packets:
-				logger.debug(f"{player} | Deframe | {utils.bytes_to_hex(packet)}")
+			# for packet in packets:
+			# 	logger.debug(f"{player} | Deframe | {utils.bytes_to_hex(packet)}")
 		else: # Player has not been identified
 			packets = RtBufferDeframer.basic_deframe(packets)
 
@@ -55,8 +55,8 @@ class Monolith:
 		
 		## TO BYTES
 		responses = [utils.rtpacket_to_bytes(packet) for packet in responses]
-		for response in responses:
-			logger.debug(f"{con} | Encrypted | {utils.bytes_to_hex(response)}")
+		# for response in responses:
+		# 	logger.debug(f"{con} | Encrypted | {utils.bytes_to_hex(response)}")
 
 		return responses
 

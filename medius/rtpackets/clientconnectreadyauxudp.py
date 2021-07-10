@@ -13,4 +13,14 @@ class ClientConnectReadyAuxUdpSerializer:
 
 class ClientConnectReadyAuxUdpHandler:
 	def process(self, serialized, monolith, con):
-		return [ServerConnectCompleteSerializer.build()]
+
+		# Get the player count
+		player = monolith.get_client_manager().identify(con)
+
+		game = player.get_game()
+
+		player_count = game.get_player_count()
+
+		game.send_server_notify_connected(player)
+
+		return [ServerConnectCompleteSerializer.build(player_count=player_count)]

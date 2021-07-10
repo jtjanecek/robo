@@ -1,5 +1,7 @@
 from enums.enums import MediusWorldStatus, MediusEnum, RtIdEnum
 from utils import utils
+from medius.rtpackets.serverconnectnotify import ServerConnectNotifySerializer
+from medius.rtpackets.clientappsingle import ClientAppSingleSerializer
 
 import logging
 logger = logging.getLogger('robo.game')
@@ -50,6 +52,42 @@ class Game:
 		# Start the UDP flush coroutine
 		player.start_udpflusher()
 
+	def send_server_notify_connected(self, player):
+		dme_player_id = self.get_dme_player_id(player)
+		ip = player.get_dmetcp_ip()
+
+		packet = utils.rtpacket_to_bytes(ServerConnectNotifySerializer.build(dme_player_id, ip))
+		logger.info(f"PACKET SERVER NOTIFY: {utils.bytes_to_hex(packet)}")
+
+		for dest_player in self._players.values():
+			if dest_player != player:
+				# send server notify 
+				dest_player.send_dmetcp(packet)
+
+	def dmetcp_single(self, player, data: bytes):
+		data = bytearray(data)
+		target_player_id = data[0]
+
+		# Change the source to be that player
+		data[0] = self.get_dme_player_id(player)
+
+		data = bytes(data)
+
+		packet_data = utils.rtpacket_to_bytes(ClientAppSingleSerializer.build(data))
+
+		self._players[target_player_id].send_dmetcp(bytes(packet_data))
+
+
+	def dmeudp_single(self, player, data: bytes):
+		data = bytearray(data)
+		target_player_id = data[0]
+
+		# Change the source to be that player
+		data[0] = self.get_dme_player_id(player)
+
+		packet_data = utils.rtpacket_to_bytes(ClientAppSingleSerializer.build(data))
+
+		self._players[target_player_id].send_dmeudp(bytes(packet_data))
 
 	def player_disconnected(self, player):
 		pass

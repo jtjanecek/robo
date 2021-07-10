@@ -4,6 +4,8 @@ from enums.enums import MediusPlayerStatus
 from queue import Queue
 from datetime import datetime
 from infra.game import Game
+import logging
+logger = logging.getLogger("robo.connection")
 
 class Connection:
 	def __init__(self, server_name: str, writer: asyncio.StreamWriter):
