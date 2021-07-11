@@ -28,7 +28,7 @@ class GetMyClansResponseSerializer:
 			{'clan_id': utils.int_to_bytes_little(4, clan_id)},
 			{'app_id': utils.int_to_bytes_little(4, app_id)},
 			{'clan_name': utils.str_to_bytes(clan_name, MediusEnum.CLANNAME_MAXLEN)},
-			{'leader_account_id': utils.int_to_bytes_little(4, callback_status)},
+			{'leader_account_id': utils.int_to_bytes_little(4, leader_account_id)},
 			{'leader_account_name': utils.str_to_bytes(leader_account_name, MediusEnum.ACCOUNTNAME_MAXLEN)},
 			{'stats': utils.str_to_bytes(stats, MediusEnum.CLANSTATS_MAXLEN)},
 			{'clan_status': utils.int_to_bytes_little(4, clan_status)},

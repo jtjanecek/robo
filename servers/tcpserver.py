@@ -42,18 +42,18 @@ class TCPServer:
 
 				packets = self._monolith.process_tcp(connection, data)
 
+				framed = b''
 				for packet in packets:
 					logger.debug(f"{connection} | O | {packet.hex().upper()}")
-					writer.write(packet)
-					
-				if len(packets) != 0:
+					framed += packet
+				if framed != b'':
+					writer.write(framed)
 					await writer.drain()
 
 		except asyncio.TimeoutError as te:
 			logger.info(f"Client timed out: {connection}")
 		except Exception as e:
-			logger.error(f"Exception on connection: {connection}")
-			logger.error(e, exc_info=True)
+			logger.exception(f"Exception on connection: {connection}")
 		finally:
 			self._monolith.client_disconnected(connection)
 			logger.info(f"Client disconnected: {connection}")

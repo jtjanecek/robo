@@ -15,7 +15,7 @@ class GetLadderStatsWideResponseSerializer:
 		):
 		packet = [
 			{'name': __name__},
-			{'mediusid': MediusIdEnum.AccountLoginResponse},
+			{'mediusid': MediusIdEnum.GetLadderStatsWideResponse},
 			{'message_id': message_id},
 			{'buf': utils.bytes_from_hex("000000")},
 			{'callback_status': utils.int_to_bytes_little(4, callback_status)},

@@ -175,6 +175,9 @@ class Monolith:
 		# logger.debug(f"Post Encryption: {utils.bytes_to_hex(result)}")
 		return result
 
+	# def process_nat(self, con: UdpConnection, data: bytes):
+	# 	pass
+
 
 # ===================================
 # Client methods

@@ -194,3 +194,15 @@ class SqlLiteDb():
 		if vals:
 			return vals[0]
 		return self._default_ladderstatswide
+
+	def update_ladderstatswide(self, account_id, ladderstatswide):
+		c = self.conn.cursor()
+		update = '''
+			UPDATE users
+			SET ladderstatswide = ?
+			WHERE
+			    account_id = ?;
+		'''
+		c.execute(update, [ladderstatswide, account_id])
+		self.conn.commit()
+		c.close()

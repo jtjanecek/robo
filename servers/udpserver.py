@@ -39,8 +39,7 @@ class UDPServer:
 				self.transport.sendto(packet, addr)
 
 		except Exception as e:
-			logger.error(f"Exception on connection: {connection}")
-			logger.error(e, exc_info=True)
+			logger.exception(f"Exception on connection: {connection}")
 
 	def start(self):
 		loop = asyncio.new_event_loop()

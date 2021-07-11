@@ -16,7 +16,7 @@ class GetMyClansHandler:
 			CallbackStatus.NO_RESULT,
 			0, # Clan id
 			0, # app id
-			"Clan Name",
+			"",
 			0, # leader account id
 			"", # Leader account name
 			"", # stats

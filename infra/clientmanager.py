@@ -171,6 +171,9 @@ class ClientManager:
 	def get_player(self, account_id: int) -> Player:
 		return self._players[account_id]
 
+	def get_player_from_mls_con(self, con):
+		return self._mls_cons[con]
+
 	# =============== DB Access Methods ===============
 
 	def get_account_id(self, username=None, session_key=None):
@@ -196,6 +199,8 @@ class ClientManager:
 	def get_player_ladderstatswide(self, account_id: int):
 		return self._db.get_ladderstatswide(account_id)
 
+	def update_player_ladderstatswide(self, account_id, ladderstatswide: str):
+		self._db.update_ladderstatswide(account_id, ladderstatswide)
 
 	# =============== Misc ===============
 
