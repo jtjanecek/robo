@@ -1,5 +1,12 @@
 {
-    "username": "ubuntu",
-    "ip": "",
-    "ssh_key_location": ""
+	"robo": { 
+		"username": "ubuntu",
+		"ip": "",
+		"ssh_key_location": ""
+	},
+	"dnas": {
+		"username": "ubuntu",
+		"ip": "",
+		"ssh_key_location": ""
+	}
 }
