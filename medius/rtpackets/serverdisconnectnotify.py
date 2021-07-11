@@ -1,4 +1,4 @@
-
+from enums.enums import RtIdEnum
 from utils import utils
 
 class ServerDisconnectNotifySerializer:
@@ -6,6 +6,18 @@ class ServerDisconnectNotifySerializer:
 		{'name': 'rtid', 'n_bytes': 1, 'cast': None},
 		{'name': 'len', 'n_bytes': 2, 'cast': utils.bytes_to_int_little}
 	]
+
+	@classmethod
+	def build(self,
+			dme_player_id,
+			ip):
+		packet = [
+			{'name': __name__},
+			{'rtid': RtIdEnum.SERVER_DISCONNECT_NOTIFY},
+			{"dme_player_id": utils.int_to_bytes_little(2,dme_player_id)},
+			{"ip": utils.str_to_bytes(ip, 16)}
+		]
+		return packet
 
 	def serialize(self, data: bytes):
 		raise Exception('Unimplemented Handler: ServerDisconnectNotifySerializer')

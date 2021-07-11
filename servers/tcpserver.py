@@ -55,13 +55,15 @@ class TCPServer:
 		except Exception as e:
 			logger.exception(f"Exception on connection: {connection}")
 		finally:
-			self._monolith.client_disconnected(connection)
-			logger.info(f"Client disconnected: {connection}")
+			try:
+				self._monolith.client_disconnected(connection)
+				logger.info(f"Client disconnected: {connection}")
 
-			connection.close()
-			writer.close()
-			await writer.wait_closed()
-
+				connection.close()
+				writer.close()
+				await writer.wait_closed()
+			except Exception as e:
+				logger.exception(f"Exception on connection: {connection}")
 	async def looper(self):
 		server = await asyncio.start_server(
 		self.handle_incoming, self._ip, self._port)

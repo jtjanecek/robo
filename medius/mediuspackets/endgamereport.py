@@ -8,5 +8,5 @@ class EndGameReportSerializer:
 
 class EndGameReportHandler:
 	def process(self, serialized, monolith, con):
-		raise Exception('Unimplemented Handler: EndGameReportHandler')
-
+		# TODO: do some processing with this report
+		return []

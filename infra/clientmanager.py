@@ -6,6 +6,9 @@ from infra.game import Game
 from infra.connection import UdpConnection, Connection
 from infra.player import Player
 
+import logging
+logger = logging.getLogger("robo.clientmanager")
+
 class ClientManager:
 	def __init__(self):
 		self._db = SqlLiteDb()
@@ -105,6 +108,7 @@ class ClientManager:
 			if con in self._mls_cons.keys():
 				account_id = self._mls_cons[con].get_account_id()
 				del self._mls_cons[con]
+				# Shut down dme coroutines if they exist
 				self._players[account_id].close()
 				del self._players[account_id]
 
@@ -112,8 +116,23 @@ class ClientManager:
 			if con in self._dmetcp_cons.keys():
 				player = self._dmetcp_cons[con]
 
-				player.get_game().player_disconnected(player)
+				logger.info("GAMES:")
+				logger.info(self._games)
 
+				game = player.get_game()
+				game.player_disconnected(player)
+
+				if game.get_player_count() == 0:
+					# Destroy the game
+					dme_world_game_id = game.get_dme_world_id()
+					del self._games[dme_world_game_id]
+
+				player.set_game(None)
+
+				logger.info("GAMES:")
+				logger.info(self._games)
+
+				# Delete this players dme connections
 				del self._dmetcp_cons[con]
 				del self._dmeudp_cons[player._dmeudp_connection]
 

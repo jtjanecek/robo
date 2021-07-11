@@ -2,6 +2,7 @@ from enums.enums import MediusWorldStatus, MediusEnum, RtIdEnum
 from utils import utils
 from medius.rtpackets.serverconnectnotify import ServerConnectNotifySerializer
 from medius.rtpackets.clientappsingle import ClientAppSingleSerializer
+from medius.rtpackets.serverdisconnectnotify import ServerDisconnectNotifySerializer
 
 import logging
 logger = logging.getLogger('robo.game')
@@ -64,6 +65,17 @@ class Game:
 				# send server notify 
 				dest_player.send_dmetcp(packet)
 
+	def send_server_notify_disconnected(self, player):
+		dme_player_id = self.get_dme_player_id(player)
+		ip = player.get_dmetcp_ip()
+		packet = utils.rtpacket_to_bytes(ServerDisconnectNotifySerializer.build(dme_player_id, ip))
+		logger.info(f"PACKET SERVER NOTIFY: {utils.bytes_to_hex(packet)}")
+
+		for dest_player in self._players.values():
+			if dest_player != player:
+				# send server notify 
+				dest_player.send_dmetcp(packet)
+
 	def dmetcp_single(self, player, data: bytes):
 		data = bytearray(data)
 		target_player_id = data[0]
@@ -90,7 +102,9 @@ class Game:
 		self._players[target_player_id].send_dmeudp(bytes(packet_data))
 
 	def player_disconnected(self, player):
-		pass
+		dme_player_id = self.get_dme_player_id(player)
+		self.send_server_notify_disconnected(player)
+		del self._players[dme_player_id]
 
 	def _generate_new_dme_player_id(self):
 		return min(self._possible_dme_player_ids.difference(set(self._players.keys())))
