@@ -175,17 +175,7 @@ class ClientManager:
 
 	# MLS Call
 	def get_players_by_world(self, world_id: int):
-		players = []
-		for player in self._players.values():
-			if player.get_mls_world_id() == world_id:
-				players.append({
-					'account_id': player.get_account_id(),
-					'username': player.get_username(), 
-					'mls_world_id': player.get_mls_world_id(), 
-					'dme_world_id': player.get_dme_world_id(),
-					'player_status': player.get_player_status()
-				})
-		return players
+		return self._players.values()
 
 	def get_player(self, account_id: int) -> Player:
 		return self._players[account_id]

@@ -17,18 +17,17 @@ class GetLobbyPlayerNames_ExtraInfoHandler:
 
 		channel_name = [channel for channel in monolith.get_channels() if channel['id'] == serialized['world_id']][0]['name']
 		players = monolith.get_client_manager().get_players_by_world(serialized['world_id'])
-		print(monolith.get_client_manager())
 		packets = []
 
-		for i in range(len(players)):
+		for i, this_player in enumerate(players):
 			packets.append(GetLobbyPlayerNames_ExtraInfoResponseSerializer.build(
 				serialized['message_id'],
 				CallbackStatus.SUCCESS,
-				players[i]['account_id'], # account_id
-				players[i]['username'], # account_name
-				players[i]['player_status'], # player_status
+				this_player.get_account_id(), # account_id
+				this_player.get_username(), # account_name
+				this_player.get_player_status(), # player_status
 				serialized['world_id'], # lobby world_id
-				players[i]['dme_world_id'], # game world id
+				this_player.get_dme_world_id(), # game world id
 				channel_name, # lobby name
 				utils.str_to_bytes("", MediusEnum.GAMENAME_MAXLEN), # game name # TODO
 				int(i == (len(players)-1)) # end of list
