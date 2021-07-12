@@ -87,8 +87,10 @@ class Game:
 
 		packet_data = utils.rtpacket_to_bytes(ClientAppSingleSerializer.build(data))
 
-		self._players[target_player_id].send_dmetcp(bytes(packet_data))
-
+		try:
+			self._players[target_player_id].send_dmetcp(bytes(packet_data))
+		except KeyError:
+			logger.debug("Tried to send to non-existant player!")
 
 	def dmeudp_single(self, player, data: bytes):
 		data = bytearray(data)
@@ -99,7 +101,10 @@ class Game:
 
 		packet_data = utils.rtpacket_to_bytes(ClientAppSingleSerializer.build(data))
 
-		self._players[target_player_id].send_dmeudp(bytes(packet_data))
+		try:
+			self._players[target_player_id].send_dmeudp(bytes(packet_data))
+		except KeyError:
+			logger.debug("Tried to send to non-existant player!")
 
 	def player_disconnected(self, player):
 		dme_player_id = self.get_dme_player_id(player)

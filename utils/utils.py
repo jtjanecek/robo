@@ -95,8 +95,8 @@ def bytes_to_int_little(data):
 def bytes_to_int_big(data):
 	return int.from_bytes(data, byteorder='big')
 
-def int_to_bytes_little(bytelength, data):
-	return data.to_bytes(bytelength, 'little')
+def int_to_bytes_little(bytelength, data, signed=False):
+	return data.to_bytes(bytelength, 'little', signed=signed)
 
 def int_to_bytes_big(bytelength, data):
 	return data.to_bytes(bytelength, 'big')

@@ -64,6 +64,7 @@ class TCPServer:
 				await writer.wait_closed()
 			except Exception as e:
 				logger.exception(f"Exception on connection: {connection}")
+				
 	async def looper(self):
 		server = await asyncio.start_server(
 		self.handle_incoming, self._ip, self._port)

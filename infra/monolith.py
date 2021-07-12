@@ -27,7 +27,10 @@ class Monolith:
 		if con.server_name == 'nat':
 			# We don't need nat yet
 			if len(data) == 4 and data[-1] != 0xd4:
-				ip_formatted = bytes([int(y) for y in con.addr.split('.')])
+				if con.addr[0:3] == '192': # Local address. Debugging purposes
+					ip_formatted = bytes([0] * 4)
+				else:
+					ip_formatted = bytes([int(y) for y in con.addr.split('.')])
 				port = utils.int_to_bytes_little(2, con.port)
 				con.send(ip_formatted + port)
 			return []

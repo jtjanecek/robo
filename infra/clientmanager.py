@@ -134,7 +134,7 @@ class ClientManager:
 
 				# Delete this players dme connections
 				del self._dmetcp_cons[con]
-				del self._dmeudp_cons[player._dmeudp_connection]
+				del self._dmeudp_cons[player._dmeudp_connection.hash()]
 
 	def dmetcp_broadcast(self, con: Connection, data: bytes):
 		source_player = self._dmetcp_cons[con]

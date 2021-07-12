@@ -24,7 +24,7 @@ class GameWorldPlayerListHandler:
 				CallbackStatus.NO_RESULT,
 				0,
 				'',
-				utils.str_to_bytes(MediusEnum.ACCOUNTSTATS_MAXLEN, ''),
+				utils.str_to_bytes('',MediusEnum.ACCOUNTSTATS_MAXLEN),
 				0,
 				1
 			)]
