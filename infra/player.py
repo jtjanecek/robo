@@ -38,7 +38,7 @@ class Player():
 		asyncio.create_task(self.mlsflusher())
 
 	async def mlsflusher(self):
-		await self._dmetcp_connection.writer.drain()
+		await self._mls_connection.writer.drain()
 
 	def start_tcpflusher(self):
 		self._dmetcp_flush_task = asyncio.create_task(self.tcpflusher())

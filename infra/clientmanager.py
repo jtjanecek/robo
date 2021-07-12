@@ -178,6 +178,8 @@ class ClientManager:
 		return self._players.values()
 
 	def get_player(self, account_id: int) -> Player:
+		if account_id not in self._players.keys():
+			return None
 		return self._players[account_id]
 
 	def get_player_from_mls_con(self, con):

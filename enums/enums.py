@@ -7,6 +7,10 @@ class GeneralEnum(Enum):
 			if value == id.value:
 				return id
 
+class MediusApplicationType:
+	MEDIUS_APP_TYPE_GAME = 0
+	LOBBY_CHAT_CHANNEL = 1
+
 class MediusGameHostType:
 	HOST_CLIENT_SERVER = 0,
 	HOST_INTEGRATED_SERVER = 1
