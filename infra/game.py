@@ -21,6 +21,13 @@ class Game:
 		# Dict for dme player id -> Player
 		self._players = {}
 
+	def active(self):
+		if self._status != MediusWorldStatus.WORLD_ACTIVE:
+			self._status = MediusWorldStatus.WORLD_ACTIVE
+			game_name = self._create_game_serialized['game_name'].decode()
+			game_name = f"[IG] {game_name}"
+			self._create_game_serialized['game_name'] = game_name[0:MediusEnum.GAMENAME_MAXLEN].encode()
+
 	def get_mls_world_id(self):
 		return self._create_game_serialized['game_level']
 
