@@ -9,10 +9,12 @@ logger = logging.getLogger('robo.game')
 
 
 class Game:
-	def __init__(self, dme_world_id: int, create_game_serialized: dict):
+	def __init__(self, dme_world_id: int, create_game_serialized: dict, dmetcp_aggtime, dmeudp_aggtime):
 		self._status = MediusWorldStatus.WORLD_PENDING_CREATION
 		self._dme_world_id = dme_world_id
 		self._create_game_serialized = create_game_serialized
+		self._dmetcp_aggtime = dmetcp_aggtime
+		self._dmeudp_aggtime = dmeudp_aggtime
 
 		self._stats = utils.bytes_from_hex(''.join(['00'] * MediusEnum.GAMESTATS_MAXLEN))
 
@@ -27,6 +29,10 @@ class Game:
 			game_name = self._create_game_serialized['game_name'].decode()
 			game_name = f"[IG] {game_name}"
 			self._create_game_serialized['game_name'] = game_name[0:MediusEnum.GAMENAME_MAXLEN].encode()
+
+			for player in self._players.values():
+				player.set_dmetcp_aggtime(self._dmetcp_aggtime)
+				player.set_dmeudp_aggtime(self._dmeudp_aggtime)
 
 	def get_mls_world_id(self):
 		return self._create_game_serialized['game_level']

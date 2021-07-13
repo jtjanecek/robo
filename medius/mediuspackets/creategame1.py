@@ -26,7 +26,10 @@ class CreateGame1Serializer:
 
 class CreateGame1Handler:
 	def process(self, serialized, monolith, con):
-		new_dme_world_id = monolith.get_client_manager().create_game(serialized)
+
+		player = monolith.get_client_manager().get_player_from_mls_con(con)
+
+		new_dme_world_id = monolith.get_client_manager().create_game(serialized, player.get_dmetcp_aggtime(), player.get_dmeudp_aggtime())
 		return [CreateGameResponseSerializer.build(
 			serialized['message_id'],
 			CallbackStatus.SUCCESS,

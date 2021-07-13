@@ -147,13 +147,13 @@ class ClientManager:
 		game.dmeudp_broadcast(source_player, data)
 
 	# =============== Dme ===============
-	def create_game(self, create_game_serialized: dict):
+	def create_game(self, create_game_serialized: dict, dmetcp_aggtime, dmeudp_aggtime):
 		with self._games_lock:
 			new_dme_world_id = self._ongoing_game_id
 			self._ongoing_game_id += 1
 
 			# Actually create the game
-			self._games[new_dme_world_id] = Game(new_dme_world_id, create_game_serialized)
+			self._games[new_dme_world_id] = Game(new_dme_world_id, create_game_serialized, dmetcp_aggtime, dmeudp_aggtime)
 
 			return new_dme_world_id
 

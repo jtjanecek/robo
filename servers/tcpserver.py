@@ -12,7 +12,7 @@ class TCPServer:
 	def __init__(self, monolith, name, ip, port):
 
 		self._logger = logging.getLogger(f"robo.{name}")
-		formatter = logging.Formatter('%(name)s | %(threadName)s | %(levelname)s | %(message)s')
+		formatter = logging.Formatter('%(asctime)s %(name)s | %(threadName)s | %(levelname)s | %(message)s')
 		filehandler = logging.FileHandler(os.path.join('logs',f'{name}.log'), mode='w')
 		filehandler.setLevel(logging.DEBUG)
 		filehandler.setFormatter(formatter)

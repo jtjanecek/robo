@@ -9,6 +9,7 @@ from enums.enums import RtIdEnum
 from utils import utils
 from infra.clientmanager import ClientManager
 from infra.connection import Connection
+from infra.chatcommands import ChatCommands
 from crypto.rsa import RSA
 from utils.rtbufferdeframer import RtBufferDeframer
 
@@ -18,6 +19,7 @@ class Monolith:
 	def __init__(self, config: dict):
 		self._config = config
 		self._client_manager = ClientManager()
+		self._chat_commands = ChatCommands()
 
 	#################################################################################
 	# UDP Pipeline
@@ -193,6 +195,9 @@ class Monolith:
 
 	def client_disconnected(self, con: Connection):
 		self._client_manager.client_disconnected(con)
+
+	def process_chat(self, player, text):
+		self._chat_commands.process_chat(player, text)
 
 # ===================================
 # Misc

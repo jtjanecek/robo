@@ -34,30 +34,22 @@ class Player():
 		self._dmetcp_flush_task = None
 		self._dmeudp_flush_task = None
 
-	def send_mls(self, data: bytes):
-		self._mls_connection.writer.write(data)
-		asyncio.create_task(self.mlsflusher())
-
-	async def mlsflusher(self):
-		await self._mls_connection.writer.drain()
-
-	def start_tcpflusher(self):
-		self._dmetcp_flush_task = asyncio.create_task(self.tcpflusher())
-
-	def start_udpflusher(self):
-		self._dmeudp_flush_task = asyncio.create_task(self.udpflusher())
-
-	def set_dmetcp_con(self, dmetcp_con):
-		self._dmetcp_connection = dmetcp_con
-
-	def set_dmeudp_con(self, dmeudp_con):
-		self._dmeudp_connection = dmeudp_con
+	
+	#############################################################
+	# DME Sending data 
+	#############################################################
 
 	def send_dmetcp(self, data: bytes):
 		self._dmetcp_queue.put(data)
 
 	def send_dmeudp(self, data: bytes):
 		self._dmeudp_queue.put(data)
+
+	def start_tcpflusher(self):
+		self._dmetcp_flush_task = asyncio.create_task(self.tcpflusher())
+
+	def start_udpflusher(self):
+		self._dmeudp_flush_task = asyncio.create_task(self.udpflusher())
 
 	async def tcpflusher(self):
 		while True:
@@ -81,6 +73,29 @@ class Player():
 			   		final_data += self._dmeudp_queue.get()
 				self._dmeudp_connection.send(final_data)
 			await asyncio.sleep(self._dmeudp_aggtime)
+
+	def close(self):
+		if self._dmetcp_flush_task != None:
+			self._dmetcp_flush_task.cancel()
+		if self._dmeudp_flush_task != None:
+			self._dmeudp_flush_task.cancel()
+
+	#############################################################
+	# MLS Sending data 
+	#############################################################
+
+	def send_mls(self, data: bytes):
+		self._mls_connection.writer.write(data)
+		asyncio.create_task(self.mlsflusher())
+
+	async def mlsflusher(self):
+		await self._mls_connection.writer.drain()
+
+	def set_dmetcp_con(self, dmetcp_con):
+		self._dmetcp_connection = dmetcp_con
+
+	def set_dmeudp_con(self, dmeudp_con):
+		self._dmeudp_connection = dmeudp_con
 
 	def deframe(self, connection, data: [bytes]):
 		'''
@@ -119,14 +134,20 @@ class Player():
 	def get_game(self):
 		return self._game
 
-	def close(self):
-		if self._dmetcp_flush_task != None:
-			self._dmetcp_flush_task.cancel()
-		if self._dmeudp_flush_task != None:
-			self._dmeudp_flush_task.cancel()
-
 	def __str__(self):
 		return f'Player(account_id={self._account_id},username={self._username},status={self._status},mls_world_id={self._mls_world_id},dme={self._game})'
 
 	def get_dmetcp_ip(self):
 		return self._dmetcp_connection.addr
+
+	def set_dmetcp_aggtime(self, agg_time):
+		self._dmetcp_aggtime = agg_time
+
+	def set_dmeudp_aggtime(self, agg_time):
+		self._dmeudp_aggtime = agg_time
+
+	def get_dmetcp_aggtime(self):
+		return self._dmetcp_aggtime
+
+	def get_dmeudp_aggtime(self):
+		return self._dmeudp_aggtime

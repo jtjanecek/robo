@@ -26,8 +26,12 @@ class RSA:
 		# c^d mod n
 		z = pow(intlist, self._d, self._n)
 		z += self._n
-
-		bytesDecrypted = z.to_bytes(len(data), 'little')
+		try:
+			bytesDecrypted = z.to_bytes(len(data), 'little')
+		except OverflowError:
+			z -= self._n
+			bytesDecrypted = z.to_bytes(len(data), 'little')
+		print(utils.bytes_to_hex(bytesDecrypted))
 		return bytesDecrypted
 
 	def encrypt(self, data: bytes) -> bytes:
@@ -47,3 +51,4 @@ class RSA:
 		cipher_bytes = utils.int_to_bytes_little(64, cipher)
 
 		return bytes([rtid] + list(length) + list(rthash) + list(cipher_bytes))
+

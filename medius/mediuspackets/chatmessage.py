@@ -17,6 +17,9 @@ class ChatMessageHandler:
 	def process(self, serialized, monolith, con):
 		player = monolith.get_client_manager().get_player_from_mls_con(con)
 
+		# Check if this command is a player command
+		monolith.process_chat(player, utils.bytes_to_str(serialized['text']))
+
 		mls_world_id = player.get_mls_world_id()
 
 		packet = [{'name': 'Server app'}, {'rtid': RtIdEnum.SERVER_APP}]
@@ -29,7 +32,8 @@ class ChatMessageHandler:
 					dst_player.send_mls(packet)
 		elif serialized['chat_message_type'] == MediusChatMessageType.WHISPER:
 			dst_player = monolith.get_client_manager().get_player(serialized['target_id'])
-			dst_player.send_mls(packet)
+			if dst_player != None:
+				dst_player.send_mls(packet)
 		else:
 			raise Exception(f"Unimplemented chat message type: {serialized['chat_message_type']}")
 
