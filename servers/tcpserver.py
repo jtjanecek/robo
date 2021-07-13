@@ -4,17 +4,20 @@ import time
 import asyncio
 from infra.connection import Connection
 import traceback
-
 import logging
-logger = logging.getLogger("robo.tcp")
-formatter = logging.Formatter('%(name)s | %(threadName)s | %(levelname)s | %(message)s')
-filehandler = logging.FileHandler(os.path.join('logs','tcp.log'), mode='w')
-filehandler.setLevel(logging.DEBUG)
-filehandler.setFormatter(formatter)
-logger.addHandler(filehandler)
+
+
 
 class TCPServer:
 	def __init__(self, monolith, name, ip, port):
+
+		self._logger = logging.getLogger(f"robo.{name}")
+		formatter = logging.Formatter('%(name)s | %(threadName)s | %(levelname)s | %(message)s')
+		filehandler = logging.FileHandler(os.path.join('logs',f'{name}.log'), mode='w')
+		filehandler.setLevel(logging.DEBUG)
+		filehandler.setFormatter(formatter)
+		self._logger.addHandler(filehandler)
+
 		self._monolith = monolith
 		self._name = name
 		self._ip = ip
@@ -27,7 +30,7 @@ class TCPServer:
 	async def handle_incoming(self, reader, writer):
 		connection = Connection(self._name, writer)
 
-		logger.info(f"Client connected: {connection}")
+		self._logger.info(f"Client connected: {connection}")
 
 		try:
 			while True:
@@ -38,39 +41,39 @@ class TCPServer:
 
 				# Analyze incoming data
 				message = data.hex().upper()
-				logger.debug(f"{connection} | I | {message}")
+				self._logger.debug(f"{connection} | I | {message}")
 
 				packets = self._monolith.process_tcp(connection, data)
 
 				framed = b''
 				for packet in packets:
-					logger.debug(f"{connection} | O | {packet.hex().upper()}")
+					self._logger.debug(f"{connection} | O | {packet.hex().upper()}")
 					framed += packet
 				if framed != b'':
 					writer.write(framed)
 					await writer.drain()
 
 		except asyncio.TimeoutError as te:
-			logger.info(f"Client timed out: {connection}")
+			self._logger.info(f"Client timed out: {connection}")
 		except Exception as e:
-			logger.exception(f"Exception on connection: {connection}")
+			self._logger.exception(f"Exception on connection: {connection}")
 		finally:
 			try:
 				self._monolith.client_disconnected(connection)
-				logger.info(f"Client disconnected: {connection}")
+				self._logger.info(f"Client disconnected: {connection}")
 
 				connection.close()
 				writer.close()
 				await writer.wait_closed()
 			except Exception as e:
-				logger.exception(f"Exception on connection: {connection}")
+				self._logger.exception(f"Exception on connection: {connection}")
 				
 	async def looper(self):
 		server = await asyncio.start_server(
 		self.handle_incoming, self._ip, self._port)
 	
 		addr = server.sockets[0].getsockname()
-		logger.info(f'{self._name} | Serving on {addr} ...')
+		self._logger.info(f'{self._name} | Serving on {addr} ...')
 
 		async with server:	
 			await server.serve_forever()
