@@ -27,6 +27,7 @@ class Player():
 
 		# Game info
 		self._game = None
+		self._dmetcp_queue = Queue()
 		self._dmeudp_queue = Queue()
 		self._dmetcp_aggtime = 0.03
 		self._dmeudp_aggtime = 0.03
@@ -53,24 +54,33 @@ class Player():
 		self._dmeudp_connection = dmeudp_con
 
 	def send_dmetcp(self, data: bytes):
-		self._dmetcp_connection.writer.write(data)
+		self._dmetcp_queue.put(data)
 
 	def send_dmeudp(self, data: bytes):
 		self._dmeudp_queue.put(data)
 
 	async def tcpflusher(self):
-	    while True:
-	        await asyncio.sleep(self._dmetcp_aggtime)
-	        await self._dmetcp_connection.writer.drain()
+		while True:
+			size = self._dmetcp_queue.qsize()
+			
+			if size != 0:
+				final_data = b''
+				for i in range(size):
+			   		final_data += self._dmetcp_queue.get()
+				self._dmetcp_connection.writer.write(final_data)
+				await self._dmetcp_connection.writer.drain()
+			await asyncio.sleep(self._dmetcp_aggtime)
 
 	async def udpflusher(self):
-	    while True:
-	    	size = self._dmeudp_queue.qsize()
-	    	
-	    	for i in range(size):
-	       		data = self._dmeudp_queue.get()
-	       		self._dmeudp_connection.send(data)
-	    	await asyncio.sleep(self._dmeudp_aggtime)
+		while True:
+			size = self._dmeudp_queue.qsize()
+			
+			if size != 0:
+				final_data = b''
+				for i in range(size):
+			   		final_data += self._dmeudp_queue.get()
+				self._dmeudp_connection.send(final_data)
+			await asyncio.sleep(self._dmeudp_aggtime)
 
 	def deframe(self, connection, data: [bytes]):
 		'''
