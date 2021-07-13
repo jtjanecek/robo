@@ -113,8 +113,8 @@ def bytes_to_str(data: bytes) -> str:
 		if b == 0x00:
 			return res
 		res += chr(b)
-	raise Exception(f'Cannot convert to string: {data}')
-
+	return res
+	
 def str_to_bytes(data: str, length: int) -> bytes:
 	str_bytes = data
 	assert(length > len(data))
