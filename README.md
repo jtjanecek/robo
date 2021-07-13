@@ -1,6 +1,11 @@
 # Robo
 A simple python medius implementation made specifically for Ratchet and Clank: Up Your Arsenal
 
+# Features
+- Once a game has started, cities will show `[IG]` to indicate that the world is "in-game"
+- Players can use the `!tagg [number]` or `!uagg [number]` in cities to set the DME TCP(tagg)/UDP(uagg) times manually for the next world they create. If a player sets these, then joins a game, they will be reset. The default in the game is 30 for both. Recommended values range from 10-100.
+
+
 ## Code adapted and inspired by:
 https://github.com/hashsploit/clank    
 https://github.com/Dnawrkshp/deadlocked-server/
