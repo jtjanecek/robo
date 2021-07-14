@@ -2,6 +2,7 @@ import os
 from time import sleep
 import json
 
+from api.api import Api
 from servers.tcpserver import TCPServer
 from servers.udpserver import UDPServer
 from infra.monolith import Monolith
@@ -36,6 +37,7 @@ class Robo():
 		self._dmetcp = TCPServer(monolith, 'dmetcp', config['dmetcp']['ip'], config['dmetcp']['port'])
 		self._dmeudp = UDPServer(monolith, 'dmeudp', config['dmeudp']['ip'], config['dmeudp']['port'])
 		self._nat = UDPServer(monolith, 'nat', config['nat']['ip'], config['nat']['port'])
+		self._api = Api(monolith, config['api']['ip'], config['api']['port'], config['api']['sync_rate'])
 
 		while True:
 			sleep(100)

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from enums.enums import MediusWorldStatus, MediusEnum, RtIdEnum
 from utils import utils
 from medius.rtpackets.serverconnectnotify import ServerConnectNotifySerializer
@@ -177,3 +178,21 @@ class Game:
 				'username': player.get_username()
 			})
 		return res
+
+	def to_json(self) -> dict:
+		game_data = deepcopy(self._create_game_serialized)
+		del game_data['session_key']
+		del game_data['spectator_password']
+		del game_data['game_password']
+		del game_data['message_id']
+		del game_data['buf']
+		result = {
+			'status': self._status,
+			'dme_world_id': self._dme_world_id,
+			'serialized_data': game_data,
+			'dmetcp_aggtime': self._dmetcp_aggtime,
+			'dmeudp_aggtime': self._dmeudp_aggtime,
+			'stats': self._stats,
+			'players': [player.to_json() for player in self._players.values()]
+		}
+		return result

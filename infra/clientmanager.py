@@ -215,6 +215,17 @@ class ClientManager:
 
 	# =============== Misc ===============
 
+	def api_req_players(self) -> list:
+		result = [player.to_json() for player in self._players.values()]
+		for player_dict in result:
+			player_dict['stats'] = self.get_player_stats(player_dict['account_id'])
+			player_dict['ladderstatswide'] = self.get_player_ladderstatswide(player_dict['account_id'])
+		return result
+
+	def api_req_games(self) -> list:
+		result = [game.to_json() for game in self._games.values()]
+		return result
+
 	def generate_access_key(self) -> bytes:
 		new_access_key = ''.join(random.choice('0123456789ABCDEF') for i in range(MediusEnum.ACCESSKEY_MAXLEN-1)) + '\0'
 		new_access_key = new_access_key.encode()

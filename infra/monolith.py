@@ -200,6 +200,14 @@ class Monolith:
 		self._chat_commands.process_chat(player, text)
 
 # ===================================
+# API methods
+	def api_req_players(self):
+		return self._client_manager.api_req_players()
+
+	def api_req_games(self):
+		return self._client_manager.api_req_games()
+
+# ===================================
 # Misc
 
 	def get_mas_ip(self) -> str:

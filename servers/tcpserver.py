@@ -12,7 +12,7 @@ class TCPServer:
 	def __init__(self, monolith, name, ip, port):
 
 		self._logger = logging.getLogger(f"robo.{name}")
-		formatter = logging.Formatter('%(asctime)s %(name)s | %(threadName)s | %(levelname)s | %(message)s')
+		formatter = logging.Formatter('%(asctime)s %(name)s | %(levelname)s | %(message)s')
 		filehandler = logging.FileHandler(os.path.join('logs',f'{name}.log'), mode='w')
 		filehandler.setLevel(logging.DEBUG)
 		filehandler.setFormatter(formatter)
@@ -73,7 +73,7 @@ class TCPServer:
 		self.handle_incoming, self._ip, self._port)
 	
 		addr = server.sockets[0].getsockname()
-		self._logger.info(f'{self._name} | Serving on {addr} ...')
+		self._logger.info(f'Serving on {addr} ...')
 
 		async with server:	
 			await server.serve_forever()

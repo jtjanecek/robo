@@ -151,3 +151,26 @@ class Player():
 
 	def get_dmeudp_aggtime(self):
 		return self._dmeudp_aggtime
+
+	def to_json(self) -> dict:
+		return {
+			'account_id': self._account_id,
+			'username': self._username,
+			'mls_world_id': self._mls_world_id,
+			'dmetcp_aggtime': self._dmetcp_aggtime,
+			'dmeudp_aggtime': self._dmeudp_aggtime
+		}
+	
+
+
+
+
+
+
+
+
+
+
+
+				
+

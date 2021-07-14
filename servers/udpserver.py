@@ -51,6 +51,6 @@ class UDPServer:
 		loop = asyncio.new_event_loop()
 		asyncio.set_event_loop(loop)
 		task = loop.create_datagram_endpoint(lambda: self, local_addr=(self._ip, self._port))
-		self._logger.info(f'{self._name} | Serving on {(self._ip, self._port)} ...')
+		self._logger.info(f'Serving on {(self._ip, self._port)} ...')
 		loop.run_until_complete(task) # Server starts listening
 		loop.run_forever()
