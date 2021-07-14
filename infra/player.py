@@ -154,6 +154,7 @@ class Player():
 
 	def to_json(self) -> dict:
 		return {
+			'status': self._status,
 			'account_id': self._account_id,
 			'username': self._username,
 			'mls_world_id': self._mls_world_id,
