@@ -21,11 +21,11 @@
 	},
 	"api": {
 		"ip": "0.0.0.0",
-		"port": 8181,
+		"port": 8281,
 		"sync_rate": 30
 	},
 	"app_id": 10684,
-	"channels": [
+    "channels": [
         {
             "id": 123,
             "name": "CY00000000-00",
@@ -47,7 +47,7 @@
             "name": "Location 2"
         }
     ],
-	"policy": "Test policy",
+	"policy": "Test policy", 
 	"announcement": "Test announcement",
 	"console_log_level": "DEBUG"
 }
