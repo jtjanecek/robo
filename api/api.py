@@ -42,9 +42,11 @@ class Api():
 			await asyncio.sleep(self._sync_rate)
 
 	async def players(self, request):
+		self._logger.debug("Players request!")
 		return web.Response(text=self._players)
 
 	async def games(self, request):
+		self._logger.debug("Games request!")
 		return web.Response(text=self._games)
 
 	async def main(self):
