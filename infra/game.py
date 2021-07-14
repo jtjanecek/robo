@@ -4,6 +4,7 @@ from utils import utils
 from medius.rtpackets.serverconnectnotify import ServerConnectNotifySerializer
 from medius.rtpackets.clientappsingle import ClientAppSingleSerializer
 from medius.rtpackets.serverdisconnectnotify import ServerDisconnectNotifySerializer
+import base64
 
 import logging
 logger = logging.getLogger('robo.game')
@@ -181,18 +182,22 @@ class Game:
 
 	def to_json(self) -> dict:
 		game_data = deepcopy(self._create_game_serialized)
-		del game_data['session_key']
-		del game_data['spectator_password']
-		del game_data['game_password']
-		del game_data['message_id']
-		del game_data['buf']
 		result = {
 			'status': self._status,
 			'dme_world_id': self._dme_world_id,
-			'serialized_data': game_data,
+			'min_players': game_data['min_players'],
+			'max_players': game_data['max_players'],
+			'game_level': game_data['game_level'],
+			'game_name': base64.b64encode(game_data['game_name']).decode(),
+			'player_skill_level': game_data['player_skill_level'],
+			'rules_set': game_data['rules_set'],
+			'generic_field_1': game_data['generic_field_1'],
+			'generic_field_2': game_data['generic_field_2'],
+			'generic_field_3': game_data['generic_field_3'],
+			'game_host_type': game_data['game_host_type'],
 			'dmetcp_aggtime': self._dmetcp_aggtime,
 			'dmeudp_aggtime': self._dmeudp_aggtime,
-			'stats': self._stats,
+			'stats': base64.b64encode(self._stats).decode(),
 			'players': [player.to_json() for player in self._players.values()]
 		}
 		return result

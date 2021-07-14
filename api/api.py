@@ -33,11 +33,11 @@ class Api():
 
 			# Sync player list
 			players = self._monolith.api_req_players()
-			self._players = str(players)
+			self._players = json.dumps(players)
 
 			# Sync game list
 			games = self._monolith.api_req_games()
-			self._games = str(games)
+			self._games = json.dumps(games)
 
 			await asyncio.sleep(self._sync_rate)
 
