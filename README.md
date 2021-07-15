@@ -1,4 +1,4 @@
-# Robo
+# Robo - Custom Medius Server for UYA
 ![Python Version](https://img.shields.io/badge/python-3.9-blue?style=for-the-badge&logo=python)
 ![OS](https://img.shields.io/badge/OS-GNU%2FLinux-red?style=for-the-badge&logo=linux)
 
