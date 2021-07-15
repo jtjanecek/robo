@@ -179,12 +179,7 @@ class Monolith:
 		if result == None:
 			logger.warning("Data was not encrypted!")
 			return data
-		# logger.debug(f"Pre Encryption: {utils.bytes_to_hex(data)}")
-		# logger.debug(f"Post Encryption: {utils.bytes_to_hex(result)}")
 		return result
-
-	# def process_nat(self, con: UdpConnection, data: bytes):
-	# 	pass
 
 
 # ===================================
@@ -209,6 +204,9 @@ class Monolith:
 
 # ===================================
 # Misc
+
+	def clear_zombie_games(self):
+		self._client_manager.clear_zombie_games()
 
 	def get_mas_ip(self) -> str:
 		return self._config['mas']['public_ip']

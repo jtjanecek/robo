@@ -9,7 +9,7 @@ from infra.monolith import Monolith
 import requests
 
 import logging
-
+import asyncio
 
 
 
@@ -30,17 +30,16 @@ class Robo():
 		logger.setLevel(logging.DEBUG)
 		logger.addHandler(filehandler)
 
-		monolith = Monolith(config)
+		self._monolith = Monolith(config)
 		
-		self._mas = TCPServer(monolith, 'mas', config['mas']['ip'], config['mas']['port'])
-		self._mls = TCPServer(monolith, 'mls', config['mls']['ip'], config['mls']['port'])
-		self._dmetcp = TCPServer(monolith, 'dmetcp', config['dmetcp']['ip'], config['dmetcp']['port'])
-		self._dmeudp = UDPServer(monolith, 'dmeudp', config['dmeudp']['ip'], config['dmeudp']['port'])
-		self._nat = UDPServer(monolith, 'nat', config['nat']['ip'], config['nat']['port'])
-		self._api = Api(monolith, config['api']['ip'], config['api']['port'], config['api']['sync_rate'])
+		self._mas = TCPServer(self._monolith, 'mas', config['mas']['ip'], config['mas']['port'])
+		self._mls = TCPServer(self._monolith, 'mls', config['mls']['ip'], config['mls']['port'])
+		self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['dmetcp']['ip'], config['dmetcp']['port'])
+		self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['dmeudp']['ip'], config['dmeudp']['port'])
+		self._nat = UDPServer(self._monolith, 'nat', config['nat']['ip'], config['nat']['port'])
+		self._api = Api(self._monolith, config['api']['ip'], config['api']['port'], config['api']['sync_rate'])
 
-		while True:
-			sleep(100)
+		self.start()
 
 	def read_config(self) -> dict:
 		with open('config.json', 'r') as f:
@@ -60,6 +59,22 @@ class Robo():
 			config['dmetcp']['public_ip'] = config['dmetcp']['ip']
 			config['dmeudp']['public_ip'] = config['dmeudp']['ip']
 		return config
+
+
+	async def clear_zombie_games(self):
+		while True:
+			self._monolith.clear_zombie_games()
+			await asyncio.sleep(120)
+
+	async def misc_functions(self):
+		# Add monolith sync to event loop
+		asyncio.create_task(self.clear_zombie_games())
+	
+   	 	# wait forever
+		await asyncio.Event().wait()
+
+	def start(self):
+		asyncio.run(self.misc_functions())
 
 if __name__ == '__main__':
 	Robo()

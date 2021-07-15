@@ -5,6 +5,7 @@ from medius.rtpackets.serverconnectnotify import ServerConnectNotifySerializer
 from medius.rtpackets.clientappsingle import ClientAppSingleSerializer
 from medius.rtpackets.serverdisconnectnotify import ServerDisconnectNotifySerializer
 import base64
+from datetime import datetime
 
 import logging
 logger = logging.getLogger('robo.game')
@@ -20,6 +21,8 @@ class Game:
 
 		self._stats = utils.bytes_from_hex(''.join(['00'] * MediusEnum.GAMESTATS_MAXLEN))
 
+		self._created_date = datetime.now().timestamp()
+		self._started_date = ''
 
 		self._possible_dme_player_ids = {0,1,2,3,4,5,6,7}
 		# Dict for dme player id -> Player
@@ -31,6 +34,7 @@ class Game:
 			game_name = self._create_game_serialized['game_name'].decode()
 			game_name = f"[IG] {game_name}"
 			self._create_game_serialized['game_name'] = game_name[0:MediusEnum.GAMENAME_MAXLEN].encode()
+			self._started_date = datetime.now().timestamp()
 
 			for player in self._players.values():
 				player.set_dmetcp_aggtime(self._dmetcp_aggtime)
@@ -183,6 +187,8 @@ class Game:
 	def to_json(self) -> dict:
 		game_data = deepcopy(self._create_game_serialized)
 		result = {
+			'created_date': self._created_date,
+			'started_date': self._started_date,
 			'status': self._status,
 			'dme_world_id': self._dme_world_id,
 			'min_players': game_data['min_players'],

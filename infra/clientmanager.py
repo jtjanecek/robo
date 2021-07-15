@@ -116,9 +116,6 @@ class ClientManager:
 			if con in self._dmetcp_cons.keys():
 				player = self._dmetcp_cons[con]
 
-				logger.info("GAMES:")
-				logger.info(self._games)
-
 				game = player.get_game()
 				game.player_disconnected(player)
 
@@ -128,9 +125,6 @@ class ClientManager:
 					del self._games[dme_world_game_id]
 
 				player.set_game(None)
-
-				logger.info("GAMES:")
-				logger.info(self._games)
 
 				# Delete this players dme connections
 				del self._dmetcp_cons[con]
@@ -225,6 +219,13 @@ class ClientManager:
 	def api_req_games(self) -> list:
 		result = [game.to_json() for game in self._games.values()]
 		return result
+
+	def clear_zombie_games(self):
+		for dme_world_id in list(self._games.keys()):
+			game = self._games[dme_world_id]
+			if datetime.now().timestamp() - game.get_created_date() > 10 and game.get_player_count() == 0:
+				# Delete this game
+				del self._games[dme_world_id]
 
 	def generate_access_key(self) -> bytes:
 		new_access_key = ''.join(random.choice('0123456789ABCDEF') for i in range(MediusEnum.ACCESSKEY_MAXLEN-1)) + '\0'
