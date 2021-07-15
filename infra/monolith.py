@@ -1,6 +1,5 @@
 import asyncio
 import logging
-logger = logging.getLogger('robo.monolith')
 
 from enums.enums import CipherContext
 from crypto.rsa import RSA
@@ -20,12 +19,14 @@ class Monolith:
 		self._config = config
 		self._client_manager = ClientManager()
 		self._chat_commands = ChatCommands()
+		self._logger = logging.getLogger('robo.monolith')
+
 
 	#################################################################################
 	# UDP Pipeline
 	#################################################################################
 
-	def process_udp(self, con, data):
+	def process_udp(self, con, data, logger):
 		if con.server_name == 'nat':
 			# We don't need nat yet
 			if len(data) == 4 and data[-1] != 0xd4:
@@ -72,7 +73,7 @@ class Monolith:
 	# TCP Pipeline
 	#################################################################################
 
-	def process_tcp(self, con: Connection, data: bytes):
+	def process_tcp(self, con: Connection, data: bytes, logger):
 		packets = [data]
 
 		# Identify the player -- if the player is not identified, then run anonymous pipeline
@@ -177,7 +178,7 @@ class Monolith:
 			result = con.get_rc4().encrypt(data)
 
 		if result == None:
-			logger.warning("Data was not encrypted!")
+			self._logger.warning("Data was not encrypted!")
 			return data
 		return result
 
