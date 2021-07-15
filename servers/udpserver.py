@@ -35,7 +35,7 @@ class UDPServer:
 		self._logger.debug(f"{self._name} | {connection} | I | {data.hex().upper()}")
 
 		try:
-			packets = self._monolith.process_udp(connection, data)
+			packets = self._monolith.process_udp(connection, data, self._logger)
 
 			p = b''
 			for packet in packets:
