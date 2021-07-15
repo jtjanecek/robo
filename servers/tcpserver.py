@@ -43,7 +43,7 @@ class TCPServer:
 				message = data.hex().upper()
 				self._logger.debug(f"{connection} | I | {message}")
 
-				packets = self._monolith.process_tcp(connection, data)
+				packets = self._monolith.process_tcp(connection, data, self._logger)
 
 				framed = b''
 				for packet in packets:
