@@ -203,7 +203,6 @@ class Game:
 			'game_host_type': game_data['game_host_type'],
 			'dmetcp_aggtime': self._dmetcp_aggtime,
 			'dmeudp_aggtime': self._dmeudp_aggtime,
-			'stats': base64.b64encode(self._stats).decode(),
 			'players': [player.to_json() for player in self._players.values()]
 		}
 		return result
