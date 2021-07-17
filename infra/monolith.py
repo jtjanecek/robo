@@ -76,7 +76,6 @@ class Monolith:
 	#################################################################################
 
 	def process_tcp(self, con: Connection, data: bytes, logger):
-		data = utils.bytes_from_hex("0B52000139310000000000000040F8FF010000000000C0C50100344245314132313744414539343331320000000100000000000000537065656479000000000000000000000000250000000000242FD50100000000")
 		packets = [data]
 
 		# Identify the player -- if the player is not identified, then run anonymous pipeline

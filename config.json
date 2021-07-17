@@ -1,53 +1,84 @@
 {
 	"mas": {
 		"ip": "0.0.0.0",
-		"port": 10075
+		"port": 10075,
+		"log_maxbytes": 250000000,
+		"log_backup_count": 5
 	},
 	"mls": {
 		"ip": "0.0.0.0",
-		"port": 10078
+		"port": 10078,
+		"log_maxbytes": 250000000,
+		"log_backup_count": 5
 	},
 	"dmetcp": {
 		"ip": "0.0.0.0",
-		"port": 10079
+		"port": 10079,
+		"log_maxbytes": 250000000,
+		"log_backup_count": 5
 	},
 	"dmeudp": {
 		"ip": "0.0.0.0",
-		"port": 51000
+		"port": 51000,
+		"log_maxbytes": 250000000,
+		"log_backup_count": 5
+	
 	},
 	"nat": {
 		"ip": "0.0.0.0",
-		"port": 10070
+		"port": 10070,
+		"log_maxbytes": 250000000,
+		"log_backup_count": 5
+	
 	},
 	"api": {
 		"ip": "0.0.0.0",
 		"port": 8281,
-		"sync_rate": 30
+		"sync_rate": 30,
+		"log_maxbytes": 250000000,
+		"log_backup_count": 5
 	},
 	"app_id": 10684,
     "channels": [
         {
             "id": 123,
-            "name": "CY00000000-00",
+            "name": "",
             "max_players": 256
         },
         {
             "id": 124,
-            "name": "CY00000001-00",
+            "name": "",
             "max_players": 256
         }
     ],
     "locations": [
         {
             "id": 40,
-            "name": "Location 1"
+            "name": "Aquatos"
         },
         {
             "id": 41,
-            "name": "Location 2"
+            "name": "Aridia"
+        },
+        {
+            "id": 42,
+            "name": "Novalis"
+  		},
+        {
+            "id": 43,
+            "name": "Tyhrranosis"
+  		},
+        {
+            "id": 44,
+            "name": "Veldin"
         }
     ],
 	"policy": "Test policy", 
 	"announcement": "Test announcement",
-	"console_log_level": "DEBUG"
+	"console_log_level": "DEBUG",
+	"pcap": {
+		"interface": "lo",
+		"log_maxbytes": 250000000,
+		"log_backup_count": 5
+	}
 }
