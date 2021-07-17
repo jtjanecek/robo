@@ -1,6 +1,7 @@
 import traceback
 from collections import deque
 from enums.enums import MediusEnum
+from hashlib import sha512
 
 def rtpacket_to_bytes(packet: list):
 	'''
@@ -88,6 +89,13 @@ def pad_str(s, size) -> str:
 	return s.ljust(size,'\0')
 
 ############################ Conversions
+
+def sha512_encrypt(data):
+	password = bytes_to_str(data)
+	sha = sha512()
+	sha.update(password.encode())
+	encrypted_password = bytes_to_hex(sha.digest())
+	return encrypted_password
 
 def bytes_to_int_little(data):
 	return int.from_bytes(data, byteorder='little')

@@ -103,7 +103,7 @@ class SqlLiteDb():
 			return vals[0]
 		return ''
 
-	def _create_new_user(self, username: str, password: str, session_key: bytes):
+	def _create_new_user(self, username: str, encrypted_password: str, session_key: bytes):
 		c = self.conn.cursor()
 		insert_command = """INSERT INTO users
 							(account_type, username, password, session_key, stats, ladderstatswide)
@@ -112,25 +112,18 @@ class SqlLiteDb():
 		account_type = 2
 		stats = self._default_stats
 		ladderstatswide = self._default_ladderstatswide
-		sha = sha512()
-		sha.update(password.encode())
-		encrypted_password = utils.bytes_to_hex(sha.digest())
 		c.execute(insert_command, [account_type, username, encrypted_password, session_key.decode(), stats, ladderstatswide])
 		self.conn.commit()
 		c.close()
 		logger.info(f"Created new user: {username}")
 
-	def _password_match(self, account_id, password):
+	def _password_match(self, account_id, encrypted_password):
 		c = self.conn.cursor()
 		select = """SELECT password
 					FROM users WHERE account_id = ?;
 				"""
 		vals = c.execute(select, [account_id]).fetchone()
 		c.close()
-
-		sha = sha512()
-		sha.update(password.encode())
-		encrypted_password = utils.bytes_to_hex(sha.digest())
 
 		if vals:
 			return vals[0] == encrypted_password

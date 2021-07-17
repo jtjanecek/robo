@@ -5,6 +5,7 @@ import asyncio
 from infra.connection import Connection
 import traceback
 import logging
+from logging import handlers
 
 
 
@@ -13,7 +14,8 @@ class TCPServer:
 
 		self._logger = logging.getLogger(f"robo.{name}")
 		formatter = logging.Formatter('%(asctime)s %(name)s | %(levelname)s | %(message)s')
-		filehandler = logging.FileHandler(os.path.join('logs',f'{name}.log'), mode='w')
+		filehandler = handlers.RotatingFileHandler(os.path.join('logs',f'{name}.log'), mode='w', maxBytes=1000000, backupCount=5)
+
 		filehandler.setLevel(logging.DEBUG)
 		filehandler.setFormatter(formatter)
 		self._logger.addHandler(filehandler)

@@ -1,7 +1,9 @@
 import os
 from time import sleep
 import json
+import argparse
 
+from pcap.robopacketsniffer import RoboPacketSniffer
 from api.api import Api
 from servers.tcpserver import TCPServer
 from servers.udpserver import UDPServer
@@ -10,13 +12,14 @@ import requests
 
 import logging
 import asyncio
+from logging import handlers
 
 
 
 
 class Robo():
-	def __init__(self):
-		config = self.read_config()
+	def __init__(self, config_file: str, pcap: str):
+		config = self.read_config(config_file)
 
 		logger = logging.getLogger('robo')
 		logger.setLevel(logging.DEBUG)
@@ -25,12 +28,16 @@ class Robo():
 		sh.setFormatter(formatter)
 		sh.setLevel(logging.getLevelName(config['console_log_level']))
 		logger.addHandler(sh)
-		filehandler = logging.FileHandler(os.path.join('logs','main.log'), mode='w')
+		filehandler = handlers.RotatingFileHandler(os.path.join('logs','main.log'), mode='w', maxBytes=100000000, backupCount=5)
 		filehandler.setFormatter(formatter)
 		logger.setLevel(logging.DEBUG)
 		logger.addHandler(filehandler)
 
 		self._monolith = Monolith(config)
+
+		self._pcap = None
+		if pcap == 'True':
+			self._pcap = RoboPacketSniffer(config)	
 		
 		self._mas = TCPServer(self._monolith, 'mas', config['mas']['ip'], config['mas']['port'])
 		self._mls = TCPServer(self._monolith, 'mls', config['mls']['ip'], config['mls']['port'])
@@ -41,8 +48,8 @@ class Robo():
 
 		self.start()
 
-	def read_config(self) -> dict:
-		with open('config.json', 'r') as f:
+	def read_config(self, config_file: str) -> dict:
+		with open(config_file, 'r') as f:
 			config = json.loads(f.read())
 
 		if config['mls']['ip'] == '0.0.0.0':
@@ -77,4 +84,10 @@ class Robo():
 		asyncio.run(self.misc_functions())
 
 if __name__ == '__main__':
-	Robo()
+	import argparse
+	parser = argparse.ArgumentParser(description='Robo - Custom Medius server for UYA')
+	parser.add_argument('--config', help='config file for this algo', required=True)
+	parser.add_argument('--pcap', help='Enable packet capturing for debugging', choices=['False','True'], default='False')
+	cli_args = parser.parse_args()
+
+	Robo(cli_args.config, cli_args.pcap)
