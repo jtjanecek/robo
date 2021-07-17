@@ -49,6 +49,21 @@
             "id": 124,
             "name": "",
             "max_players": 256
+        },
+        {
+            "id": 125,
+            "name": "",
+            "max_players": 256
+        },
+        {
+            "id": 126,
+            "name": "",
+            "max_players": 256
+        },
+        {
+            "id": 127,
+            "name": "",
+            "max_players": 256
         }
     ],
     "locations": [
