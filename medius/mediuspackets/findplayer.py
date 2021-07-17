@@ -18,7 +18,7 @@ class FindPlayerHandler:
 		player = monolith.get_client_manager().get_player(serialized['account_id'])
 
 		app_type = MediusApplicationType.MEDIUS_APP_TYPE_GAME
-		world_id = -1
+		world_id = 0
 		app_name = ''
 		app_id = 0
 		callback_status = CallbackStatus.NO_RESULT
