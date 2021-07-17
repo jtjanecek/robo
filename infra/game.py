@@ -165,6 +165,8 @@ class Game:
 			if dest_player != player:
 				dest_player.send_dmeudp(packet)
 
+	def get_created_date(self):
+		return self._created_date
 
 	def get_created_info(self):
 		return self._create_game_serialized

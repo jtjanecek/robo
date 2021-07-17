@@ -5,6 +5,7 @@ from infra.sqllitedb import SqlLiteDb
 from infra.game import Game
 from infra.connection import UdpConnection, Connection
 from infra.player import Player
+from datetime import datetime
 
 import logging
 logger = logging.getLogger("robo.clientmanager")

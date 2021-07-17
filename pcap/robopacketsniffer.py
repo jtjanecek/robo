@@ -30,7 +30,7 @@ class RoboPacketSniffer:
 		self._logger = logging.getLogger("pcap")
 		self._logger.info(config)
 		self._logger.setLevel(logging.DEBUG)
-		filehandler = handlers.RotatingFileHandler(os.path.join('logs','pcap.log'), mode='w', maxBytes=1000000000, backupCount=5)
+		filehandler = handlers.RotatingFileHandler(os.path.join('logs','pcap.log'), mode='w', maxBytes=config['pcap']['log_maxbytes'], backupCount=config['pcap']['log_backup_count'])
 		filehandler.setLevel(logging.DEBUG)
 		self._logger.addHandler(filehandler)
 
@@ -64,7 +64,7 @@ class RoboPacketSniffer:
 			if 'TCP' in p.protocol_queue and 'PSH' in p.tcp.flag_txt and (p.tcp.sport in self._ports or p.tcp.dport in self._ports):
 				res += f'TCP | srcprt: {p.tcp.sport:5} | dstport: {p.tcp.dport:5} | data: {self._bytes_to_hex(p.data)}'
 				self._logger.debug(res)
-			elif 'UDP' in p.protocol_queue and (p.tcp.sport in self._ports or p.tcp.dport in self._ports):
+			elif 'UDP' in p.protocol_queue and (p.udp.sport in self._ports or p.udp.dport in self._ports):
 				res += f'UDP | srcprt: {p.udp.sport:5} | dstport: {p.udp.dport:5} | data: {self._bytes_to_hex(p.data)}'
 				self._logger.debug(res)
 

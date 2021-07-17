@@ -39,12 +39,12 @@ class Robo():
 		if pcap == 'True':
 			self._pcap = RoboPacketSniffer(config)	
 		
-		self._mas = TCPServer(self._monolith, 'mas', config['mas']['ip'], config['mas']['port'])
-		self._mls = TCPServer(self._monolith, 'mls', config['mls']['ip'], config['mls']['port'])
-		self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['dmetcp']['ip'], config['dmetcp']['port'])
-		self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['dmeudp']['ip'], config['dmeudp']['port'])
-		self._nat = UDPServer(self._monolith, 'nat', config['nat']['ip'], config['nat']['port'])
-		self._api = Api(self._monolith, config['api']['ip'], config['api']['port'], config['api']['sync_rate'])
+		self._mas = TCPServer(self._monolith, 'mas', config['mas']['ip'], config['mas']['port'], config['mas']['log_maxbytes'], config['mas']['log_backup_count'])
+		self._mls = TCPServer(self._monolith, 'mls', config['mls']['ip'], config['mls']['port'], config['mls']['log_maxbytes'], config['mls']['log_backup_count'])
+		self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['dmetcp']['ip'], config['dmetcp']['port'], config['dmetcp']['log_maxbytes'], config['dmetcp']['log_backup_count'])
+		self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['dmeudp']['ip'], config['dmeudp']['port'], config['dmeudp']['log_maxbytes'], config['dmeudp']['log_backup_count'])
+		self._nat = UDPServer(self._monolith, 'nat', config['nat']['ip'], config['nat']['port'], config['nat']['log_maxbytes'], config['nat']['log_backup_count'])
+		self._api = Api(self._monolith, config['api']['ip'], config['api']['port'], config['api']['sync_rate'], config['api']['log_maxbytes'], config['api']['log_backup_count'])
 
 		self.start()
 

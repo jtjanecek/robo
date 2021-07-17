@@ -5,3 +5,4 @@ logs/
 cloud/cloud.json
 *.pyc
 *.zip
+pcap/pcap/

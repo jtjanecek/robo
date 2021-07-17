@@ -5,13 +5,14 @@ from aiohttp import web
 import asyncio
 from time import sleep
 import json
+from logging import handlers
 
 
 class Api():
-	def __init__(self, monolith, ip: str, port: int, sync_rate: int):
+	def __init__(self, monolith, ip: str, port: int, sync_rate: int, log_maxbytes, log_backup_count):
 		self._logger = logging.getLogger(f"robo.api")
 		formatter = logging.Formatter('%(asctime)s API | %(levelname)s | %(message)s')
-		filehandler = logging.FileHandler(os.path.join('logs','api.log'), mode='w')
+		filehandler = handlers.RotatingFileHandler(os.path.join('logs','api.log'), mode='w', maxBytes=log_maxbytes, backupCount=log_backup_count)
 		filehandler.setLevel(logging.DEBUG)
 		filehandler.setFormatter(formatter)
 		self._logger.addHandler(filehandler)

@@ -11,11 +11,11 @@ from logging import handlers
 
 
 class UDPServer:
-	def __init__(self, monolith, name, ip, port):
+	def __init__(self, monolith, name, ip, port, log_maxbytes, log_backup_count):
 
 		self._logger = logging.getLogger(f"robo.{name}")
 		formatter = logging.Formatter('%(asctime)s %(name)s | %(threadName)s | %(levelname)s | %(message)s')
-		filehandler = handlers.RotatingFileHandler(os.path.join('logs',f'{name}.log'), mode='w', maxBytes=1000000, backupCount=5)
+		filehandler = handlers.RotatingFileHandler(os.path.join('logs',f'{name}.log'), mode='w', maxBytes=log_maxbytes, backupCount=log_backup_count)
 		filehandler.setLevel(logging.DEBUG)
 		filehandler.setFormatter(formatter)
 		self._logger.addHandler(filehandler)
