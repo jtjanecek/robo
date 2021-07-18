@@ -21,7 +21,7 @@ class JoinGameHandler:
 
 		callback_status = CallbackStatus.SUCCESS
 		if game_status in [MediusWorldStatus.WORLD_CLOSED, MediusWorldStatus.WORLD_INACTIVE, MediusWorldStatus.WORLD_ACTIVE]:
-			callback_status = CallbackStatus.WORLD_IS_FULL
+			callback_status = CallbackStatus.REQUEST_DENIED
 
 		game_host_type = MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP
 
@@ -38,6 +38,11 @@ class JoinGameHandler:
 		encryption_key = utils.bytes_from_hex(''.join(['00'] * 64))
 		session_key = serialized['session_key']
 		access_key = client_manager.generate_access_key()
+
+		if callback_status == CallbackStatus.REQUEST_DENIED:
+			dmetcp_ip = ''
+			nat_ip = ''
+
 
 		return [JoinGameResponseSerializer.build(
 			serialized['message_id'],
