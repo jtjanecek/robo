@@ -11,11 +11,22 @@ class PolicySerializer:
 
 class PolicyHandler:
 	def process(self, serialized, monolith, con):
-		end_of_list = 1
-		return [PolicyResponseSerializer.build(
-			serialized['message_id'],
-			CallbackStatus.SUCCESS,
-			monolith.get_policy(),
-			end_of_list
-		)]
+		def chunks(s, n):
+			"""Produce `n`-character chunks from `s`."""
+			res = []
+			for start in range(0, len(s), n):
+				res.append(s[start:start+n])
+			return res
+		policy = monolith.get_policy()
 
+		packets = []
+		policy_split = chunks(policy, MediusEnum.POLICY_MAXLEN-1)
+		for i, policy_substr in enumerate(policy_split):
+			end_of_list = int((i == (len(policy_split)-1)))
+			packets.append(PolicyResponseSerializer.build(
+				serialized['message_id'],
+				CallbackStatus.SUCCESS,
+				policy_substr,
+				end_of_list
+			))
+		return packets
