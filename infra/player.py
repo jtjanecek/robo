@@ -76,10 +76,20 @@ class Player():
 
 	def close(self):
 		if self._dmetcp_flush_task != None:
-			self._dmetcp_flush_task.cancel()
+			result = self._dmetcp_flush_task.cancel()
+			if result == True:
+				logger.info(f"Player successfully canceled TCP flush routine [{result}]")
+			else:
+				logger.error(f"Player [{self.__str__()}] was unable to cancel TCP flush routine [{result}]")
+			self._dmetcp_flush_task = None
+			
 		if self._dmeudp_flush_task != None:
-			self._dmeudp_flush_task.cancel()
-
+			result = self._dmeudp_flush_task.cancel()
+			if result == True:
+				logger.info(f"Player successfully canceled UDP flush routine [{result}]")
+			else:
+				logger.error(f"Player [{self.__str__()}] was unable to cancel UDP flush routine [{result}]")
+			self._dmeudp_flush_task = None
 	#############################################################
 	# MLS Sending data 
 	#############################################################
