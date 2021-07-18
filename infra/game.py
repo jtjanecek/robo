@@ -57,6 +57,9 @@ class Game:
 
 		'''
 
+		if len(self._players) == 8 or self._status == MediusWorldStatus.WORLD_ACTIVE:
+			logger.warning(f'Attempt to join full or active game!')
+
 		dme_player_id = self._generate_new_dme_player_id()
 		self._players[dme_player_id] = player
 
