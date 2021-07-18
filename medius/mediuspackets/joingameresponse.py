@@ -29,7 +29,7 @@ class JoinGameResponseSerializer:
 			{'mediusid': MediusIdEnum.JoinGameResponse},
 			{'message_id': message_id},
 			{'buf': utils.bytes_from_hex("000000")},
-			{'callback_status': utils.int_to_bytes_little(4, callback_status)},
+			{'callback_status': utils.int_to_bytes_little(4, callback_status, signed=True)},
 			{'game_host_type': utils.int_to_bytes_little(4, game_host_type)},
 			{'net_connection_type': utils.int_to_bytes_little(4, net_connection_type)},
 
