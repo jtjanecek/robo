@@ -126,6 +126,7 @@ class Game:
 			logger.debug("Tried to send to non-existant player!")
 
 	def player_disconnected(self, player):
+		player.close()
 		dme_player_id = self.get_dme_player_id(player)
 		self.send_server_notify_disconnected(player)
 		del self._players[dme_player_id]
