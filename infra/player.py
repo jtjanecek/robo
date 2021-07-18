@@ -82,7 +82,7 @@ class Player():
 			else:
 				logger.error(f"Player [{self.__str__()}] was unable to cancel TCP flush routine [{result}]")
 			self._dmetcp_flush_task = None
-			
+
 		if self._dmeudp_flush_task != None:
 			result = self._dmeudp_flush_task.cancel()
 			if result == True:
@@ -90,6 +90,8 @@ class Player():
 			else:
 				logger.error(f"Player [{self.__str__()}] was unable to cancel UDP flush routine [{result}]")
 			self._dmeudp_flush_task = None
+
+
 	#############################################################
 	# MLS Sending data 
 	#############################################################
