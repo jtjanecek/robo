@@ -140,6 +140,9 @@ class Player():
 	def get_player_status(self) -> MediusPlayerStatus:
 		return self._status
 
+	def set_player_status(self, status):
+		self._status = status
+
 	def set_game(self, game):
 		self._game = game
 

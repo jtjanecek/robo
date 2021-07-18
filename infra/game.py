@@ -1,5 +1,5 @@
 from copy import deepcopy
-from enums.enums import MediusWorldStatus, MediusEnum, RtIdEnum
+from enums.enums import MediusWorldStatus, MediusEnum, RtIdEnum, MediusPlayerStatus
 from utils import utils
 from medius.rtpackets.serverconnectnotify import ServerConnectNotifySerializer
 from medius.rtpackets.clientappsingle import ClientAppSingleSerializer
@@ -37,6 +37,7 @@ class Game:
 			self._started_date = datetime.now().timestamp()
 
 			for player in self._players.values():
+				player.set_player_status(MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD)
 				player.set_dmetcp_aggtime(self._dmetcp_aggtime)
 				player.set_dmeudp_aggtime(self._dmeudp_aggtime)
 

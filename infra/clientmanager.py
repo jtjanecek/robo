@@ -126,6 +126,7 @@ class ClientManager:
 					del self._games[dme_world_game_id]
 
 				player.set_game(None)
+				player.set_player_status(MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD)
 
 				# Delete this players dme connections
 				del self._dmetcp_cons[con]
