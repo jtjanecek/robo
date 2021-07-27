@@ -88,6 +88,12 @@ def format_rt_message(rtid, *args) -> bytes:
 def pad_str(s, size) -> str:
 	return s.ljust(size,'\0')
 
+def check_username_valid(username: str) -> bool:
+	for c in username:
+		if ord(c) < 21 or ord(c) > 126:
+			return False
+	return True
+
 ############################ Conversions
 
 def sha512_encrypt(data):

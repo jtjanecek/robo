@@ -26,7 +26,7 @@ class AccountLoginResponseSerializer:
 			{'mediusid': MediusIdEnum.AccountLoginResponse},
 			{'message_id': message_id},
 			{'buf': utils.bytes_from_hex("000000")},
-			{'callback_status': utils.int_to_bytes_little(4, callback_status)},
+			{'callback_status': utils.int_to_bytes_little(4, callback_status, signed=True)},
 			{'account_id': utils.int_to_bytes_little(4, account_id)},
 			{'account_type': utils.int_to_bytes_little(4, account_type)},
 			{'world_id': utils.int_to_bytes_little(4, world_id)},

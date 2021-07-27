@@ -6,6 +6,7 @@ from infra.game import Game
 from infra.connection import UdpConnection, Connection
 from infra.player import Player
 from datetime import datetime
+from utils import utils
 
 import logging
 logger = logging.getLogger("robo.clientmanager")
@@ -253,6 +254,10 @@ class ClientManager:
 		return new_session_key
 
 	def account_login(self, username: str, password: str, session_key: bytes):
+		username_valid = utils.check_username_valid(username)
+		if username_valid == False:
+			return False
+
 		with self._new_session_keys_lock:
 			session_key_valid = session_key in self._new_session_keys
 			if session_key_valid:
