@@ -10,20 +10,9 @@ class PatchManager:
 		pass
 
 	def process_login(self, player):
-		self._send_patch(player)
-
-
-	def _send_patch(self, player, patch):
-		try:
-			# Send the player a whisper
-			packet = ServerMemoryPokeSerializer.build(0x000D0000, utils.bytes_from_hex("12345678"))
-			packet = utils.rtpacket_to_bytes(packet)
-			player.send_mls(packet)
-			logger.debug('sent patch to {0}'.format(player))
-
-		except:
-			logger.exception('error')
-
+		patch = Patches.get(10684)
+		if patch is not None:
+			patch.send(player)
 
 # 
 class Patch:
@@ -72,7 +61,7 @@ class Patch:
     def sendFile(self, player, path, address, hook):
 
         # determine hook
-        hookValue = address / 4
+        hookValue = int(address / 4)
         if self.HookType == "j":
             hookValue |= 0x08000000
         elif self.HookType == "jal":
@@ -103,7 +92,7 @@ class Patch:
 
 # patch collection by app id
 Patches = {
-    11184: Patch(11184, 
+    10684: Patch(10684, 
         "./bin/patch-ntsc.bin", 0x000D0000, 
         "./bin/unpatch-ntsc.bin", 0x000E0000,
         0, "j")
