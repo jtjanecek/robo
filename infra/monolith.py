@@ -9,6 +9,7 @@ from utils import utils
 from infra.clientmanager import ClientManager
 from infra.connection import Connection
 from infra.chatcommands import ChatCommands
+from infra.patch import PatchManager
 from crypto.rsa import RSA
 from utils.rtbufferdeframer import RtBufferDeframer
 
@@ -22,6 +23,7 @@ class Monolith:
 		self._client_manager = ClientManager()
 		self._chat_commands = ChatCommands()
 		self._logger = logging.getLogger('robo.monolith')
+		self._patch_manager = PatchManager()
 
 
 	#################################################################################
@@ -196,6 +198,9 @@ class Monolith:
 
 	def process_chat(self, player, text):
 		self._chat_commands.process_chat(player, text)
+
+	def process_login(self, player):
+		self._patch_manager.process_login(player)
 
 # ===================================
 # API methods

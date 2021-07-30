@@ -1,4 +1,4 @@
-
+from enums.enums import RtIdEnum
 from utils import utils
 
 class ServerMemoryPokeSerializer:
@@ -10,6 +10,17 @@ class ServerMemoryPokeSerializer:
 	def serialize(self, data: bytes):
 		raise Exception('Unimplemented Handler: ServerMemoryPokeSerializer')
 		return utils.serialize(data, self.data_dict)
+
+	@classmethod
+	def build(self, address: int, payload: bytes):
+		packet = [
+			{'name': __name__},
+			{'rtid': RtIdEnum.SERVER_MEMORY_POKE},
+			{'address': utils.int_to_bytes_little(4, address)},
+			{'count': utils.int_to_bytes_little(4, len(payload))},
+			{'payload': payload}
+		]
+		return packet
 
 class ServerMemoryPokeHandler:
 	def process(self, serialized, monolith, con):
