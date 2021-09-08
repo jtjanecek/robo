@@ -122,6 +122,7 @@ class ClientManager:
 				game.player_disconnected(player)
 
 				if game.get_player_count() == 0:
+					logger.info(f"Game destroyed: {game.to_json()}!")
 					# Destroy the game
 					dme_world_game_id = game.get_dme_world_id()
 					del self._games[dme_world_game_id]

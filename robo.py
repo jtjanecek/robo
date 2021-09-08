@@ -39,12 +39,12 @@ class Robo():
 		if pcap == 'True':
 			self._pcap = RoboPacketSniffer(config)	
 		
-		self._mas = TCPServer(self._monolith, 'mas', config['mas']['ip'], config['mas']['port'], config['mas']['log_maxbytes'], config['mas']['log_backup_count'], config['log_location'])
-		self._mls = TCPServer(self._monolith, 'mls', config['mls']['ip'], config['mls']['port'], config['mls']['log_maxbytes'], config['mls']['log_backup_count'], config['log_location'])
-		self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['dmetcp']['ip'], config['dmetcp']['port'], config['dmetcp']['log_maxbytes'], config['dmetcp']['log_backup_count'], config['log_location'])
-		self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['dmeudp']['ip'], config['dmeudp']['port'], config['dmeudp']['log_maxbytes'], config['dmeudp']['log_backup_count'], config['log_location'])
-		self._nat = UDPServer(self._monolith, 'nat', config['nat']['ip'], config['nat']['port'], config['nat']['log_maxbytes'], config['nat']['log_backup_count'], config['log_location'])
-		self._api = Api(self._monolith, config['api']['ip'], config['api']['port'], config['api']['sync_rate'], config['api']['log_maxbytes'], config['api']['log_backup_count'], config['log_location'])
+		self._mas = TCPServer(self._monolith, 'mas', config['bind_ip'], config['mas']['port'], config['mas']['log_maxbytes'], config['mas']['log_backup_count'], config['log_location'])
+		self._mls = TCPServer(self._monolith, 'mls', config['bind_ip'], config['mls']['port'], config['mls']['log_maxbytes'], config['mls']['log_backup_count'], config['log_location'])
+		self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['bind_ip'], config['dmetcp']['port'], config['dmetcp']['log_maxbytes'], config['dmetcp']['log_backup_count'], config['log_location'])
+		self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['bind_ip'], config['dmeudp']['port'], config['dmeudp']['log_maxbytes'], config['dmeudp']['log_backup_count'], config['log_location'])
+		self._nat = UDPServer(self._monolith, 'nat', config['bind_ip'], config['nat']['port'], config['nat']['log_maxbytes'], config['nat']['log_backup_count'], config['log_location'])
+		self._api = Api(self._monolith, config['bind_ip'], config['api']['port'], config['api']['sync_rate'], config['api']['log_maxbytes'], config['api']['log_backup_count'], config['log_location'])
 
 		self.start()
 
@@ -52,19 +52,9 @@ class Robo():
 		with open(config_file, 'r') as f:
 			config = json.loads(f.read())
 
-		if config['mls']['ip'] == '0.0.0.0':
+		if config['public_ip'] == '0.0.0.0':
 			public_ip = requests.get('https://checkip.amazonaws.com').text.strip()
-			config['mls']['public_ip'] = public_ip
-			config['mas']['public_ip'] = public_ip
-			config['nat']['public_ip'] = public_ip
-			config['dmetcp']['public_ip'] = public_ip
-			config['dmeudp']['public_ip'] = public_ip
-		else:
-			config['mls']['public_ip'] = config['mls']['ip']
-			config['mas']['public_ip'] = config['mas']['ip']
-			config['nat']['public_ip'] = config['nat']['ip']
-			config['dmetcp']['public_ip'] = config['dmetcp']['ip']
-			config['dmeudp']['public_ip'] = config['dmeudp']['ip']
+			config['public_ip'] = public_ip
 		return config
 
 
