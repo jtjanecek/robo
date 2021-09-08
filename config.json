@@ -42,27 +42,27 @@
     "channels": [
         {
             "id": 123,
-            "name": "",
+            "name": "CY00000000-00",
             "max_players": 256
         },
         {
             "id": 124,
-            "name": "",
+            "name": "CY00000000-01",
             "max_players": 256
         },
         {
             "id": 125,
-            "name": "",
+            "name": "CY00000000-02",
             "max_players": 256
         },
         {
             "id": 126,
-            "name": "",
+            "name": "CY00000000-03",
             "max_players": 256
         },
         {
             "id": 127,
-            "name": "",
+            "name": "CY00000000-04",
             "max_players": 256
         }
     ],
@@ -95,5 +95,6 @@
 		"interface": "lo",
 		"log_maxbytes": 250000000,
 		"log_backup_count": 5
-	}
+	},
+	"log_location": "/logs"
 }

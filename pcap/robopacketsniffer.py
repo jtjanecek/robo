@@ -8,6 +8,14 @@ import datetime
 
 class RoboPacketSniffer:
 	def __init__(self, config: dict):
+
+		import subprocess
+		import shlex
+		cmd = "tcpdump --interface any -s 65535 -n -x 'udp port 51000 or tcp port 10075 or tcp port 10078 or tcp port 10079 or udp port 10070' -W 10 -C 1 -w /logs/pcap.pcap"
+		args = shlex.split(cmd)
+		p = subprocess.Popen(args)
+
+		'''
 		sys.path.append('pcap/pcap')
 		try:
 			from pcap.pcap.packet_sniffer import PacketSniffer
@@ -25,6 +33,7 @@ class RoboPacketSniffer:
 		mp.set_start_method('spawn')
 		p = mp.Process(target=self.start, args=(config,), daemon=True)
 		p.start()
+		'''
 		
 	def start(self, config):
 		self._logger = logging.getLogger("pcap")

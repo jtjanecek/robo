@@ -4,12 +4,15 @@
 
 A simple python medius implementation made specifically for Ratchet and Clank: Up Your Arsenal
 
-### Installation
+### Building
 ```
-git clone https://github.com/jtjanecek/robo
-pip install -r requirements.txt
-mkdir logs
-sudo python robo.py
+# Set the log directory at the bottom of the config
+# Set the ports you want to use in config.json
+# Then:
+bash build.sh
+
+# Then modify the ports in run.sh to the same ports in the config
+bash run.sh
 ```
 
 ### Features

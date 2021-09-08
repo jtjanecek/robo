@@ -12,8 +12,8 @@ import logging
 logger = logging.getLogger("robo.clientmanager")
 
 class ClientManager:
-	def __init__(self):
-		self._db = SqlLiteDb()
+	def __init__(self, config):
+		self._db = SqlLiteDb(db_loc=config['log_location'])
 
 		# Used in Mas only
 		self._new_session_keys = set()

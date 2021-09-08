@@ -19,7 +19,7 @@ class Monolith:
 
 	def __init__(self, config: dict):
 		self._config = config
-		self._client_manager = ClientManager()
+		self._client_manager = ClientManager(config)
 		self._chat_commands = ChatCommands()
 		self._logger = logging.getLogger('robo.monolith')
 
