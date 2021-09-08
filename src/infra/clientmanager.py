@@ -12,8 +12,8 @@ import logging
 logger = logging.getLogger("robo.clientmanager")
 
 class ClientManager:
-	def __init__(self):
-		self._db = SqlLiteDb()
+	def __init__(self, config):
+		self._db = SqlLiteDb(db_loc=config['log_location'])
 
 		# Used in Mas only
 		self._new_session_keys = set()
@@ -122,6 +122,7 @@ class ClientManager:
 				game.player_disconnected(player)
 
 				if game.get_player_count() == 0:
+					logger.info(f"Game destroyed: {game.to_json()}!")
 					# Destroy the game
 					dme_world_game_id = game.get_dme_world_id()
 					del self._games[dme_world_game_id]

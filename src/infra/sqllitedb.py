@@ -12,12 +12,13 @@ from utils import utils
 logger = logging.getLogger('robo.sqllitedb')
 
 class SqlLiteDb():
-	def __init__(self, mode='rwc', db='database.db'):
-		this_file_dir = os.path.dirname(os.path.abspath(__file__))
+	def __init__(self, mode='rwc', db='database.db', db_loc=None):
 
-		this_file_dir = os.path.join(this_file_dir, "dbs")
+		if db_loc == None:
+			db_loc = os.path.dirname(os.path.abspath(__file__))
+			db_loc = os.path.join(db_loc, "dbs")
 
-		db_file = os.path.join(this_file_dir, db)
+		db_file = os.path.join(db_loc, db)
 		db_file = "file:" + db_file + "?mode=" + mode
 		logger.info("Using DB: {}".format(db_file))
 

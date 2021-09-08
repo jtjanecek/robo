@@ -30,6 +30,9 @@ class Game:
 
 	def active(self):
 		if self._status != MediusWorldStatus.WORLD_ACTIVE:
+
+			logger.info(f"Game {self.to_json()} started!")
+
 			self._status = MediusWorldStatus.WORLD_ACTIVE
 			game_name = self._create_game_serialized['game_name'].decode()
 			game_name = f"[IG] {game_name}"

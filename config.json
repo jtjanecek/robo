@@ -1,38 +1,34 @@
 {
+	"bind_ip": "0.0.0.0",
+	"public_ip": "192.168.1.2",
 	"mas": {
-		"ip": "0.0.0.0",
 		"port": 10075,
 		"log_maxbytes": 250000000,
 		"log_backup_count": 5
 	},
 	"mls": {
-		"ip": "0.0.0.0",
 		"port": 10078,
 		"log_maxbytes": 250000000,
 		"log_backup_count": 5
 	},
 	"dmetcp": {
-		"ip": "0.0.0.0",
 		"port": 10079,
 		"log_maxbytes": 250000000,
 		"log_backup_count": 5
 	},
 	"dmeudp": {
-		"ip": "0.0.0.0",
 		"port": 51000,
 		"log_maxbytes": 250000000,
 		"log_backup_count": 5
 	
 	},
 	"nat": {
-		"ip": "0.0.0.0",
 		"port": 10070,
 		"log_maxbytes": 250000000,
 		"log_backup_count": 5
 	
 	},
 	"api": {
-		"ip": "0.0.0.0",
 		"port": 8281,
 		"sync_rate": 30,
 		"log_maxbytes": 250000000,
@@ -42,27 +38,27 @@
     "channels": [
         {
             "id": 123,
-            "name": "",
+            "name": "CY00000000-00",
             "max_players": 256
         },
         {
             "id": 124,
-            "name": "",
+            "name": "CY00000000-01",
             "max_players": 256
         },
         {
             "id": 125,
-            "name": "",
+            "name": "CY00000000-02",
             "max_players": 256
         },
         {
             "id": 126,
-            "name": "",
+            "name": "CY00000000-03",
             "max_players": 256
         },
         {
             "id": 127,
-            "name": "",
+            "name": "CY00000000-04",
             "max_players": 256
         }
     ],
@@ -95,5 +91,6 @@
 		"interface": "lo",
 		"log_maxbytes": 250000000,
 		"log_backup_count": 5
-	}
+	},
+	"log_location": "/logs"
 }

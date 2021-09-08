@@ -2,7 +2,7 @@ from utils import utils
 
 class RtBuffer():
 	def __init__(self):
-		self._buffer = [0] * 2024
+		self._buffer = [0] * 2048
 		self._cursor = 0
 		self._encrypted = False
 
