@@ -18,7 +18,7 @@ from logging import handlers
 
 
 class Robo():
-	def __init__(self, config_file: str, pcap: str):
+	def __init__(self, config_file: str):
 		config = self.read_config(config_file)
 
 		logger = logging.getLogger('robo')
@@ -35,9 +35,7 @@ class Robo():
 
 		self._monolith = Monolith(config)
 
-		self._pcap = None
-		if pcap == 'True':
-			self._pcap = RoboPacketSniffer(config)	
+		self._pcap = RoboPacketSniffer(config)	
 		
 		self._mas = TCPServer(self._monolith, 'mas', config['bind_ip'], config['mas']['port'], config['mas']['log_maxbytes'], config['mas']['log_backup_count'], config['log_location'])
 		self._mls = TCPServer(self._monolith, 'mls', config['bind_ip'], config['mls']['port'], config['mls']['log_maxbytes'], config['mls']['log_backup_count'], config['log_location'])
@@ -77,7 +75,6 @@ if __name__ == '__main__':
 	import argparse
 	parser = argparse.ArgumentParser(description='Robo - Custom Medius server for UYA')
 	parser.add_argument('--config', help='config file for this algo', required=True)
-	parser.add_argument('--pcap', help='Enable packet capturing for debugging', choices=['False','True'], default='False')
 	cli_args = parser.parse_args()
 
-	Robo(cli_args.config, cli_args.pcap)
+	Robo(cli_args.config)
