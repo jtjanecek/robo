@@ -36,7 +36,7 @@ class TCPServer:
 
 		try:
 			while True:
-				data = await asyncio.wait_for(reader.read(1024), timeout=45)
+				data = await asyncio.wait_for(reader.read(2048), timeout=45)
 
 				if data == b'':
 					break;
