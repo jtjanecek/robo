@@ -3,35 +3,35 @@
 	"public_ip": "192.168.1.2",
 	"mas": {
 		"port": 10075,
-		"log_maxbytes": 250000000,
+		"log_maxbytes": 50000000,
 		"log_backup_count": 5
 	},
 	"mls": {
 		"port": 10078,
-		"log_maxbytes": 250000000,
+		"log_maxbytes": 50000000,
 		"log_backup_count": 5
 	},
 	"dmetcp": {
 		"port": 10079,
-		"log_maxbytes": 250000000,
+		"log_maxbytes": 50000000,
 		"log_backup_count": 5
 	},
 	"dmeudp": {
 		"port": 51000,
-		"log_maxbytes": 250000000,
+		"log_maxbytes": 50000000,
 		"log_backup_count": 5
 	
 	},
 	"nat": {
 		"port": 10070,
-		"log_maxbytes": 250000000,
+		"log_maxbytes": 50000000,
 		"log_backup_count": 5
 	
 	},
 	"api": {
 		"port": 8281,
 		"sync_rate": 30,
-		"log_maxbytes": 250000000,
+		"log_maxbytes": 50000000,
 		"log_backup_count": 5
 	},
 	"app_id": 10684,
