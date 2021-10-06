@@ -5,5 +5,5 @@ docker run -it \
 	-p 51000:51000/udp \
 	-p 10070:10070/udp \
 	-p 8281:8281/tcp \
-	-v /logs:/logs \
+	-v $PWD/logs:/logs \
 	robo

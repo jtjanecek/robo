@@ -18,7 +18,7 @@ class ChatMessageHandler:
 		player = monolith.get_client_manager().get_player_from_mls_con(con)
 
 		# Check if this command is a player command
-		monolith.process_chat(player, utils.bytes_to_str(serialized['text']))
+		monolith.process_chat(player, utils.bytes_to_str(serialized['text']), serialized['chat_message_type'])
 
 		mls_world_id = player.get_mls_world_id()
 

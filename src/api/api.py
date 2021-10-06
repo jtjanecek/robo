@@ -19,6 +19,7 @@ class Api():
 
 		self._players = "[]"
 		self._games = "[]"
+		self._chat = []
 
 		self._monolith = monolith
 		self._ip = ip
@@ -40,6 +41,9 @@ class Api():
 			games = self._monolith.api_req_games()
 			self._games = json.dumps(games)
 
+			# Sync chat
+			self._chat += self._monolith.api_req_chat()
+
 			await asyncio.sleep(self._sync_rate)
 
 	async def players(self, request):
@@ -50,12 +54,18 @@ class Api():
 		self._logger.debug("Games request!")
 		return web.Response(text=self._games)
 
+	async def chat(self, request):
+		self._logger.debug("Chat request!")
+		self._logger.debug(self._chat)
+		return web.Response(text=json.dumps(self._chat))
+
 	async def main(self):
 		# add stuff to the loop, e.g. using asyncio.create_task()
 
 		app = web.Application()
 		app.router.add_get('/players', self.players)
 		app.router.add_get('/games', self.games)
+		app.router.add_get('/chat', self.chat)
 
 		runner = web.AppRunner(app)
 		await runner.setup()

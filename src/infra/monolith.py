@@ -11,8 +11,10 @@ from infra.connection import Connection
 from infra.chatcommands import ChatCommands
 from crypto.rsa import RSA
 from utils.rtbufferdeframer import RtBufferDeframer
+from enums.enums import MediusChatMessageType
 
-import datetime
+import queue
+from datetime import datetime
 
 
 class Monolith:
@@ -23,6 +25,7 @@ class Monolith:
 		self._chat_commands = ChatCommands()
 		self._logger = logging.getLogger('robo.monolith')
 
+		self._chat_messages = queue.Queue()
 
 	#################################################################################
 	# UDP Pipeline
@@ -194,8 +197,12 @@ class Monolith:
 	def client_disconnected(self, con: Connection):
 		self._client_manager.client_disconnected(con)
 
-	def process_chat(self, player, text):
+	def process_chat(self, player, text, chat_message_type):
 		self._chat_commands.process_chat(player, text)
+
+		if chat_message_type == MediusChatMessageType.BROADCAST:
+			username = player.get_username()
+			self._chat_messages.put({"username":username, "message":text, "ts": datetime.now().timestamp()})		
 
 # ===================================
 # API methods
@@ -204,6 +211,13 @@ class Monolith:
 
 	def api_req_games(self):
 		return self._client_manager.api_req_games()
+
+	def api_req_chat(self) -> list:
+		result = []
+		size = self._chat_messages.qsize()
+		for i in range(size):
+			result.append(self._chat_messages.get())
+		return result
 
 # ===================================
 # Misc
