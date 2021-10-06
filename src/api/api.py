@@ -6,7 +6,7 @@ import asyncio
 from time import sleep
 import json
 from logging import handlers
-
+from datetime import datetime
 
 class Api():
 	def __init__(self, monolith, ip: str, port: int, sync_rate: int, log_maxbytes, log_backup_count, log_location):
@@ -43,6 +43,8 @@ class Api():
 
 			# Sync chat
 			self._chat += self._monolith.api_req_chat()
+			# only save last 10 minutes
+			self._chat = [c for c in self._chat if (datetime.now().timestamp() - c['ts']) / 60 < 10]
 
 			await asyncio.sleep(self._sync_rate)
 
