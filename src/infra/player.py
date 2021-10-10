@@ -29,8 +29,8 @@ class Player():
 		self._game = None
 		self._dmetcp_queue = Queue()
 		self._dmeudp_queue = Queue()
-		self._dmetcp_aggtime = 0.03
-		self._dmeudp_aggtime = 0.03
+		self._dmetcp_aggtime = 0.01
+		self._dmeudp_aggtime = 0.01
 		self._dmetcp_flush_task = None
 		self._dmeudp_flush_task = None
 
@@ -78,7 +78,7 @@ class Player():
 		if self._dmetcp_flush_task != None:
 			result = self._dmetcp_flush_task.cancel()
 			if result == True:
-				logger.info(f"Player successfully canceled TCP flush routine [{result}]")
+				logger.info(f"Player [{self.__str__()}] successfully canceled TCP flush routine [{result}]")
 			else:
 				logger.error(f"Player [{self.__str__()}] was unable to cancel TCP flush routine [{result}]")
 			self._dmetcp_flush_task = None
@@ -86,7 +86,7 @@ class Player():
 		if self._dmeudp_flush_task != None:
 			result = self._dmeudp_flush_task.cancel()
 			if result == True:
-				logger.info(f"Player successfully canceled UDP flush routine [{result}]")
+				logger.info(f"Player [{self.__str__()}] successfully canceled UDP flush routine [{result}]")
 			else:
 				logger.error(f"Player [{self.__str__()}] was unable to cancel UDP flush routine [{result}]")
 			self._dmeudp_flush_task = None
