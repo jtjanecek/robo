@@ -6,3 +6,4 @@ cloud/cloud.json
 *.pyc
 *.zip
 pcap/pcap/
+bin/

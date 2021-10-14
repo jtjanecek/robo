@@ -9,6 +9,7 @@ from utils import utils
 from infra.clientmanager import ClientManager
 from infra.connection import Connection
 from infra.chatcommands import ChatCommands
+from infra.patch import PatchManager
 from crypto.rsa import RSA
 from utils.rtbufferdeframer import RtBufferDeframer
 from enums.enums import MediusChatMessageType
@@ -24,6 +25,7 @@ class Monolith:
 		self._client_manager = ClientManager(config)
 		self._chat_commands = ChatCommands()
 		self._logger = logging.getLogger('robo.monolith')
+		self._patch_manager = PatchManager()
 
 		self._chat_messages = queue.Queue()
 
@@ -203,6 +205,9 @@ class Monolith:
 		if chat_message_type == MediusChatMessageType.BROADCAST:
 			username = player.get_username()
 			self._chat_messages.put({"username":username, "message":text, "ts": datetime.now().timestamp()})		
+
+	def process_login(self, player):
+		self._patch_manager.process_login(player)
 
 # ===================================
 # API methods
