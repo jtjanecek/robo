@@ -23,6 +23,7 @@ bash run.sh
 Current API endpoints:
 - `/players`
 - `/games`
+- `/chat`
 
 ### Code adapted and inspired by:
 https://github.com/hashsploit/clank    
