@@ -1,4 +1,5 @@
 from utils.rtbufferdeframer import RtBufferDeframer
+from utils import utils
 import asyncio
 from queue import Queue
 from enums.enums import MediusPlayerStatus
@@ -97,6 +98,7 @@ class Player():
 	#############################################################
 
 	def send_mls(self, data: bytes):
+		logger.info(f"Sending MLS data to {self.__str__()}: {utils.bytes_to_hex(data)}")
 		self._mls_connection.writer.write(data)
 		asyncio.create_task(self.mlsflusher())
 
