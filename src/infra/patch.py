@@ -6,13 +6,13 @@ import logging
 logger = logging.getLogger('robo.patch')
 
 class PatchManager:
-	def __init__(self):
-		pass
+    def __init__(self):
+        pass
 
-	def process_login(self, player):
-		patch = Patches.get(10684)
-		if patch is not None:
-			patch.send(player)
+    def process_login(self, player):
+        patch = Patches.get(10684)
+        if patch is not None:
+            patch.send(player)
 
 # 
 class Patch:
@@ -51,7 +51,7 @@ class Patch:
             # send patch last
             if self.PayloadPath != "":
                 self.sendFile(player, self.PayloadPath, self.Address, True)
-			
+            
             logger.debug('sent patch to {0}'.format(player))
 
         except:

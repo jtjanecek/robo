@@ -20,257 +20,257 @@ from datetime import datetime
 
 class Monolith:
 
-	def __init__(self, config: dict):
-		self._config = config
-		self._client_manager = ClientManager(config)
-		self._chat_commands = ChatCommands()
-		self._logger = logging.getLogger('robo.monolith')
-		self._patch_manager = PatchManager()
+    def __init__(self, config: dict):
+        self._config = config
+        self._client_manager = ClientManager(config)
+        self._chat_commands = ChatCommands()
+        self._logger = logging.getLogger('robo.monolith')
+        self._patch_manager = PatchManager()
 
-		self._chat_messages = queue.Queue()
+        self._chat_messages = queue.Queue()
 
-	#################################################################################
-	# UDP Pipeline
-	#################################################################################
+    #################################################################################
+    # UDP Pipeline
+    #################################################################################
 
-	def process_udp(self, con, data, logger):
-		if con.server_name == 'nat':
-			# We don't need nat yet
-			if len(data) == 4 and data[-1] != 0xd4:
-				if con.addr[0:3] == '192': # Local address. Debugging purposes
-					ip_formatted = bytes([0] * 4)
-				else:
-					ip_formatted = bytes([int(y) for y in con.addr.split('.')])
-				port = utils.int_to_bytes_little(2, con.port)
-				con.send(ip_formatted + port)
-			return []
-		packets = [data]
-		# This means its dmeudp. 
-		# We need to tie this to a tcp connection to deframe if it's > 100 bytes
+    def process_udp(self, con, data, logger):
+        if con.server_name == 'nat':
+            # We don't need nat yet
+            if len(data) == 4 and data[-1] != 0xd4:
+                if con.addr[0:3] == '192': # Local address. Debugging purposes
+                    ip_formatted = bytes([0] * 4)
+                else:
+                    ip_formatted = bytes([int(y) for y in con.addr.split('.')])
+                port = utils.int_to_bytes_little(2, con.port)
+                con.send(ip_formatted + port)
+            return []
+        packets = [data]
+        # This means its dmeudp. 
+        # We need to tie this to a tcp connection to deframe if it's > 100 bytes
 
-		player = self._client_manager.identify(con)
+        player = self._client_manager.identify(con)
 
-		###### DEFRAME
-		# Player has been identified
-		if player != None:
-			packets = player.deframe(con, packets)
-			# for packet in packets:
-			# 	logger.debug(f"{player} | Deframe | {utils.bytes_to_hex(packet)}")
-		else: # Player has not been identified
-			packets = RtBufferDeframer.basic_deframe(packets)
+        ###### DEFRAME
+        # Player has been identified
+        if player != None:
+            packets = player.deframe(con, packets)
+            # for packet in packets:
+            #     logger.debug(f"{player} | Deframe | {utils.bytes_to_hex(packet)}")
+        else: # Player has not been identified
+            packets = RtBufferDeframer.basic_deframe(packets)
 
-		## SERIALIZE
-		serialized = [self._serialize(packetBytes) for packetBytes in packets]
-		for serial in serialized:
-			logger.debug(f"{con} | Serialized | {serial}")		
+        ## SERIALIZE
+        serialized = [self._serialize(packetBytes) for packetBytes in packets]
+        for serial in serialized:
+            logger.debug(f"{con} | Serialized | {serial}")        
 
-		## RESPONSE
-		responses = utils.flatten([self._rtresponse(con, packetBytes) for packetBytes in serialized])
-		for response in responses:
-			logger.debug(f"{con} | Response | {response}")
-		
-		## TO BYTES
-		responses = [utils.rtpacket_to_bytes(packet) for packet in responses]
-		# for response in responses:
-		# 	logger.debug(f"{con} | Encrypted | {utils.bytes_to_hex(response)}")
+        ## RESPONSE
+        responses = utils.flatten([self._rtresponse(con, packetBytes) for packetBytes in serialized])
+        for response in responses:
+            logger.debug(f"{con} | Response | {response}")
+        
+        ## TO BYTES
+        responses = [utils.rtpacket_to_bytes(packet) for packet in responses]
+        # for response in responses:
+        #     logger.debug(f"{con} | Encrypted | {utils.bytes_to_hex(response)}")
 
-		return responses
+        return responses
 
-	#################################################################################
-	# TCP Pipeline
-	#################################################################################
+    #################################################################################
+    # TCP Pipeline
+    #################################################################################
 
-	def process_tcp(self, con: Connection, data: bytes, logger):
-		packets = [data]
+    def process_tcp(self, con: Connection, data: bytes, logger):
+        packets = [data]
 
-		# Identify the player -- if the player is not identified, then run anonymous pipeline
-		player = self._client_manager.identify(con)
+        # Identify the player -- if the player is not identified, then run anonymous pipeline
+        player = self._client_manager.identify(con)
 
-		###### DEFRAME
-		# Player has been identified
-		if player != None:
-			packets = player.deframe(con, packets)
-			for packet in packets:
-				logger.debug(f"{player} | Deframe | {utils.bytes_to_hex(packet)}")
-		else: # Player has not been identified
-			packets = RtBufferDeframer.basic_deframe(packets)
+        ###### DEFRAME
+        # Player has been identified
+        if player != None:
+            packets = player.deframe(con, packets)
+            for packet in packets:
+                logger.debug(f"{player} | Deframe | {utils.bytes_to_hex(packet)}")
+        else: # Player has not been identified
+            packets = RtBufferDeframer.basic_deframe(packets)
 
-		###### DECRYPT
-		# We only need to decrypt in mas
-		if con.server_name == 'mas':
-			packets = [self._decrypt(con, packet) for packet in packets]
-			#for decrypt in decrypted:
-			#	logger.debug(f"{con} | Decrypted | {utils.bytes_to_hex(decrypt)}")
+        ###### DECRYPT
+        # We only need to decrypt in mas
+        if con.server_name == 'mas':
+            packets = [self._decrypt(con, packet) for packet in packets]
+            #for decrypt in decrypted:
+            #    logger.debug(f"{con} | Decrypted | {utils.bytes_to_hex(decrypt)}")
 
-		## SERIALIZE
-		packets = [self._serialize(packet) for packet in packets]
-		for serial in packets:
-			logger.debug(f"{con} | Serialized | {serial}")
+        ## SERIALIZE
+        packets = [self._serialize(packet) for packet in packets]
+        for serial in packets:
+            logger.debug(f"{con} | Serialized | {serial}")
 
-		## RESPONSE
-		responses = utils.flatten([self._rtresponse(con, packetBytes) for packetBytes in packets])
-		for response in responses:
-			logger.debug(f"{con} | Response | {response}")
+        ## RESPONSE
+        responses = utils.flatten([self._rtresponse(con, packetBytes) for packetBytes in packets])
+        for response in responses:
+            logger.debug(f"{con} | Response | {response}")
 
-		## ENCRYPT
-		encrypted = [self._encrypt(con, utils.rtpacket_to_bytes(packet)) for packet in responses]
-		#for encrypt in encrypted:
-		#	logger.debug(f"{con} | Encrypted | {utils.bytes_to_hex(encrypt)}")
+        ## ENCRYPT
+        encrypted = [self._encrypt(con, utils.rtpacket_to_bytes(packet)) for packet in responses]
+        #for encrypt in encrypted:
+        #    logger.debug(f"{con} | Encrypted | {utils.bytes_to_hex(encrypt)}")
 
-		return encrypted
+        return encrypted
 
-	def _decrypt(self, con: Connection, data: bytes) -> bytes:
-		''' If we are on MAS, decrypt the data. Otherwise, just pass it along
-		'''
-		# Leave only mas encrypted
-		if con.server_name not in ['mls', 'mas']:
-			return data
+    def _decrypt(self, con: Connection, data: bytes) -> bytes:
+        ''' If we are on MAS, decrypt the data. Otherwise, just pass it along
+        '''
+        # Leave only mas encrypted
+        if con.server_name not in ['mls', 'mas']:
+            return data
 
-		# Data is unencrypted
-		if data[0] < 0x80:
-			return data
+        # Data is unencrypted
+        if data[0] < 0x80:
+            return data
 
-		rtid = data[0] & 0x7F
-		rtlen = data[1:3]
-		rthash = data[3:7]
-		remaining_data = data[7:]
+        rtid = data[0] & 0x7F
+        rtlen = data[1:3]
+        rthash = data[3:7]
+        remaining_data = data[7:]
 
-		hashctx = rthash[3] & 0xFF
-		hashctx = hashctx >> 0x05
+        hashctx = rthash[3] & 0xFF
+        hashctx = hashctx >> 0x05
 
-		if hashctx == CipherContext.RSA_AUTH:
-			return bytes([rtid] + [b for b in rtlen] + list(RSA().decrypt(remaining_data, rthash)))
-		elif hashctx == CipherContext.RC_CLIENT_SESSION:
-			decrypted_bytes =  con.get_rc4().decrypt(remaining_data, rthash)
-			return utils.format_rt_message(rtid, decrypted_bytes)
-		elif hashctx == CipherContext.RC_SERVER_SESSION:
-			decrypted_bytes =  con.get_server_rc4().decrypt(remaining_data, rthash)
-			return utils.format_rt_message(rtid, decrypted_bytes)
+        if hashctx == CipherContext.RSA_AUTH:
+            return bytes([rtid] + [b for b in rtlen] + list(RSA().decrypt(remaining_data, rthash)))
+        elif hashctx == CipherContext.RC_CLIENT_SESSION:
+            decrypted_bytes =  con.get_rc4().decrypt(remaining_data, rthash)
+            return utils.format_rt_message(rtid, decrypted_bytes)
+        elif hashctx == CipherContext.RC_SERVER_SESSION:
+            decrypted_bytes =  con.get_server_rc4().decrypt(remaining_data, rthash)
+            return utils.format_rt_message(rtid, decrypted_bytes)
 
-	def _serialize(self, data: bytes) -> bytes:
-		rt_info = RtId.map[data[0]]
+    def _serialize(self, data: bytes) -> bytes:
+        rt_info = RtId.map[data[0]]
 
-		serialized = rt_info['serializer'].serialize(data)
+        serialized = rt_info['serializer'].serialize(data)
 
-		return serialized
+        return serialized
 
-	def _rtresponse(self, con: Connection, serialized) -> [bytes]:
-		''' 
-		1. Serialize the data coming in into an RT/Medius type
-		2. Get the response
-		'''
-		rt_info = RtId.map[serialized['rtid'][0]]
+    def _rtresponse(self, con: Connection, serialized) -> [bytes]:
+        ''' 
+        1. Serialize the data coming in into an RT/Medius type
+        2. Get the response
+        '''
+        rt_info = RtId.map[serialized['rtid'][0]]
 
-		responses = rt_info['handler'].process(serialized, self, con)		
+        responses = rt_info['handler'].process(serialized, self, con)        
 
-		return responses
+        return responses
 
-	def _encrypt(self, con: Connection, data: bytes) -> [bytes]:
-		'''
-		If we are on mas, encrypt the data
-		'''
-		if con.server_name != 'mas':
-			return data
+    def _encrypt(self, con: Connection, data: bytes) -> [bytes]:
+        '''
+        If we are on mas, encrypt the data
+        '''
+        if con.server_name != 'mas':
+            return data
 
-		result = None
-		if data[0] == RtIdEnum.SERVER_CRYPTKEY_PEER:
-			result = con.get_rsa().encrypt(data)
-		elif data[0] in [
-				RtIdEnum.SERVER_CRYPTKEY_GAME,
-				RtIdEnum.SERVER_CONNECT_ACCEPT_TCP,
-				RtIdEnum.SERVER_CONNECT_COMPLETE,
-				RtIdEnum.SERVER_APP,
-				RtIdEnum.CLIENT_APP_TOSERVER
-				]:
-			result = con.get_rc4().encrypt(data)
+        result = None
+        if data[0] == RtIdEnum.SERVER_CRYPTKEY_PEER:
+            result = con.get_rsa().encrypt(data)
+        elif data[0] in [
+                RtIdEnum.SERVER_CRYPTKEY_GAME,
+                RtIdEnum.SERVER_CONNECT_ACCEPT_TCP,
+                RtIdEnum.SERVER_CONNECT_COMPLETE,
+                RtIdEnum.SERVER_APP,
+                RtIdEnum.CLIENT_APP_TOSERVER
+                ]:
+            result = con.get_rc4().encrypt(data)
 
-		if result == None:
-			self._logger.warning("Data was not encrypted!")
-			return data
-		return result
+        if result == None:
+            self._logger.warning("Data was not encrypted!")
+            return data
+        return result
 
 
 # ===================================
 # Client methods
 
-	def get_client_manager(self):
-		return self._client_manager
+    def get_client_manager(self):
+        return self._client_manager
 
-	def client_disconnected(self, con: Connection):
-		self._client_manager.client_disconnected(con)
+    def client_disconnected(self, con: Connection):
+        self._client_manager.client_disconnected(con)
 
-	def process_chat(self, player, text, chat_message_type):
-		self._chat_commands.process_chat(player, text)
+    def process_chat(self, player, text, chat_message_type):
+        self._chat_commands.process_chat(player, text)
 
-		if chat_message_type == MediusChatMessageType.BROADCAST:
-			username = player.get_username()
-			self._chat_messages.put({"username":username, "message":text, "ts": datetime.now().timestamp()})		
+        if chat_message_type == MediusChatMessageType.BROADCAST:
+            username = player.get_username()
+            self._chat_messages.put({"username":username, "message":text, "ts": datetime.now().timestamp()})        
 
-	def process_login(self, player):
-		self._patch_manager.process_login(player)
+    def process_login(self, player):
+        self._patch_manager.process_login(player)
 
 # ===================================
 # API methods
-	def api_req_players(self):
-		return self._client_manager.api_req_players()
+    def api_req_players(self):
+        return self._client_manager.api_req_players()
 
-	def api_req_games(self):
-		return self._client_manager.api_req_games()
+    def api_req_games(self):
+        return self._client_manager.api_req_games()
 
-	def api_req_chat(self) -> list:
-		result = []
-		size = self._chat_messages.qsize()
-		for i in range(size):
-			result.append(self._chat_messages.get())
-		return result
+    def api_req_chat(self) -> list:
+        result = []
+        size = self._chat_messages.qsize()
+        for i in range(size):
+            result.append(self._chat_messages.get())
+        return result
 
 # ===================================
 # Misc
 
-	def clear_zombie_games(self):
-		self._client_manager.clear_zombie_games()
+    def clear_zombie_games(self):
+        self._client_manager.clear_zombie_games()
 
-	def get_mas_ip(self) -> str:
-		return self._config['public_ip']
+    def get_mas_ip(self) -> str:
+        return self._config['public_ip']
 
-	def get_mas_port(self) -> int:
-		return self._config['mas']['port']
+    def get_mas_port(self) -> int:
+        return self._config['mas']['port']
 
-	def get_mls_ip(self) -> str:
-		return self._config['public_ip']
+    def get_mls_ip(self) -> str:
+        return self._config['public_ip']
 
-	def get_mls_port(self) -> int:
-		return self._config['mls']['port']
+    def get_mls_port(self) -> int:
+        return self._config['mls']['port']
 
-	def get_dmetcp_ip(self) -> str:
-		return self._config['public_ip']
+    def get_dmetcp_ip(self) -> str:
+        return self._config['public_ip']
 
-	def get_dmetcp_port(self) -> int:
-		return self._config['dmetcp']['port']
+    def get_dmetcp_port(self) -> int:
+        return self._config['dmetcp']['port']
 
-	def get_dmeudp_ip(self) -> str:
-		return self._config['public_ip']
+    def get_dmeudp_ip(self) -> str:
+        return self._config['public_ip']
 
-	def get_dmeudp_port(self) -> int:
-		return self._config['dmeudp']['port']
+    def get_dmeudp_port(self) -> int:
+        return self._config['dmeudp']['port']
 
-	def get_nat_ip(self) -> str:
-		return self._config['public_ip']
+    def get_nat_ip(self) -> str:
+        return self._config['public_ip']
 
-	def get_nat_port(self) -> int:
-		return self._config['nat']['port']
+    def get_nat_port(self) -> int:
+        return self._config['nat']['port']
 
-	def get_app_id(self) -> int:
-		return self._config['app_id']
+    def get_app_id(self) -> int:
+        return self._config['app_id']
 
-	def get_locations(self) -> list:
-		return self._config['locations']
+    def get_locations(self) -> list:
+        return self._config['locations']
 
-	def get_policy(self) -> str:
-		return self._config['policy']
+    def get_policy(self) -> str:
+        return self._config['policy']
 
-	def get_announcement(self) -> str:
-		return self._config['announcement']
+    def get_announcement(self) -> str:
+        return self._config['announcement']
 
-	def get_channels(self) -> list:
-		return self._config['channels']
+    def get_channels(self) -> list:
+        return self._config['channels']

@@ -2,11 +2,11 @@
 from utils import utils
 
 class MediusServerSetAttributesResponseSerializer:
-	data_dict = [
-		{'name': 'mediusid', 'n_bytes': 2, 'cast': None}
-	]
+    data_dict = [
+        {'name': 'mediusid', 'n_bytes': 2, 'cast': None}
+    ]
 
 class MediusServerSetAttributesResponseHandler:
-	def process(self, serialized, monolith, con):
-		raise Exception('Unimplemented Handler: MediusServerSetAttributesResponseHandler')
+    def process(self, serialized, monolith, con):
+        raise Exception('Unimplemented Handler: MediusServerSetAttributesResponseHandler')
 

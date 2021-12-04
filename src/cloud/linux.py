@@ -8,7 +8,7 @@ import json
 #########################################################
 
 with open("cloud.json", "r") as f:
-	cloud_config = json.loads(f.read())
+    cloud_config = json.loads(f.read())
 
 commands = '''
 sudo apt-get update;
@@ -30,7 +30,7 @@ screen -Sdm robo ../robo_env/bin/python3.9 robo.py;
 '''
 
 with open('_temp.sh', 'w+') as f:
-	f.write(commands)
+    f.write(commands)
 
 ##### 1. Send the current robo setup to remote
 os.system("zip -r robo.zip ../")
@@ -76,7 +76,7 @@ screen -Sdm dnas sudo bash run.sh
 
 '''
 with open('_temp.sh', 'w+') as f:
-	f.write(commands)
+    f.write(commands)
 
 ##### 1. Initialize the instance
 print("Executing dnas script ...")
