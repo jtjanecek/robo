@@ -1,4 +1,6 @@
+*.pdf
 *.db
+.idea
 *.db-journal
 *.swp
 logs/
