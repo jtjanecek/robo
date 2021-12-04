@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster as build-image
+FROM python:3.9-slim-buster as build-image
 
 RUN apt-get update
 RUN apt-get install tcpdump -y
