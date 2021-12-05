@@ -46,7 +46,8 @@ class SqlLiteDb():
                                     clan_status integer NOT NULL,
                                     clan_tag text NOT NULL,
                                     clan_msg text NOT NULL,
-                                    stats text NOT NULL
+                                    stats text NOT NULL,
+                                    statswide text NOT NULL
                                 );
                                 """
 
@@ -57,8 +58,14 @@ class SqlLiteDb():
                                 """
 
         sql_create_clan_invites = """CREATE TABLE IF NOT EXISTS clan_invites (
-                                    account_id integer PRIMARY KEY,
-                                    clan_id text NOT NULL
+                                    clan_invitation_id integer PRIMARY KEY,
+                                    account_id_invited integer NOT NULL,
+                                    clan_invitation_response_status integer NOT NULL,
+                                    clan_id text NOT NULL,
+                                    invite_message text NOT NULL,
+                                    response_msg text NOT NULL,
+                                    response_status integer NOT NULL,
+                                    response_time integer NOT NULL
                                 );
                                 """
 
@@ -67,6 +74,7 @@ class SqlLiteDb():
             c.execute(sql_create_user_tables)
             c.execute(sql_create_clans_table)
             c.execute(sql_create_clan_users_table)
+            c.execute(sql_create_clan_invites)
 
         sql = "CREATE UNIQUE INDEX IF NOT EXISTS sym_dt_idx ON users (account_id, session_key);"
         c.execute(sql)
@@ -81,6 +89,7 @@ class SqlLiteDb():
         self._default_clan_status = 0
         self._default_clan_msg = ''
         self._default_clanstats = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+        self._default_clanstatswide = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 
     def check_login(self, username: str, password: str, session_key: bytes) -> bool:
         account_id = self.get_account_id(username=username)
@@ -243,10 +252,13 @@ class SqlLiteDb():
 
         c = self.conn.cursor()
         insert_command = """INSERT INTO clans
-                            (clan_name, leader_account_id, leader_account_name, clan_status, clan_tag, clan_msg, stats)
-                            values(?,?,?,?,?,?,?);
+                            (clan_name, leader_account_id, leader_account_name, clan_status, clan_tag, clan_msg, stats, statswide)
+                            values(?,?,?,?,?,?,?,?);
                             """
-        c.execute(insert_command, [clan_name, leader_account_id, leader_account_name, self._default_clan_status, self._default_clantag, self._default_clan_msg, self._default_clanstats])
+        c.execute(insert_command, [clan_name, leader_account_id, leader_account_name,
+                                   self._default_clan_status, self._default_clantag,
+                                   self._default_clan_msg, self._default_clanstats,
+                                   self._default_clanstatswide])
         self.conn.commit()
         c.close()
 
@@ -311,6 +323,33 @@ class SqlLiteDb():
         self.conn.commit()
         c.close()
 
+    def update_clan_statswide(self, clan_id, statswide: str):
+        # it should be hex already
+        # clan_name should be hex
+        if type(statswide) != str:
+            raise Exception('Clan name is not str!')
+        c = self.conn.cursor()
+        update = '''
+             UPDATE clans
+             SET statswide = ?
+             WHERE
+                 clan_id = ?;
+         '''
+        c.execute(update, [statswide, clan_id])
+        self.conn.commit()
+        c.close()
+
+    def get_clan_statswide(self, clan_id: int):
+        c = self.conn.cursor()
+        select = """SELECT statswide
+                    FROM clans WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchone()
+        c.close()
+        if vals:
+            return vals[0]
+        return self._default_clanstatswide
+
     def update_clan_message(self, clan_id: int, clan_message: str):
         c = self.conn.cursor()
         update = '''
@@ -337,16 +376,6 @@ class SqlLiteDb():
         return ''
 
     def get_clan_info(self, clan_id: int):
-        '''
-            clan_info['clan_id'], # Clan id
-            10684, # app id
-            clan_info['clan_name'],
-            clan_info['leader_account_id'], # leader account id
-            clan_info['leader_account_name'], # Leader account name
-            clan_info['clan_stats'], # stats
-            clan_info['clan_status'], # clan status
-        '''
-
         c = self.conn.cursor()
         select = """SELECT clan_id, clan_name, leader_account_id, leader_account_name, stats, clan_status
                     FROM clans WHERE clan_id = ?;
@@ -363,3 +392,33 @@ class SqlLiteDb():
             'clan_status': vals[5]
         }
         return clan_info
+
+    def get_clan_member_account_ids(self, clan_id):
+        c = self.conn.cursor()
+        select = """SELECT account_id
+                    FROM clan_users WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchall()
+        c.close()
+
+        account_ids = [val[0] for val in vals]
+        return account_ids
+
+    def get_clan_invitations_sent(self, clan_id):
+        c = self.conn.cursor()
+        select = """SELECT account_id_invited, response_msg, response_status, response_time
+                    FROM clan_invites WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchall()
+        c.close()
+
+        accounts = []
+        for val in vals:
+            accounts.append({
+                'account_id': val[0],
+                'response_msg': val[1],
+                'response_status': val[2],
+                'response_status': val[3],
+                'response_time': val[4]
+            })
+        return accounts

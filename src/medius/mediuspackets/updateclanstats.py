@@ -15,6 +15,10 @@ class UpdateClanStatsSerializer:
 class UpdateClanStatsHandler:
     def process(self, serialized, monolith, con):
 
+        clan_tag = serialized['stats'][172:176].decode().replace('\x00','')
+        if not utils.check_username_valid(clan_tag):
+            raise Exception('Invalid clan tag!')
+
         stats = utils.bytes_to_hex(serialized['stats'])
         monolith.get_client_manager().update_clan_stats(serialized['clan_id'], stats)
 

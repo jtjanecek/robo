@@ -7,7 +7,9 @@ class GetLadderStatsWideSerializer:
         {'name': 'mediusid', 'n_bytes': 2, 'cast': None},
         {'name': 'message_id', 'n_bytes': MediusEnum.MESSAGEID_MAXLEN, 'cast': None},
         {'name': 'buf', 'n_bytes': 3, 'cast': None},
-        {'name': 'account_or_clan_id', 'n_bytes': 4, 'cast': utils.bytes_to_int_little}
+        {'name': 'account_or_clan_id', 'n_bytes': 4, 'cast': utils.bytes_to_int_little},
+        {'name': 'ladder_type', 'n_bytes': 4, 'cast': utils.bytes_to_int_little}
+
     ]
 
 class GetLadderStatsWideHandler:
@@ -15,7 +17,14 @@ class GetLadderStatsWideHandler:
 
 
         client_manager = monolith.get_client_manager()
-        ladderstatswide = client_manager.get_player_ladderstatswide(serialized['account_or_clan_id'])
+
+        if serialized['ladder_type'] == 0:
+            ladderstatswide = client_manager.get_player_ladderstatswide(serialized['account_or_clan_id'])
+        elif serialized['ladder_type'] == 1:
+            ladderstatswide = client_manager.get_clan_statswide(serialized['account_or_clan_id'])
+        else:
+            raise Exception("Not implemented ladder type in GetLadderStatsWide!")
+
         return [GetLadderStatsWideResponseSerializer.build(
                 serialized['message_id'],
                 CallbackStatus.SUCCESS,

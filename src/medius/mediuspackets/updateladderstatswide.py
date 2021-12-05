@@ -17,7 +17,13 @@ class UpdateLadderStatsWideHandler:
 
         account_id = client_manager.get_player_from_mls_con(con).get_account_id()
 
-        client_manager.update_player_ladderstatswide(account_id, serialized['ladderstatswide'])
+        if serialized['ladder_type'] == 0:
+            client_manager.update_player_ladderstatswide(account_id, serialized['ladderstatswide'])
+        elif serialized['ladder_type'] == 1:
+            clan_id = client_manager.get_clan_id_from_account_id(account_id)
+            client_manager.update_clan_statswide(clan_id, serialized['ladderstatswide'])
+        else:
+            raise Exception("Unimplemented ladder type for ladderstatswide!")
 
         return [UpdateLadderStatsWideResponseSerializer.build(
             serialized['message_id'],
