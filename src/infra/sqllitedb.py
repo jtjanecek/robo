@@ -56,6 +56,12 @@ class SqlLiteDb():
                                 );
                                 """
 
+        sql_create_clan_invites = """CREATE TABLE IF NOT EXISTS clan_invites (
+                                    account_id integer PRIMARY KEY,
+                                    clan_id text NOT NULL
+                                );
+                                """
+
         c = self.conn.cursor()
         if mode != 'ro':
             c.execute(sql_create_user_tables)
@@ -304,6 +310,31 @@ class SqlLiteDb():
         c.execute(update, [stats, clan_id])
         self.conn.commit()
         c.close()
+
+    def update_clan_message(self, clan_id: int, clan_message: str):
+        c = self.conn.cursor()
+        update = '''
+             UPDATE clans
+             SET clan_msg = ?
+             WHERE
+                 clan_id = ?;
+         '''
+        c.execute(update, [clan_message, clan_id])
+        self.conn.commit()
+        c.close()
+
+    def get_clan_message(self, clan_id: int):
+        c = self.conn.cursor()
+        select = """SELECT clan_msg
+                    FROM clans WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchone()
+        c.close()
+
+        # Check if it exists first
+        if vals:
+            return vals[0]
+        return ''
 
     def get_clan_info(self, clan_id: int):
         '''

@@ -223,6 +223,12 @@ class ClientManager:
     def update_clan_stats(self, clan_id: int, stats: str):
         return self._db.update_clan_stats(clan_id, stats)
 
+    def update_clan_message(self, clan_id: int, clan_message: str):
+        return self._db.update_clan_message(clan_id, clan_message)
+
+    def get_clan_message(self, clan_id: int):
+        return self._db.get_clan_message(clan_id)
+
     # =============== Misc ===============
 
     def api_req_players(self) -> list:
