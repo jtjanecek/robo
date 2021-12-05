@@ -211,6 +211,18 @@ class ClientManager:
     def update_player_ladderstatswide(self, account_id, ladderstatswide: str):
         self._db.update_ladderstatswide(account_id, ladderstatswide)
 
+    def create_clan(self, clan_name: bytes, player_account_id: int, player_username: str):
+        return self._db.create_clan(clan_name, player_account_id, player_username)
+
+    def get_clan_id_from_account_id(self, account_id: int):
+        return self._db.get_clan_id_from_account_id(account_id)
+
+    def get_clan_info(self, clan_id: int):
+        return self._db.get_clan_info(clan_id)
+
+    def update_clan_stats(self, clan_id: int, stats: str):
+        return self._db.update_clan_stats(clan_id, stats)
+
     # =============== Misc ===============
 
     def api_req_players(self) -> list:

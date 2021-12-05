@@ -27,7 +27,7 @@ class SqlLiteDb():
 
         self._cols = ['account_id', 'username', 'password', 'session_key']
 
-        sql_create_min_table = """CREATE TABLE IF NOT EXISTS users (
+        sql_create_user_tables = """CREATE TABLE IF NOT EXISTS users (
                                     account_id integer PRIMARY KEY,
                                     account_type integer NOT NULL,
                                     username text NOT NULL,
@@ -38,9 +38,29 @@ class SqlLiteDb():
                                 );
                                 """
 
+        sql_create_clans_table = """CREATE TABLE IF NOT EXISTS clans (
+                                    clan_id integer PRIMARY KEY,
+                                    clan_name text NOT NULL,
+                                    leader_account_id integer NOT NULL,
+                                    leader_account_name text NOT NULL,
+                                    clan_status integer NOT NULL,
+                                    clan_tag text NOT NULL,
+                                    clan_msg text NOT NULL,
+                                    stats text NOT NULL
+                                );
+                                """
+
+        sql_create_clan_users_table = """CREATE TABLE IF NOT EXISTS clan_users (
+                                    account_id integer PRIMARY KEY,
+                                    clan_id text NOT NULL
+                                );
+                                """
+
         c = self.conn.cursor()
         if mode != 'ro':
-            c.execute(sql_create_min_table)
+            c.execute(sql_create_user_tables)
+            c.execute(sql_create_clans_table)
+            c.execute(sql_create_clan_users_table)
 
         sql = "CREATE UNIQUE INDEX IF NOT EXISTS sym_dt_idx ON users (account_id, session_key);"
         c.execute(sql)
@@ -50,6 +70,11 @@ class SqlLiteDb():
 
         self._default_stats = '00C0A84400C0A84400C0A84400C0A8440000AF430000AF430000AF430000AF4300000000FFFFFFFFEF42000037FA0000EF000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
         self._default_ladderstatswide = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+
+        self._default_clantag = ''
+        self._default_clan_status = 0
+        self._default_clan_msg = ''
+        self._default_clanstats = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 
     def check_login(self, username: str, password: str, session_key: bytes) -> bool:
         account_id = self.get_account_id(username=username)
@@ -200,3 +225,110 @@ class SqlLiteDb():
         c.execute(update, [ladderstatswide, account_id])
         self.conn.commit()
         c.close()
+
+    def create_clan(self, clan_name: bytes, leader_account_id: int, leader_account_name: str):
+        # Ensure clan name is not taken
+        clan_name = utils.bytes_to_hex(clan_name)
+        clan_id = self.get_clan_id_from_name(clan_name)
+
+        # Ensure clan doesn't exist
+        if clan_id is not None:
+            return None
+
+        c = self.conn.cursor()
+        insert_command = """INSERT INTO clans
+                            (clan_name, leader_account_id, leader_account_name, clan_status, clan_tag, clan_msg, stats)
+                            values(?,?,?,?,?,?,?);
+                            """
+        c.execute(insert_command, [clan_name, leader_account_id, leader_account_name, self._default_clan_status, self._default_clantag, self._default_clan_msg, self._default_clanstats])
+        self.conn.commit()
+        c.close()
+
+        new_clan_id = self.get_clan_id_from_name(clan_name)
+        logger.info(f"Created new clan: {clan_name} | clan_id: {new_clan_id}")
+
+        # Add the leader to the clan
+        self.add_user_to_clan(leader_account_id, new_clan_id)
+
+        return new_clan_id
+
+    def add_user_to_clan(self, account_id, clan_id):
+        logger.info(f"Adding account_id: {account_id} to clan: {clan_id}")
+        c = self.conn.cursor()
+        insert_command = """INSERT INTO clan_users
+                            (account_id, clan_id)
+                            values(?,?);
+                            """
+        c.execute(insert_command, [account_id, clan_id])
+        self.conn.commit()
+        c.close()
+
+    def get_clan_id_from_name(self, clan_name: str):
+        # clan_name should be hex
+        if type(clan_name) != str:
+            raise Exception('Clan name is not str!')
+
+        c = self.conn.cursor()
+        select = """SELECT clan_id
+                    FROM clans WHERE lower(clan_name) = lower(?);
+                """
+        vals = c.execute(select, [clan_name]).fetchone()
+        c.close()
+
+        # Check if it exists first
+        if vals:
+            return vals[0]
+        return None
+
+    def get_clan_id_from_account_id(self, account_id: int):
+        c = self.conn.cursor()
+        select = """SELECT clan_id
+                    FROM clan_users WHERE account_id = ?;
+                """
+        vals = c.execute(select, [account_id]).fetchone()
+        c.close()
+
+        # Check if it exists first
+        if vals:
+            return vals[0]
+        return None
+
+    def update_clan_stats(self, clan_id: int, stats: str):
+        c = self.conn.cursor()
+        update = '''
+             UPDATE clans
+             SET stats = ?
+             WHERE
+                 clan_id = ?;
+         '''
+        c.execute(update, [stats, clan_id])
+        self.conn.commit()
+        c.close()
+
+    def get_clan_info(self, clan_id: int):
+        '''
+            clan_info['clan_id'], # Clan id
+            10684, # app id
+            clan_info['clan_name'],
+            clan_info['leader_account_id'], # leader account id
+            clan_info['leader_account_name'], # Leader account name
+            clan_info['clan_stats'], # stats
+            clan_info['clan_status'], # clan status
+        '''
+
+        c = self.conn.cursor()
+        select = """SELECT clan_id, clan_name, leader_account_id, leader_account_name, stats, clan_status
+                    FROM clans WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchone()
+        c.close()
+
+        clan_info = {
+            'clan_id': vals[0],
+            'clan_name': vals[1],
+            'leader_account_id': vals[2],
+            'leader_account_name': vals[3],
+            'clan_stats': vals[4],
+            'clan_status': vals[5]
+        }
+        return clan_info
