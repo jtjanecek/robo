@@ -33,7 +33,7 @@ bash build.sh
 bash run.sh
 ```
 
-### Running offline
+### Running offline [WIP]
 To run robo offline, you can use `iptables` to route things back to your PC without being on a network. UYA requires external IP addresses in the config for `public_ip` (medius limitation).
 ```
 # TCP:
