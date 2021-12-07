@@ -35,7 +35,7 @@ bash run.sh
 ### Running fully locally on linux
 1. Set Robo `public_ip` in `config.json` to your local ip
 2. Disable DNS server locally
-'''
+```
 # Disable systemd so that the local DNAS can run
 sudo systemctl stop systemd-resolved
 ```
