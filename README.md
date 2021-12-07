@@ -18,7 +18,6 @@ Current API endpoints:
 https://github.com/hashsploit/clank    
 https://github.com/Dnawrkshp/deadlocked-server/
 
-
 # Running on Linux
 1. Clone the repo
 ```
