@@ -34,6 +34,20 @@ bash build.sh
 bash run.sh
 ```
 
+### Running offline
+To run robo offline, you can use `iptables` to route things back to your PC without being on a network. UYA requires external IP addresses in the config for `public_ip` (medius limitation).
+```
+# TCP:
+sudo iptables -t nat -A OUTPUT -d 192.168.100.100 -j DNAT --to-destination 127.0.0.1
+# UDP:
+# not sure yet
+
+# Disable systemd so that the local DNAS can run
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+```
+Then set `public_ip` to `192.168.100.100`
+
 # Building & Running on Windows
 ## Download PCSX2
 Download PCSX2 1.6.0 from here:
