@@ -60,12 +60,9 @@ class SqlLiteDb():
         sql_create_clan_invites = """CREATE TABLE IF NOT EXISTS clan_invites (
                                     clan_invitation_id integer PRIMARY KEY,
                                     account_id_invited integer NOT NULL,
-                                    clan_invitation_response_status integer NOT NULL,
-                                    clan_id text NOT NULL,
+                                    clan_id integer NOT NULL,
                                     invite_message text NOT NULL,
-                                    response_msg text NOT NULL,
-                                    response_status integer NOT NULL,
-                                    response_time integer NOT NULL
+                                    response_msg text NOT NULL
                                 );
                                 """
 
@@ -241,9 +238,7 @@ class SqlLiteDb():
         self.conn.commit()
         c.close()
 
-    def create_clan(self, clan_name: bytes, leader_account_id: int, leader_account_name: str):
-        # Ensure clan name is not taken
-        clan_name = utils.bytes_to_hex(clan_name)
+    def create_clan(self, clan_name: str, leader_account_id: int, leader_account_name: str):
         clan_id = self.get_clan_id_from_name(clan_name)
 
         # Ensure clan doesn't exist
@@ -350,6 +345,17 @@ class SqlLiteDb():
             return vals[0]
         return self._default_clanstatswide
 
+    def get_clan_name(self, clan_id: int):
+        c = self.conn.cursor()
+        select = """SELECT clan_name
+                    FROM clans WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchone()
+        c.close()
+        if vals:
+            return vals[0]
+        return ''
+
     def update_clan_message(self, clan_id: int, clan_message: str):
         c = self.conn.cursor()
         update = '''
@@ -393,6 +399,19 @@ class SqlLiteDb():
         }
         return clan_info
 
+    def get_clan_leader_account_id(self, clan_id):
+        c = self.conn.cursor()
+        select = """SELECT leader_account_id
+                    FROM clans WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchone()
+        c.close()
+
+        # Check if it exists first
+        if vals:
+            return vals[0]
+        return 0
+
     def get_clan_member_account_ids(self, clan_id):
         c = self.conn.cursor()
         select = """SELECT account_id
@@ -406,19 +425,88 @@ class SqlLiteDb():
 
     def get_clan_invitations_sent(self, clan_id):
         c = self.conn.cursor()
-        select = """SELECT account_id_invited, response_msg, response_status, response_time
+        select = """SELECT account_id_invited
                     FROM clan_invites WHERE clan_id = ?;
                 """
         vals = c.execute(select, [clan_id]).fetchall()
         c.close()
-
+        logger.info(vals)
         accounts = []
         for val in vals:
             accounts.append({
                 'account_id': val[0],
-                'response_msg': val[1],
-                'response_status': val[2],
-                'response_status': val[3],
-                'response_time': val[4]
+                'response_msg': '',
+                'response_status': 0,
+                'response_time': 0
             })
         return accounts
+
+    def check_invite_exists(self, account_id, clan_id):
+        c = self.conn.cursor()
+        select = """SELECT account_id_invited
+                    FROM clan_invites WHERE account_id_invited = ? and clan_id = ?;
+                """
+        vals = c.execute(select, [account_id, clan_id]).fetchone()
+        c.close()
+
+        # Check if it exists first
+        if vals == [] or vals == None:
+            return False
+        return True
+
+    def invite_player_to_clan(self, account_id, clan_id, invite_message):
+        c = self.conn.cursor()
+
+        # first ensure this combo is not already in the db
+        if self.check_invite_exists(account_id, clan_id):
+            logger.info(f"Player already invited!")
+            c.close()
+            return
+
+        insert_command = """INSERT INTO clan_invites
+                            (account_id_invited, clan_id, 
+                            invite_message, response_msg)
+                            values(?,?,?,?);
+                            """
+        c.execute(insert_command, [account_id, clan_id, invite_message, ''])
+        self.conn.commit()
+        c.close()
+
+    def get_clan_invitations(self, account_id):
+        c = self.conn.cursor()
+        select = """SELECT clan_invitation_id, clan_id
+                    FROM clan_invites WHERE account_id_invited = ?;
+                """
+        vals = c.execute(select, [account_id]).fetchall()
+        c.close()
+        logger.info(vals)
+        accounts = []
+        for val in vals:
+            accounts.append({
+                'clan_invitation_id': val[0],
+                'clan_id': val[1]
+            })
+        return accounts
+
+
+    def respond_clan_invite(self, clan_invitation_id: int, accepted):
+        c = self.conn.cursor()
+        select = """SELECT account_id_invited, clan_id
+                    FROM clan_invites WHERE clan_invitation_id = ?;
+                """
+        vals = c.execute(select, [clan_invitation_id]).fetchone()
+        c.close()
+
+        account_id = vals[0]
+        clan_id = vals[1]
+
+        if accepted:
+            self.add_user_to_clan(account_id, clan_id)
+
+        # Delete the clan invite
+        c = self.conn.cursor()
+        select = """DELETE
+                    FROM clan_invites WHERE clan_invitation_id = ?;
+                """
+        vals = c.execute(select, [clan_invitation_id]).fetchone()
+        c.close()

@@ -241,6 +241,21 @@ class ClientManager:
     def update_clan_statswide(self, clan_id: int, statswide: str):
         return self._db.update_clan_statswide(clan_id, statswide)
 
+    def invite_player_to_clan(self, account_id: int, clan_id: int, invite_message: str):
+        return self._db.invite_player_to_clan(account_id, clan_id, invite_message)
+
+    def get_clan_invitations(self, account_id: int):
+        return self._db.get_clan_invitations(account_id)
+
+    def get_clan_leader_account_id(self, clan_id: int):
+        return self._db.get_clan_leader_account_id(clan_id)
+
+    def get_clan_name(self, clan_id: int):
+        return self._db.get_clan_name(clan_id)
+
+    def respond_clan_invite(self, clan_invitation_id, accepted):
+        return self._db.respond_clan_invite(clan_invitation_id, accepted)
+
     # =============== Misc ===============
 
     def api_req_players(self) -> list:

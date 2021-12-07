@@ -32,11 +32,11 @@ class GetClanInvitationsSentHandler:
 
         packets = []
         for i, account_data in enumerate(clan_invs_sent):
-            username = client_manager.get_username(account_id=account_id)
+            username = client_manager.get_username(account_id=account_data['account_id'])
 
             packets.append(GetClanInvitationsSentResponseSerializer.build(
                 serialized['message_id'],
-                CallbackStatus.NO_RESULT,
+                CallbackStatus.SUCCESS,
                 account_data['account_id'], # account id
                 username, # account_name
                 account_data['response_msg'], # response message

@@ -15,11 +15,18 @@ class GetMyClanMessagesSerializer:
 
 class GetMyClanMessagesHandler:
     def process(self, serialized, monolith, con):
+        client_manager = monolith.get_client_manager()
+        player = client_manager.get_player_from_mls_con(con)
+        account_id = player.get_account_id()
+
+        clan_id = client_manager.get_clan_id_from_account_id(account_id)
+        clan_message = client_manager.get_clan_message(serialized['clan_id'])
+
         return [GetMyClanMessagesResponseSerializer.build(
             serialized['message_id'],
             CallbackStatus.SUCCESS,
             serialized['clan_id'],
-            'Test Clan Message',
+            clan_message,
             1
         )]
 

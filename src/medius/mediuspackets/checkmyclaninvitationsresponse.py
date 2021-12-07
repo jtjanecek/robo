@@ -10,21 +10,28 @@ class CheckMyClanInvitationsResponseSerializer:
     @classmethod
     def build(self,
             message_id,
-            callback_status
-            ):
+            callback_status,
+            clan_invitation_id = 0,
+            clan_id = 0,
+            response_status = 0,
+            message = '',
+            leader_account_id = 0,
+            leader_account_name = '',
+            end_of_list = 1
+              ):
         packet = [
             {'name': __name__},
             {'mediusid': MediusIdEnum.CheckMyClanInvitationsResponse},
             {'message_id': message_id},
             {'buf': utils.bytes_from_hex("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status, signed=True)},
-            {'clan_invitation_id': utils.int_to_bytes_little(4, 0)},
-            {'clan_id': utils.int_to_bytes_little(4, 0)},
-            {'response_status': utils.int_to_bytes_little(4, 0)},
-            {'message': utils.str_to_bytes('', MediusEnum.CLANMSG_MAXLEN)},
-            {'leader_account_id': utils.int_to_bytes_little(4, 0)},
-            {'leader_account_name': utils.str_to_bytes('', MediusEnum.ACCOUNTNAME_MAXLEN)},
-            {'end_of_list': utils.int_to_bytes_little(4, 1)},
+            {'clan_invitation_id': utils.int_to_bytes_little(4, clan_invitation_id)},
+            {'clan_id': utils.int_to_bytes_little(4, clan_id)},
+            {'response_status': utils.int_to_bytes_little(4, response_status)},
+            {'message': utils.str_to_bytes(message, MediusEnum.CLANMSG_MAXLEN)},
+            {'leader_account_id': utils.int_to_bytes_little(4, leader_account_id)},
+            {'leader_account_name': utils.str_to_bytes(leader_account_name, MediusEnum.ACCOUNTNAME_MAXLEN)},
+            {'end_of_list': utils.int_to_bytes_little(4, end_of_list)},
         ]
         return packet
 
