@@ -32,7 +32,6 @@ bash build.sh
 ```
 bash run.sh
 ```
-
 ### Running fully locally on linux
 1. Set Robo `public_ip` in `config.json` to your local ip
 2. Disable DNS server locally
