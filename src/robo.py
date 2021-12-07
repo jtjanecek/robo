@@ -28,7 +28,7 @@ class Robo():
         sh.setFormatter(formatter)
         sh.setLevel(logging.getLevelName(config['console_log_level']))
         logger.addHandler(sh)
-        filehandler = handlers.RotatingFileHandler(os.path.join(config['log_location'],'main.log'), mode='w', maxBytes=100000000, backupCount=5)
+        filehandler = handlers.RotatingFileHandler(os.path.join(config['log_location'],'main.log'), mode='w', maxBytes=config['mls']['max_bytes_mb']*1000000, backupCount=5)
         filehandler.setFormatter(formatter)
         logger.setLevel(logging.DEBUG)
         logger.addHandler(filehandler)
