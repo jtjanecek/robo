@@ -22,7 +22,7 @@ https://github.com/Dnawrkshp/deadlocked-server/
 # Running on Linux
 1. Clone the repo
 ```
-https://github.com/jtjanecek/robo/
+git clone https://github.com/jtjanecek/robo/
 ```
 2. If you want to run the server locally, change the `public_ip` to your local IP address in `config.json`
 3. Build the docker image
