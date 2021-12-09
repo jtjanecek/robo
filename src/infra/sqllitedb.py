@@ -440,6 +440,39 @@ class SqlLiteDb():
         self.conn.commit()
         c.close()
 
+    def remove_player_from_clan(self, account_id: int, clan_id: int):
+        # Delete the clan invitations
+        c = self.conn.cursor()
+        select = """DELETE
+                    FROM clan_users WHERE account_id = ? and clan_id = ?;
+                """
+        vals = c.execute(select, [account_id, clan_id]).fetchone()
+        self.conn.commit()
+        c.close()
+
+    def transfer_clan_ownership(self, clan_id: int, new_account_id: int, new_account_name: str):
+        c = self.conn.cursor()
+        update = '''
+             UPDATE clans
+             SET leader_account_id = ?
+             WHERE
+                 clan_id = ?;
+         '''
+        c.execute(update, [new_account_id, clan_id])
+        self.conn.commit()
+        c.close()
+
+        c = self.conn.cursor()
+        update = '''
+             UPDATE clans
+             SET leader_account_name = ?
+             WHERE
+                 clan_id = ?;
+         '''
+        c.execute(update, [new_account_name, clan_id])
+        self.conn.commit()
+        c.close()
+
     def get_clan_member_account_ids(self, clan_id):
         c = self.conn.cursor()
         select = """SELECT account_id

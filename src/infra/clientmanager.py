@@ -259,6 +259,12 @@ class ClientManager:
     def disband_clan(self, clan_id: int):
         return self._db.disband_clan(clan_id)
 
+    def remove_player_from_clan(self, account_id: int, clan_id: int):
+        return self._db.remove_player_from_clan(account_id, clan_id)
+
+    def transfer_clan_ownership(self, clan_id: int, new_account_id: int, new_account_name: str):
+        return self._db.transfer_clan_ownership(clan_id, new_account_id, new_account_name)
+
     # =============== Misc ===============
 
     def api_req_players(self) -> list:
