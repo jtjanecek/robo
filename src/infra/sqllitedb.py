@@ -207,7 +207,7 @@ class SqlLiteDb():
         c = self.conn.cursor()
         update = '''
             UPDATE users
-            SET stats = ?
+            SET stats = ?  
             WHERE
                 account_id = ?;
         '''
