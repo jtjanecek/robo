@@ -412,6 +412,34 @@ class SqlLiteDb():
             return vals[0]
         return 0
 
+    def disband_clan(self, clan_id: int):
+        # Delete the clan
+        c = self.conn.cursor()
+        select = """DELETE
+                    FROM clans WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchone()
+        self.conn.commit()
+        c.close()
+
+        # Delete the clan users
+        c = self.conn.cursor()
+        select = """DELETE
+                    FROM clan_users WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchone()
+        self.conn.commit()
+        c.close()
+
+        # Delete the clan invitations
+        c = self.conn.cursor()
+        select = """DELETE
+                    FROM clan_invites WHERE clan_id = ?;
+                """
+        vals = c.execute(select, [clan_id]).fetchone()
+        self.conn.commit()
+        c.close()
+
     def get_clan_member_account_ids(self, clan_id):
         c = self.conn.cursor()
         select = """SELECT account_id
@@ -509,4 +537,5 @@ class SqlLiteDb():
                     FROM clan_invites WHERE clan_invitation_id = ?;
                 """
         vals = c.execute(select, [clan_invitation_id]).fetchone()
+        self.conn.commit()
         c.close()
