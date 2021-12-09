@@ -30,7 +30,7 @@ class GetMyClansResponseSerializer:
             {'clan_name': utils.str_to_bytes(clan_name, MediusEnum.CLANNAME_MAXLEN)},
             {'leader_account_id': utils.int_to_bytes_little(4, leader_account_id)},
             {'leader_account_name': utils.str_to_bytes(leader_account_name, MediusEnum.ACCOUNTNAME_MAXLEN)},
-            {'stats': utils.str_to_bytes(stats, MediusEnum.CLANSTATS_MAXLEN)},
+            {'stats': utils.str_to_bytes(stats, MediusEnum.CLANSTATS_MAXLEN) if clan_name == '' else utils.bytes_from_hex(stats)},
             {'clan_status': utils.int_to_bytes_little(4, clan_status)},
             {'end_of_list': utils.int_to_bytes_little(4, end_of_list)}
         ]

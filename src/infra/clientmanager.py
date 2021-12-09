@@ -211,6 +211,60 @@ class ClientManager:
     def update_player_ladderstatswide(self, account_id, ladderstatswide: str):
         self._db.update_ladderstatswide(account_id, ladderstatswide)
 
+    def create_clan(self, clan_name: bytes, player_account_id: int, player_username: str):
+        return self._db.create_clan(clan_name, player_account_id, player_username)
+
+    def get_clan_id_from_account_id(self, account_id: int):
+        return self._db.get_clan_id_from_account_id(account_id)
+
+    def get_clan_info(self, clan_id: int):
+        return self._db.get_clan_info(clan_id)
+
+    def update_clan_stats(self, clan_id: int, stats: str):
+        return self._db.update_clan_stats(clan_id, stats)
+
+    def update_clan_message(self, clan_id: int, clan_message: str):
+        return self._db.update_clan_message(clan_id, clan_message)
+
+    def get_clan_message(self, clan_id: int):
+        return self._db.get_clan_message(clan_id)
+
+    def get_clan_member_account_ids(self, clan_id: int):
+        return self._db.get_clan_member_account_ids(clan_id)
+
+    def get_clan_invitations_sent(self, clan_id: int):
+        return self._db.get_clan_invitations_sent(clan_id)
+
+    def get_clan_statswide(self, clan_id: int):
+        return self._db.get_clan_statswide(clan_id)
+
+    def update_clan_statswide(self, clan_id: int, statswide: str):
+        return self._db.update_clan_statswide(clan_id, statswide)
+
+    def invite_player_to_clan(self, account_id: int, clan_id: int, invite_message: str):
+        return self._db.invite_player_to_clan(account_id, clan_id, invite_message)
+
+    def get_clan_invitations(self, account_id: int):
+        return self._db.get_clan_invitations(account_id)
+
+    def get_clan_leader_account_id(self, clan_id: int):
+        return self._db.get_clan_leader_account_id(clan_id)
+
+    def get_clan_name(self, clan_id: int):
+        return self._db.get_clan_name(clan_id)
+
+    def respond_clan_invite(self, clan_invitation_id, accepted):
+        return self._db.respond_clan_invite(clan_invitation_id, accepted)
+
+    def disband_clan(self, clan_id: int):
+        return self._db.disband_clan(clan_id)
+
+    def remove_player_from_clan(self, account_id: int, clan_id: int):
+        return self._db.remove_player_from_clan(account_id, clan_id)
+
+    def transfer_clan_ownership(self, clan_id: int, new_account_id: int, new_account_name: str):
+        return self._db.transfer_clan_ownership(clan_id, new_account_id, new_account_name)
+
     # =============== Misc ===============
 
     def api_req_players(self) -> list:
