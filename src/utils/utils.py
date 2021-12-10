@@ -97,7 +97,7 @@ def check_username_valid(username: str) -> bool:
     return pattern.match(username)
 
 def check_ctag_valid(ctag: str) -> bool:
-    if len(ctag) < 1 or len(ctag) > 5:
+    if len(ctag) < 1:
         return False
 
     pattern = re.compile("^([A-Za-z0-9]+)+$")
