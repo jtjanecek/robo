@@ -1,4 +1,5 @@
 import traceback
+import re
 from collections import deque
 from enums.enums import MediusEnum
 from hashlib import sha512
