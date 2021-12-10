@@ -90,7 +90,7 @@ def pad_str(s, size) -> str:
     return s.ljust(size,'\0')
 
 def check_username_valid(username: str) -> bool:
-    if len(username) < 3 or len(username) > 13:
+    if len(username) < 3 or len(username) > 15:
         return False
 
     pattern = re.compile("^([A-Za-z0-9-_ ]+)+$")
