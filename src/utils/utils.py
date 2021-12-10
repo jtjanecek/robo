@@ -89,10 +89,18 @@ def pad_str(s, size) -> str:
     return s.ljust(size,'\0')
 
 def check_username_valid(username: str) -> bool:
-    for c in username:
-        if ord(c) < 21 or ord(c) > 126:
-            return False
-    return True
+    if len(username) < 3 or len(username) > 13:
+        return False
+
+    pattern = re.compile("^([A-Za-z0-9-_ ]+)+$")
+    return pattern.match(username)
+
+def check_ctag_valid(ctag: str) -> bool:
+    if len(ctag) < 1 or len(ctag) > 5:
+        return False
+
+    pattern = re.compile("^([A-Za-z0-9]+)+$")
+    return pattern.match(ctag)
 
 ############################ Conversions
 
