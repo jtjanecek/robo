@@ -18,7 +18,7 @@ class UpdateClanStatsHandler:
 
         if serialized['stats'][172:176] != b'\xff\xff\xff\xff': # update clan when transfer clan leadership
             clan_tag = serialized['stats'][172:176].decode().replace('\x00', '')
-            if not utils.check_ctag_valid(clan_tag):
+            if not utils.check_username_valid(clan_tag):
                 raise Exception('Invalid clan tag!')
 
         stats = utils.bytes_to_hex(serialized['stats'])
