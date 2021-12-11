@@ -1,5 +1,4 @@
 import traceback
-import re
 from collections import deque
 from enums.enums import MediusEnum
 from hashlib import sha512
@@ -90,18 +89,10 @@ def pad_str(s, size) -> str:
     return s.ljust(size,'\0')
 
 def check_username_valid(username: str) -> bool:
-    if len(username) < 3 or len(username) > 15:
-        return False
-
-    pattern = re.compile("^([A-Za-z0-9-_ ]+)+$")
-    return pattern.match(username)
-
-def check_ctag_valid(ctag: str) -> bool:
-    if len(ctag) < 1:
-        return False
-
-    pattern = re.compile("^([A-Za-z0-9]+)+$")
-    return pattern.match(ctag)
+    for c in username:
+        if ord(c) < 21 or ord(c) > 126:
+            return False
+    return True
 
 ############################ Conversions
 
