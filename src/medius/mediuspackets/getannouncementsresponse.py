@@ -19,7 +19,7 @@ class GetAnnouncementsResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.GetAnnouncementsResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'announcement_id': utils.int_to_bytes_little(4, announcement_id)},
             {'announcement': utils.str_to_bytes(announcement, MediusEnum.ANNOUNCEMENT_MAXLEN)},

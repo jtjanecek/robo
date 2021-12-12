@@ -26,7 +26,7 @@ class LadderPosition_ExtraInfoResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.LadderPosition_ExtraInfoResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'ladder_position': utils.int_to_bytes_little(4, ladder_position)},
             {'ladder_stat': utils.int_to_bytes_little(4, ladder_stat)},
             {'account_id': utils.int_to_bytes_little(4, account_id)},

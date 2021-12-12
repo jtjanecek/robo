@@ -23,18 +23,18 @@ class JoinChannelResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.JoinChannelResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'net_connection_type_1': utils.int_to_bytes_little(4, net_connection_type_1)},
             {'net_connection_type_2': utils.int_to_bytes_little(4, net_connection_type_2)},
             {'mls_ip': utils.str_to_bytes(mls_ip, MediusEnum.BASIC_IP)},
             {'mls_port': utils.int_to_bytes_little(2, mls_port)},
-            {'buf': utils.bytes_from_hex("00000000000000000000000000000000000000000000FFFFFFFF")},
+            {'buf': utils.hex_to_bytes("00000000000000000000000000000000000000000000FFFFFFFF")},
             {'world_id': utils.int_to_bytes_little(4, world_id)},
-            {'buf': utils.bytes_from_hex("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")},
+            {'buf': utils.hex_to_bytes("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")},
             {'session_key': session_key},
             {'access_key': access_key},
-            {'buf': utils.bytes_from_hex("0000")}
+            {'buf': utils.hex_to_bytes("0000")}
         ]
         return packet
 

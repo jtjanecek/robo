@@ -20,7 +20,7 @@ class ServerConnectAcceptAuxUdpSerializer:
         packet = [
             {'name': __name__},
             {'rtid': RtIdEnum.SERVER_CONNECT_ACCEPT_AUX_UDP},
-            {'unknown': utils.bytes_from_hex("010810")},
+            {'unknown': utils.hex_to_bytes("010810")},
             {"dme_player_id": utils.int_to_bytes_little(2,dme_player_id)},
             {"player_count": utils.int_to_bytes_little(2,player_count)},
             {'ip_addr': utils.pad_str(ipaddr,16).encode()},

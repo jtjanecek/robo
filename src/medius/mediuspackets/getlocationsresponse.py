@@ -18,7 +18,7 @@ class GetLocationsResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.GetLocationsResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'location_id': utils.int_to_bytes_little(4, location_id)},
             {'location_name': utils.str_to_bytes(location_name, MediusEnum.LOCATIONNAME_MAXLEN)},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},

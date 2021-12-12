@@ -39,7 +39,7 @@ class Patch:
         try:
             # reset hook
             if self.Hook > 0 and self.HookType == "j":
-                packet = ServerMemoryPokeSerializer.build(self.Hook, utils.bytes_from_hex("03E00008"))
+                packet = ServerMemoryPokeSerializer.build(self.Hook, utils.hex_to_bytes("03E00008"))
                 packet = utils.rtpacket_to_bytes(packet)
                 player.send_mls(packet)
 

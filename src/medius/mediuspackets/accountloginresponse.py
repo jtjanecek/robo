@@ -25,7 +25,7 @@ class AccountLoginResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.AccountLoginResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status, signed=True)},
             {'account_id': utils.int_to_bytes_little(4, account_id)},
             {'account_type': utils.int_to_bytes_little(4, account_type)},
@@ -34,14 +34,14 @@ class AccountLoginResponseSerializer:
             {'unknown': utils.int_to_bytes_little(4, 1)},
             {'mls_ip': utils.str_to_bytes(mls_ip, MediusEnum.BASIC_IP)},
             {'mls_port': utils.int_to_bytes_little(2, mls_port)},
-            {'buf': utils.bytes_from_hex("000003000000")},
+            {'buf': utils.hex_to_bytes("000003000000")},
             {'mls_ip': utils.str_to_bytes(nat_ip, MediusEnum.BASIC_IP)},
             {'mls_port': utils.int_to_bytes_little(2, nat_port)},
-            {'buf': utils.bytes_from_hex("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")},
+            {'buf': utils.hex_to_bytes("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")},
             {'session_key': session_key},
-            {'buf': utils.bytes_from_hex("")},
+            {'buf': utils.hex_to_bytes("")},
             {'access_key': access_key},
-            {'buf': utils.bytes_from_hex("0000")}
+            {'buf': utils.hex_to_bytes("0000")}
         ]
         return packet
 

@@ -35,7 +35,7 @@ class JoinGameHandler:
         nat_ip = monolith.get_nat_ip()
         nat_port = monolith.get_nat_port()
 
-        encryption_key = utils.bytes_from_hex(''.join(['00'] * 64))
+        encryption_key = utils.hex_to_bytes(''.join(['00'] * 64))
         session_key = serialized['session_key']
         access_key = client_manager.generate_access_key()
 

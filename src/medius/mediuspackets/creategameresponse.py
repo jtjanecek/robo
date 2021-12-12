@@ -16,7 +16,7 @@ class CreateGameResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.CreateGameResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'new_dme_world_id': utils.int_to_bytes_little(4, new_dme_world_id)}
         ]

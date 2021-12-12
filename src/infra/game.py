@@ -19,7 +19,7 @@ class Game:
         self._dmetcp_aggtime = dmetcp_aggtime
         self._dmeudp_aggtime = dmeudp_aggtime
 
-        self._stats = utils.bytes_from_hex(''.join(['00'] * MediusEnum.GAMESTATS_MAXLEN))
+        self._stats = utils.hex_to_bytes(''.join(['00'] * MediusEnum.GAMESTATS_MAXLEN))
 
         self._created_date = datetime.now().timestamp()
         self._started_date = ''

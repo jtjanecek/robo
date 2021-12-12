@@ -38,7 +38,7 @@ class GameWorldPlayerListHandler:
                 CallbackStatus.SUCCESS,
                 player['account_id'],
                 player['username'],
-                utils.bytes_from_hex(client_manager.get_player_stats(player['account_id'])),
+                utils.hex_to_bytes(client_manager.get_player_stats(player['account_id'])),
                 1, # connection class
                 int(i == (len(players)-1))
             ))

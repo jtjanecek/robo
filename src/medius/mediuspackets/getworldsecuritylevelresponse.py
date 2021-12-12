@@ -18,7 +18,7 @@ class GetWorldSecurityLevelResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.GetWorldSecurityLevelResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'world_id': utils.int_to_bytes_little(4, world_id)},
             {'app_type': utils.int_to_bytes_little(4, app_type)},

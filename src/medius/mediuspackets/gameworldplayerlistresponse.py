@@ -20,7 +20,7 @@ class GameWorldPlayerListResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.GameWorldPlayerListResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'account_id': utils.int_to_bytes_little(4, account_id)},
             {'username': utils.str_to_bytes(username, MediusEnum.ACCOUNTNAME_MAXLEN)},

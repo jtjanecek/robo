@@ -12,10 +12,10 @@ class SessionBeginResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.SessionBeginResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'session_key': session_key},
-            {'buf': utils.bytes_from_hex("000000")}
+            {'buf': utils.hex_to_bytes("000000")}
         ]
         return packet
 
