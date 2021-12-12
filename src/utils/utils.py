@@ -118,6 +118,10 @@ def check_ctag_valid(ctag: bytes):
         return False
 
     for c in ctag_str:
+        if ord(c) > 7 and ord(c) < 15: # Color codes
+            continue
+        if ord(c) > 15 and ord(c) < 27: # Buttons
+            continue
         if ord(c) < 32 or ord(c) > 126 or ord(c) == 96: # Tilda character not on uya keyboard
             return False
     return True
