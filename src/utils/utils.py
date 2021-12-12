@@ -90,7 +90,7 @@ def pad_str(s, size) -> str:
 
 def check_username_valid(username: str) -> bool:
     for c in username:
-        if ord(c) < 21 or ord(c) > 126:
+        if ord(c) < 33 or ord(c) > 126 or ord(c) == 96: # Tilda character not on uya keyboard
             return False
     return True
 
