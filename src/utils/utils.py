@@ -89,8 +89,20 @@ def pad_str(s, size) -> str:
     return s.ljust(size,'\0')
 
 def check_username_valid(username: str) -> bool:
+    # First or last characters are spaces
+    if username[0] == ' ' or username[-1] == ' ':
+        return False
+
+    # Ensure length > 1
+    if len(username) == 1:
+        return False
+
+    # Multiple spaces together aren't supported on UYA keyboard
+    if '  ' in username:
+        return False
+
     for c in username:
-        if ord(c) < 21 or ord(c) > 126:
+        if ord(c) < 32 or ord(c) > 126 or ord(c) == 96: # Tilda character not on uya keyboard
             return False
     return True
 
