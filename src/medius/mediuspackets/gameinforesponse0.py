@@ -29,7 +29,7 @@ class GameInfoResponse0Serializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.GameInfoResponse0},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status, signed=True)},
             {'app_id': utils.int_to_bytes_little(4, app_id)},
             {'min_players': utils.int_to_bytes_little(4, min_players)},

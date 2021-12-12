@@ -23,14 +23,14 @@ class GetMyClansResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.GetMyClansResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'clan_id': utils.int_to_bytes_little(4, clan_id)},
             {'app_id': utils.int_to_bytes_little(4, app_id)},
             {'clan_name': utils.str_to_bytes(clan_name, MediusEnum.CLANNAME_MAXLEN)},
             {'leader_account_id': utils.int_to_bytes_little(4, leader_account_id)},
             {'leader_account_name': utils.str_to_bytes(leader_account_name, MediusEnum.ACCOUNTNAME_MAXLEN)},
-            {'stats': utils.str_to_bytes(stats, MediusEnum.CLANSTATS_MAXLEN) if clan_name == '' else utils.bytes_from_hex(stats)},
+            {'stats': utils.str_to_bytes(stats, MediusEnum.CLANSTATS_MAXLEN) if clan_name == '' else utils.hex_to_bytes(stats)},
             {'clan_status': utils.int_to_bytes_little(4, clan_status)},
             {'end_of_list': utils.int_to_bytes_little(4, end_of_list)}
         ]

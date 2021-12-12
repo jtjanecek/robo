@@ -17,7 +17,7 @@ class PolicyResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.PolicyResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'policy': utils.str_to_bytes(policy, MediusEnum.POLICY_MAXLEN)},
             {'end_of_list': utils.int_to_bytes_little(4, end_of_list)}

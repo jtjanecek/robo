@@ -18,7 +18,7 @@ class ChatFwdMessageSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.ChatFwdMessage},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'source_account_id': utils.int_to_bytes_little(4, source_account_id)},
             {'username': utils.str_to_bytes(username, MediusEnum.USERNAME_MAXLEN)},
             {'message_type': utils.int_to_bytes_little(4, message_type)},

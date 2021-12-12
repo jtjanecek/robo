@@ -16,7 +16,7 @@ class GetBuddyList_ExtraInfoResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.GetBuddyList_ExtraInfoResponse},
             {'message_id': message_id},
-            {'TODO': utils.bytes_from_hex(template)}
+            {'TODO': utils.hex_to_bytes(template)}
         ]
         return packet
 

@@ -27,7 +27,7 @@ class ChannelList_ExtraInfoResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.ChannelList_ExtraInfoResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'world_id': utils.int_to_bytes_little(4, world_id)},
             {'player_count': utils.int_to_bytes_little(2, player_count)},

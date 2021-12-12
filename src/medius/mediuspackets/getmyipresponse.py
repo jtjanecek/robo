@@ -17,7 +17,7 @@ class GetMyIPResponseSerializer:
             {'mediusid': MediusIdEnum.GetMyIPResponse},
             {'message_id': message_id},
             {'ip': utils.str_to_bytes(addr, MediusEnum.IP_MAXLEN)},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)}
         ]
 

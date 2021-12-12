@@ -20,7 +20,7 @@ class ServerConnectNotifySerializer:
             {'rtid': RtIdEnum.SERVER_CONNECT_NOTIFY},
             {"dme_player_id": utils.int_to_bytes_little(2,dme_player_id)},
             {"ip": utils.str_to_bytes(ip, 16)},
-            {"buf": utils.bytes_from_hex("".join(["00"] * 64))}
+            {"buf": utils.hex_to_bytes("".join(["00"] * 64))}
         ]
         return packet
 

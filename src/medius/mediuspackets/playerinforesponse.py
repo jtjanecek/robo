@@ -20,13 +20,13 @@ class PlayerInfoResponseSerializer:
             {'name': __name__},
             {'mediusid': MediusIdEnum.PlayerInfoResponse},
             {'message_id': message_id},
-            {'buf': utils.bytes_from_hex("000000")},
+            {'buf': utils.hex_to_bytes("000000")},
             {'callback_status': utils.int_to_bytes_little(4, callback_status)},
             {'account_name': utils.str_to_bytes(account_name, MediusEnum.ACCOUNTNAME_MAXLEN)},
             {'app_id': utils.int_to_bytes_little(4, app_id)},
             {'player_status': utils.int_to_bytes_little(4, player_status)},
             {'connection_class': utils.int_to_bytes_little(4, connection_class)},
-            {'stats': utils.bytes_from_hex(stats)}
+            {'stats': utils.hex_to_bytes(stats)}
         ]
         return packet
 
