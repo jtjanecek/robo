@@ -106,6 +106,26 @@ def check_username_valid(username: str) -> bool:
             return False
     return True
 
+def check_ctag_valid(ctag: bytes):
+    ctag_str = bytes_to_str(ctag)
+
+    # First or last characters are spaces
+    if ctag_str[0] == ' ' or ctag_str[-1] == ' ':
+        return False
+
+    # Multiple spaces together aren't supported on UYA keyboard
+    if '  ' in ctag_str:
+        return False
+
+    for c in ctag_str:
+        if ord(c) > 7 and ord(c) < 15: # Color codes
+            continue
+        if ord(c) > 15 and ord(c) < 27: # Buttons
+            continue
+        if ord(c) < 32 or ord(c) > 126 or ord(c) == 96: # Tilda character not on uya keyboard
+            return False
+    return True
+
 ############################ Conversions
 
 def sha512_encrypt(data):
@@ -147,3 +167,4 @@ def str_to_bytes(data: str, length: int) -> bytes:
     while (len(str_bytes) != length):
         str_bytes += '\0'
     return str_bytes.encode()
+
