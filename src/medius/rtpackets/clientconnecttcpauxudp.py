@@ -3,6 +3,10 @@ from utils import utils
 from medius.rtpackets.serverconnectaccepttcp import ServerConnectAcceptTcpSerializer
 from medius.rtpackets.serverinfoauxudp import ServerInfoAuxUdpSerializer
 
+import logging
+logger = logging.getLogger('robo.ClientConnectTcpAuxUdpHandler')
+
+
 class ClientConnectTcpAuxUdpSerializer:
     data_dict = [
         {'name': 'rtid', 'n_bytes': 1, 'cast': None},
@@ -26,11 +30,11 @@ class ClientConnectTcpAuxUdpHandler:
         
         # Check access key
         if not client_manager.validate_access_key(serialized['access_key']):
-                raise Exception("Invalid access key")
+            raise Exception("Invalid access key")
 
         if client_manager.dmetcp_connected(con, serialized['session_key'], serialized['target_world_id']) == False:
             # No valid player found
-            return []
+            raise Exception('Invalid session key')
 
         account_id = client_manager.get_account_id(session_key=serialized['session_key'])
         player = client_manager.get_player(account_id)
