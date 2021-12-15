@@ -8,6 +8,14 @@ import json
 from logging import handlers
 from datetime import datetime
 
+
+from api.parser import weaponParser
+from api.parser import advancedRulesParser
+from api.parser import mapParser
+from api.parser import timeParser
+from api.parser import gamerulesParser
+
+
 class Api():
     def __init__(self, monolith, ip: str, port: int, sync_rate: int, log_max_mb, log_backup_count, log_location):
         self._logger = logging.getLogger(f"robo.api")
@@ -39,6 +47,16 @@ class Api():
 
             # Sync game list
             games = self._monolith.api_req_games()
+            for game in games:
+                game['weapons'] = weaponParser(game['player_skill_level'])
+                game['advanced_rules'] = advancedRulesParser(game['generic_field_3'])
+                game['map'] = mapParser(game['generic_field_3'])
+                game['game_length'] = timeParser(game['generic_field_3'])
+                game_mode, submode = gamerulesParser(game['generic_field_3'])
+                game['game_mode'] = game_mode
+                game['submode'] = submode
+
+
             self._games = json.dumps(games)
 
             # Sync chat
