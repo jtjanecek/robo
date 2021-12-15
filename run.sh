@@ -1,4 +1,5 @@
 docker run -it \
+    --rm \
     --log-opt max-size=50m \
     -p 10075:10075/tcp \
     -p 10078:10078/tcp \
@@ -7,4 +8,5 @@ docker run -it \
     -p 10070:10070/udp \
     -p 8281:8281/tcp \
     -v $PWD/logs:/logs \
+    --name robo \
     robo
