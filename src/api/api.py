@@ -56,6 +56,15 @@ class Api():
                 game['game_mode'] = game_mode
                 game['submode'] = submode
 
+                binary = bin(game['generic_field_3'])[2:]
+                length = len(binary)
+                leftover = 32 - length
+                binary_full = leftover*'0' + binary
+                if game_mode == 'CTF':
+                    game['cap_limit'] = int(binary_full[5:9],2)
+                elif game_mode == 'Deathmatch':
+                    game['frag'] = int(binary_full[10:13],2)*5
+
 
             self._games = json.dumps(games)
 
