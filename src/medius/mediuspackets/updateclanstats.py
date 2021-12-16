@@ -16,10 +16,9 @@ class UpdateClanStatsHandler:
     def process(self, serialized, monolith, con):
 
 
-#         if serialized['stats'][172:176] not in (b'\xff\xff\xff\xff', b'\x00\x00\x00\x00') : # update clan when transfer clan leadership
-#             clan_tag = serialized['stats'][172:176]
-#             if not utils.check_ctag_valid(clan_tag):
-#                 raise Exception('Invalid clan tag!')
+        clan_tag = serialized['stats'][172:176]
+		if not utils.check_ctag_valid(clan_tag):
+			raise Exception('Invalid clan tag!') # This will disconnect player
 
         stats = utils.bytes_to_hex(serialized['stats'])
         monolith.get_client_manager().update_clan_stats(serialized['clan_id'], stats)

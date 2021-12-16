@@ -88,6 +88,26 @@ def format_rt_message(rtid, *args) -> bytes:
 def pad_str(s, size) -> str:
     return s.ljust(size,'\0')
 
+def check_ctag_valid(byte_data: bytes):
+    if byte_data in (b'\x00\x00\x00\x00', b'\xFF\xFF\xFF\xFF'):
+        return True
+    if byte_data[0] == b'\x00':
+        return False
+
+    nums = list(byte_data)
+    while nums[-1] == 0:
+        nums.pop()
+
+    if nums[-1] == 32: # Box glitch when last character is a space
+        return False
+      
+    for num in nums:
+        if not (
+            ((num > 8 and num < 15) or # Colors 
+            (num > 32 and num < 126)) and num != 96): # Tilda character not on uya keyboard
+            return False
+    return True
+
 def check_username_valid(username: str) -> bool:
     # First or last characters are spaces
     if username[0] == ' ' or username[-1] == ' ':
