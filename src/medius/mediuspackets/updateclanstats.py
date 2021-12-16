@@ -15,10 +15,9 @@ class UpdateClanStatsSerializer:
 class UpdateClanStatsHandler:
     def process(self, serialized, monolith, con):
 
-
         clan_tag = serialized['stats'][172:176]
-		if not utils.check_ctag_valid(clan_tag):
-			raise Exception('Invalid clan tag!') # This will disconnect player
+        if not utils.check_ctag_valid(clan_tag):
+            raise Exception('Invalid clan tag!') # This will disconnect player
 
         stats = utils.bytes_to_hex(serialized['stats'])
         monolith.get_client_manager().update_clan_stats(serialized['clan_id'], stats)

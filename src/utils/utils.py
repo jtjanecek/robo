@@ -103,8 +103,8 @@ def check_ctag_valid(byte_data: bytes):
       
     for num in nums:
         if not (
-            ((num > 8 and num < 15) or # Colors 
-            (num > 32 and num < 126)) and num != 96): # Tilda character not on uya keyboard
+            ((num >= 9 and num <= 14) or # Colors 
+            (num >= 32 and num <= 125)) and num != 96): # Tilda character not on uya keyboard
             return False
     return True
 
@@ -122,26 +122,6 @@ def check_username_valid(username: str) -> bool:
         return False
 
     for c in username:
-        if ord(c) < 32 or ord(c) > 126 or ord(c) == 96: # Tilda character not on uya keyboard
-            return False
-    return True
-
-def check_ctag_valid(ctag: bytes):
-    ctag_str = bytes_to_str(ctag)
-
-    # First or last characters are spaces
-    if ctag_str[0] == ' ' or ctag_str[-1] == ' ':
-        return False
-
-    # Multiple spaces together aren't supported on UYA keyboard
-    if '  ' in ctag_str:
-        return False
-
-    for c in ctag_str:
-        if ord(c) > 7 and ord(c) < 15: # Color codes
-            continue
-        if ord(c) > 15 and ord(c) < 27: # Buttons
-            continue
         if ord(c) < 32 or ord(c) > 126 or ord(c) == 96: # Tilda character not on uya keyboard
             return False
     return True
