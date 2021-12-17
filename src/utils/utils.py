@@ -100,6 +100,13 @@ def check_ctag_valid(byte_data: bytes):
 
     if nums[-1] == 32: # Box glitch when last character is a space
         return False
+
+    # Check if two spaces in a row exist
+    num_set = set()
+    for i in range(len(nums)-1):
+        num_set.add((nums[i],nums[i+1]))
+    if ((32,32)) in num_set: # two spaces are next to each other
+        return False
       
     for num in nums:
         if not (
