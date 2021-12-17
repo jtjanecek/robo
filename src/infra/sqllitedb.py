@@ -66,12 +66,20 @@ class SqlLiteDb():
                                 );
                                 """
 
+        sql_create_buddies = """CREATE TABLE IF NOT EXISTS buddies (
+                                    id integer PRIMARY KEY,
+                                    account_id integer NOT NULL,
+                                    buddy_id integer NOT NULL
+                                );
+                                """
+
         c = self.conn.cursor()
         if mode != 'ro':
             c.execute(sql_create_user_tables)
             c.execute(sql_create_clans_table)
             c.execute(sql_create_clan_users_table)
             c.execute(sql_create_clan_invites)
+            c.execute(sql_create_buddies)
 
         sql = "CREATE UNIQUE INDEX IF NOT EXISTS sym_dt_idx ON users (account_id, session_key);"
         c.execute(sql)
@@ -572,3 +580,41 @@ class SqlLiteDb():
         vals = c.execute(select, [clan_invitation_id]).fetchone()
         self.conn.commit()
         c.close()
+
+    #===================== BUDDIES ==========================
+    def get_buddies(self, account_id: int):
+        c = self.conn.cursor()
+        select = """SELECT buddy_id
+                    FROM buddies WHERE account_id = ?;
+                """
+        vals = c.execute(select, [account_id]).fetchall()
+        c.close()
+        buddy_ids = [val[0] for val in vals]
+        return buddy_ids
+
+    def add_buddy(self, account_id: int, buddy_id: int):
+        # First check if this buddy already exists
+        current_buddies = set(self.get_buddies(account_id))
+        if buddy_id in current_buddies:
+            return
+
+        # Not currently a buddy!
+        c = self.conn.cursor()
+        insert_command = """INSERT INTO buddies
+                            (account_id, buddy_id)
+                            values(?,?);
+                            """
+        c.execute(insert_command, [account_id, buddy_id])
+        self.conn.commit()
+        c.close()
+
+    def remove_buddy(self, account_id, buddy_id):
+        c = self.conn.cursor()
+        select = """DELETE
+                    FROM buddies WHERE account_id = ? and buddy_id = ?;
+                """
+        vals = c.execute(select, [account_id, buddy_id]).fetchone()
+        self.conn.commit()
+        c.close()
+
+
