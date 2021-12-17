@@ -9,14 +9,32 @@ class GetBuddyList_ExtraInfoResponseSerializer:
 
     @classmethod
     def build(self,
-            message_id: bytes,
-            template: str
-            ):
+              message_id,
+              callback_status,
+              account_id,
+              username,
+              player_status,
+              world_id,
+              dme_world_id,
+              lobby_name,
+              game_name,
+              end_of_list
+
+              ):
         packet = [
             {'name': __name__},
             {'mediusid': MediusIdEnum.GetBuddyList_ExtraInfoResponse},
             {'message_id': message_id},
-            {'TODO': utils.hex_to_bytes(template)}
+            {'buf': utils.hex_to_bytes("000000")},
+            {'callback_status': utils.int_to_bytes_little(4, callback_status)},
+            {'account_id': utils.int_to_bytes_little(4, account_id)},
+            {'username': utils.str_to_bytes(username, MediusEnum.ACCOUNTNAME_MAXLEN)},
+            {'player_status': utils.int_to_bytes_little(4, player_status)},
+            {'world_id': utils.int_to_bytes_little(4, world_id)},
+            {'dme_world_id': utils.int_to_bytes_little(4, dme_world_id)},
+            {'lobby_name': utils.str_to_bytes(lobby_name, MediusEnum.LOBBYNAME_MAXLEN)},
+            {'game_name': game_name},
+            {'end_of_list': utils.int_to_bytes_little(4, end_of_list)}
         ]
         return packet
 

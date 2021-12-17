@@ -265,6 +265,15 @@ class ClientManager:
     def transfer_clan_ownership(self, clan_id: int, new_account_id: int, new_account_name: str):
         return self._db.transfer_clan_ownership(clan_id, new_account_id, new_account_name)
 
+    def add_buddy(self, account_id: int, buddy_id: int):
+        return self._db.add_buddy(account_id, buddy_id)
+
+    def get_buddies(self, account_id: int):
+        return self._db.get_buddies(account_id)
+
+    def remove_buddy(self, account_id, buddy_id):
+        return self._db.remove_buddy(account_id, buddy_id)
+
     # =============== Misc ===============
 
     def api_req_players(self) -> list:
