@@ -15,6 +15,11 @@ Bug fixes:
 - Remove button symbols in clan tags
 	- Reason: Button symbols do not scale with distance, so when players see others with this tag from far away, the clan tag will block a significant view of the map
 
+## Documentation
+![Features and extras!](https://github.com/jtjanecek/robo/docs/features.md)
+![Running Robo on Windows](https://github.com/jtjanecek/robo/docs/windows.md)
+![Running Robo on Linux (recommended)](https://github.com/jtjanecek/robo/docs/linux.md)
+
 ## Code adapted and inspired by:
 https://github.com/hashsploit/clank    
 https://github.com/Dnawrkshp/deadlocked-server/
