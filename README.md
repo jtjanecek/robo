@@ -5,7 +5,7 @@
 A simple python medius implementation made specifically for Ratchet and Clank: Up Your Arsenal
 
 # Philosophy
-This server is meant to allow users as much freedom as possible while removing bugs and actively affect gameplay. This means that bug will only be fixed if it impacts a users experience in-game.
+This server is meant to allow users as much freedom as possible while removing bugs that **actively affect gameplay**. This means that bug will only be fixed **if it impacts a users experience in-game**.
 
 Bug fixes:
 - Remove colors and button symbols in account names
