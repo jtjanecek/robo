@@ -1,4 +1,4 @@
-from enums.enums import MediusEnum, CallbackStatus
+from enums.enums import MediusEnum, CallbackStatus, COLOR_MAP_1, CLANTAG_ALLOWED_CHARACTERS
 from utils import utils
 from medius.mediuspackets.updateclanstatsresponse import UpdateClanStatsResponseSerializer
 
@@ -22,18 +22,20 @@ class UpdateClanStatsHandler:
         if not ctag_valid:
             raise Exception(f'Invalid clan tag [{reason}]: {clan_tag}') # This will disconnect player
 
-        # if clan_tag not in ():
-        #     client_manager = monolith.get_client_manager()
-        #     clan_message = client_manager.get_clan_message(serialized['clan_id'])
+        client_manager = monolith.get_client_manager()
+        clan_message = client_manager.get_clan_message(serialized['clan_id'])
 
-            # if clan_message == 'Colors 1':
-            #     clan_tag = bytearray(clan_tag)
-            #     # Replace all instances of colors with the mapping
-            #     for key, value in color_map_1.items():
-            #         clan_tag = clan_tag.replace(key, value)
-            #     clan_stats = bytearray(clan_stats)
-            #     clan_stats[172:176] = clan_tag
-            #     logger.info(f"Clan stats after replacement: {clan_stats}")
+        if clan_message == 'Colors 1':
+
+            clan_tag = [clan_tag[i:i+4] for i in range(0,len(clan_tag),4)]
+            for i in range(len(clan_tag)):
+                character = CLANTAG_ALLOWED_CHARACTERS[clan_tag[i]]
+                if character in COLOR_MAP_1.keys():
+                    clan_tag[i] = COLOR_MAP_1[character]
+            clan_tag = ''.join(clan_tag)
+            clan_tag = utils.hex_to_bytes(clan_tag)
+            clan_stats = bytearray(clan_stats)
+            clan_stats[16:24] = clan_tag
 
         clan_stats = bytes(clan_stats)
         stats = utils.bytes_to_hex(clan_stats)
