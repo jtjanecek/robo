@@ -1,6 +1,6 @@
 import traceback
 from collections import deque
-from enums.enums import MediusEnum
+from enums.enums import MediusEnum, CLANTAG_ALLOWED_CHARACTERS
 from hashlib import sha512
 
 def rtpacket_to_bytes(packet: list):
@@ -88,32 +88,32 @@ def format_rt_message(rtid, *args) -> bytes:
 def pad_str(s, size) -> str:
     return s.ljust(size,'\0')
 
-def check_ctag_valid(byte_data: bytes):
-    if byte_data in (b'\x00\x00\x00\x00', b'\xFF\xFF\xFF\xFF'):
-        return True
-    if byte_data[0] == b'\x00':
-        return False
+def check_ctag_valid(byte_data: str):
+    split = [byte_data[i:i+4] for i in range(0,len(byte_data),4)]
 
-    nums = list(byte_data)
-    while nums[-1] == 0:
-        nums.pop()
+    # First strip all the empties
+    while len(split) > 0 and split[0] == '3030':
+        split.pop(0)
 
-    if nums[-1] == 32: # Box glitch when last character is a space
-        return False
+    if len(split) == 0:
+        return True, ''
 
-    # Check if two spaces in a row exist
+    split = list(reversed(split))
+    if split[0] == '3230': # space is first ctag letter
+        return False, f'First character is a space!'
+    if split[-1] == '3230': # space is last character
+        return False, f'Last character is a space!'
+
     num_set = set()
-    for i in range(len(nums)-1):
-        num_set.add((nums[i],nums[i+1]))
-    if ((32,32)) in num_set: # two spaces are next to each other
-        return False
-      
-    for num in nums:
-        if not (
-            ((num >= 9 and num <= 14) or # Colors 
-            (num >= 32 and num <= 125)) and num != 96): # Tilda character not on uya keyboard
-            return False
-    return True
+    for i in range(len(split)-1):
+        num_set.add((split[i],split[i+1]))
+    if (('3230','3230')) in num_set: # two spaces are next to each other
+        return False, f'Two spaces found together!!'
+
+    for character in split:
+        if character not in CLANTAG_ALLOWED_CHARACTERS.keys():
+            return False, f'{character} not found in mapping!'
+    return True, ''
 
 def check_username_valid(username: str) -> bool:
     # First or last characters are spaces
