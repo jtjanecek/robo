@@ -27,7 +27,7 @@ The clan tag:
 
 will translate to:
 
-[img]
+![clan_tag_example](https://github.com/jtjanecek/robo/blob/master/docs/assets/example_clan_colors.jpg)
 
 ### Clan Color Mappings:
 Clan message: `Colors 1`:
