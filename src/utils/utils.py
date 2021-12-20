@@ -115,27 +115,6 @@ def check_ctag_valid(byte_data: str):
             return False, f'{character} not found in mapping!'
     return True, ''
 
-    # nums = list(byte_data)
-    # while nums[-1] == 0:
-    #     nums.pop()
-    #
-    # if nums[-1] == 32: # Box glitch when last character is a space
-    #     return False
-    #
-    # # Check if two spaces in a row exist
-    # num_set = set()
-    # for i in range(len(nums)-1):
-    #     num_set.add((nums[i],nums[i+1]))
-    # if ((32,32)) in num_set: # two spaces are next to each other
-    #     return False
-    #
-    # for num in nums:
-    #     if not (
-    #         ((num >= 9 and num <= 14) or # Colors
-    #         (num >= 32 and num <= 125)) and num != 96): # Tilda character not on uya keyboard
-    #         return False
-    # return True
-
 def check_username_valid(username: str) -> bool:
     # First or last characters are spaces
     if username[0] == ' ' or username[-1] == ' ':
