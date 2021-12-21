@@ -23,25 +23,25 @@ class Symbols:
 
 
 class Symbols_Unicode:
-    # DEFAULT =
+    DEFAULT = '3038'
     BLUE = '3039'
-    # GREEN =
-    # PINK =
-    # WHITE =
-    # GRAY =
-    # BLACK =
+    GREEN = '3041'
+    PINK = '3042'
+    WHITE = '3043'
+    GRAY = '3044'
+    BLACK = '3045'
 
     SELECT_BUTTON = '3141'
     CROSS = '3130'
 
 COLOR_MAP_1 = {
-    # '1': Symbols_Unicode.DEFAULT,
+    '1': Symbols_Unicode.DEFAULT,
     '2': Symbols_Unicode.BLUE,
-    # '3': Symbols_Unicode.GREEN,
-    # '4': Symbols_Unicode.PINK,
-    # '5': Symbols_Unicode.WHITE,
-    # '6': Symbols_Unicode.GRAY,
-    # '7': Symbols_Unicode.BLACK
+    '3': Symbols_Unicode.GREEN,
+    '4': Symbols_Unicode.PINK,
+    '5': Symbols_Unicode.WHITE,
+    '6': Symbols_Unicode.GRAY,
+    '7': Symbols_Unicode.BLACK
 }
 CLANTAG_ALLOWED_CHARACTERS = {
     '3631': 'A', '3632': 'B', '3633': 'C', '3634': 'D',
@@ -72,11 +72,11 @@ CLANTAG_ALLOWED_CHARACTERS = {
     '3030': 'empty',
     # Symbols_Unicode.DEFAULT: 'default color',
     Symbols_Unicode.BLUE: 'blue',
-    # Symbols_Unicode.GREEN: 'green',
-    # Symbols_Unicode.PINK: 'pink',
-    # Symbols_Unicode.WHITE: 'white',
-    # Symbols_Unicode.GRAY: 'gray',
-    # Symbols_Unicode.BLACK: 'black',
+    Symbols_Unicode.GREEN: 'green',
+    Symbols_Unicode.PINK: 'pink',
+    Symbols_Unicode.WHITE: 'white',
+    Symbols_Unicode.GRAY: 'gray',
+    Symbols_Unicode.BLACK: 'black',
 }
 
 
