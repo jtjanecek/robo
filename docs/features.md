@@ -9,7 +9,7 @@ Current API endpoints:
 - `/chat`
 
 ## Colored Clan Tags
-You are able to customize colors in your clan tags without the need for cheats or hacks. I have built a way to do this only through the custom UI. Listed below are the steps to add colors to your clan tags:
+You are able to customize colors in your clan tags without the need for cheats or hacks. I have built a way to do this  through the standard menus. Listed below are the steps to add colors to your clan tags:
 
 1. Set your clan message to the exact text `Colors 1`
 2. Set your clan tag using the mapping below to set your clan tag
