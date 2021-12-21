@@ -17,8 +17,13 @@ You are able to customize colors in your clan tags without the need for cheats o
 4. You should see your custom colored clan tag
 5. Set your clan message to whatever else you'd like
 
-Example:
+### Clan Color Mappings:
+Clan message: `Colors 1`:
+```
+2 -> Blue
+```
 
+### Example
 With clan tag set to `Colors 1`:
 
 The clan tag:
@@ -28,9 +33,3 @@ The clan tag:
 will translate to:
 
 ![clan_tag_example](https://github.com/jtjanecek/robo/blob/master/docs/assets/example_clan_colors.jpg)
-
-### Clan Color Mappings:
-Clan message: `Colors 1`:
-```
-2 -> Blue
-```
