@@ -20,7 +20,13 @@ You are able to customize colors in your clan tags without the need for cheats o
 ### Clan Color Mappings:
 Clan message: `Colors 1`:
 ```
+1 -> Default color
 2 -> Blue
+3 -> Green
+4 -> Pink
+5 -> White
+6 -> Gray
+7 -> Black
 ```
 
 ### Example
