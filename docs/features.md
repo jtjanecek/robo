@@ -30,7 +30,7 @@ Clan message: `Colors 1`:
 ```
 
 ### Example
-With clan tag set to `Colors 1`:
+With clan message set to `Colors 1`:
 
 The clan tag:
 
