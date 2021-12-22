@@ -84,7 +84,7 @@ class Robo():
     async def backup_db(self):
         while True:
             self._monolith.backup_db()
-            await asyncio.sleep(60 * 1) # every minute
+            await asyncio.sleep(60 * 30) # every 30 minutes
 
 if __name__ == '__main__':
     import argparse
