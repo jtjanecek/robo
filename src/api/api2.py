@@ -7,6 +7,10 @@ from time import sleep
 import json
 from logging import handlers
 from datetime import datetime
+import sqlite3
+
+import os.path
+
 
 from api.parser import weaponParser
 from api.parser import advancedRulesParser
@@ -24,10 +28,40 @@ class Api2():
         filehandler.setFormatter(formatter)
         self._logger.addHandler(filehandler)
 
+        self._db_loc = db_loc
+        self._db = db
         self._ip = ip
         self._port = port
 
         asyncio.run(self.main())
+
+    def check_alts(self, username):
+        c = self.conn.cursor()
+        select = """SELECT hash
+                    FROM alts WHERE username = ?;
+                """
+        vals = c.execute(select, [username]).fetchall()
+        c.close()
+        if not vals: # This already exists in the db
+            return '[]'
+        self._logger.info(vals)
+        # Otherwise, we found some hashes. So let's find all usernames with this hash
+        hashes = [f"'{val[0]}'" for val in vals]
+        hashes = ', '.join(hashes)
+
+        self._logger.info(f"Found hashes for username {username}: {hashes}")
+
+        c = self.conn.cursor()
+        select = f"""SELECT username
+                    FROM alts WHERE hash in ({hashes});
+                """
+        self._logger.info(f"Executing: {select}")
+        vals = c.execute(select).fetchall()
+        self._logger.info(vals)
+        c.close()
+
+        vals = [val[0] for val in vals]
+        return str(list(set(vals)))
 
     async def players(self, request):
         self._logger.debug("Players request!")
@@ -35,9 +69,9 @@ class Api2():
         if name == 'Anonymous':
             return web.Response(text=f'You need a player name!')
 
-        
+        usernames = self.check_alts(name)
 
-        return web.Response(text=f'players {name}')
+        return web.Response(text=usernames)
 
     async def clans(self, request):
         self._logger.debug("Clans request!")
@@ -53,6 +87,16 @@ class Api2():
 
     async def main(self):
         # add stuff to the loop, e.g. using asyncio.create_task()
+
+        db_file = os.path.join(self._db_loc, self._db)
+        db_file = "file:" + db_file + "?mode=ro"
+
+        while not os.path.isfile(os.path.join(self._db_loc, self._db)):
+            self._logger.info(f"No backup db found! Waiting for creation ({os.path.join(self._db_loc, self._db)}) ...")
+            sleep(10)
+
+        self._logger.info("Connecting to backup db ...")
+        self.conn = sqlite3.connect(db_file, uri=True)
 
         app = web.Application()
         app.router.add_get('/players/{name}', self.players)

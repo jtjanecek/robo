@@ -13,7 +13,7 @@ logger = logging.getLogger("robo.clientmanager")
 
 class ClientManager:
     def __init__(self, config):
-        self._db = SqlLiteDb(db_loc=config['log_location'])
+        self._db = SqlLiteDb(db_loc=config['log_location'], salt=config['bcrypt_salt'])
 
         # Used in Mas only
         self._new_session_keys = set()
@@ -320,7 +320,7 @@ class ClientManager:
             self._new_session_keys.add(new_session_key)
         return new_session_key
 
-    def account_login(self, username: str, password: str, session_key: bytes):
+    def account_login(self, username: str, password: str, session_key: bytes, ip: str):
         username_valid = utils.check_username_valid(username)
         if username_valid == False:
             return False
@@ -331,6 +331,9 @@ class ClientManager:
                 self._new_session_keys.remove(session_key)
 
         login_success = self._db.check_login(username, password, session_key)
+
+        if login_success:
+            self._db.register_ip(username, ip)
         return login_success
 
     def __str__(self):

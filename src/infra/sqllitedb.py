@@ -3,16 +3,18 @@ from sqlite3 import Error
 import logging
 import os
 from hashlib import sha512
-
 from datetime import datetime
 from datetime import timedelta
 import time
 import pandas as pd
+
+import bcrypt
+
 from utils import utils
 logger = logging.getLogger('robo.sqllitedb')
 
 class SqlLiteDb():
-    def __init__(self, mode='rwc', db='database.db', db_loc=None):
+    def __init__(self, mode='rwc', db='database.db', db_loc=None, salt='$2b$12$KpQgsoVLTDt3MR/tVYUzZe'):
 
         if db_loc == None:
             db_loc = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +25,8 @@ class SqlLiteDb():
         logger.info("Using DB: {}".format(db_file))
         self._db_loc = db_loc
         self._db = db
+
+        self._salt = salt
 
         # This will raise an error if it can't connect
         self.conn = sqlite3.connect(db_file, uri=True, check_same_thread=False)
@@ -75,6 +79,12 @@ class SqlLiteDb():
                                 );
                                 """
 
+        sql_create_alts = """CREATE TABLE IF NOT EXISTS alts (
+                                    id integer PRIMARY KEY,
+                                    username text NOT NULL,
+                                    hash text NOT NULL
+                                );
+                                """
         c = self.conn.cursor()
         if mode != 'ro':
             c.execute(sql_create_user_tables)
@@ -82,9 +92,13 @@ class SqlLiteDb():
             c.execute(sql_create_clan_users_table)
             c.execute(sql_create_clan_invites)
             c.execute(sql_create_buddies)
+            c.execute(sql_create_alts)
+
 
         sql = "CREATE UNIQUE INDEX IF NOT EXISTS sym_dt_idx ON users (account_id, session_key);"
         c.execute(sql)
+
+
 
         self.conn.commit()
         c.close()
@@ -105,6 +119,27 @@ class SqlLiteDb():
         cmd = f'''sqlite3 {os.path.join(self._db_loc, self._db)} ".backup '{db_file}'"'''
         logger.info(f"Backing up db: '{cmd}'...")
         os.system(cmd)
+
+    def register_ip(self, username, ip):
+        c = self.conn.cursor()
+        select = """SELECT username
+                    FROM alts WHERE username = ? and hash = ?;
+                """
+        hash = bcrypt.hashpw(ip.encode(), self._salt.encode()).decode()
+        vals = c.execute(select, [username, hash]).fetchone()
+        c.close()
+        if vals: # This already exists in the db
+            return
+        # Insert new row
+        c = self.conn.cursor()
+        insert_command = """INSERT INTO alts
+                            (username, hash)
+                            values(?,?);
+                            """
+        hash = bcrypt.hashpw(ip.encode(), self._salt.encode()).decode()
+        c.execute(insert_command, [username, hash])
+        self.conn.commit()
+        c.close()
 
     def check_login(self, username: str, password: str, session_key: bytes) -> bool:
         account_id = self.get_account_id(username=username)
