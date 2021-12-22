@@ -24,9 +24,6 @@ class TCPServer:
         self._name = name
         self._ip = ip
         self._port = port
-        self._thread = threading.Thread(target = self.start)
-        self._thread.setDaemon(True)
-        self._thread.start()
 
 
     async def handle_incoming(self, reader, writer):
@@ -70,15 +67,13 @@ class TCPServer:
             except Exception as e:
                 self._logger.exception(f"Exception on connection: {connection}")
                 
-    async def looper(self):
+    async def start(self):
         server = await asyncio.start_server(
         self.handle_incoming, self._ip, self._port)
     
         addr = server.sockets[0].getsockname()
         self._logger.info(f'Serving on {addr} ...')
 
-        async with server:    
+        async with server:
             await server.serve_forever()
 
-    def start(self):
-        asyncio.run(self.looper())

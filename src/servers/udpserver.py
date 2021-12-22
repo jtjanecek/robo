@@ -14,7 +14,7 @@ class UDPServer:
     def __init__(self, monolith, name, ip, port, log_maxb_mb, log_backup_count, log_location):
 
         self._logger = logging.getLogger(f"robo.{name}")
-        formatter = logging.Formatter('%(asctime)s %(name)s | %(threadName)s | %(levelname)s | %(message)s')
+        formatter = logging.Formatter('%(asctime)s %(name)s | %(levelname)s | %(message)s')
         filehandler = handlers.RotatingFileHandler(os.path.join(log_location,f'{name}.log'), mode='w', maxBytes=log_maxb_mb*1000000, backupCount=log_backup_count)
         filehandler.setLevel(logging.DEBUG)
         filehandler.setFormatter(formatter)
@@ -24,9 +24,6 @@ class UDPServer:
         self._name = name
         self._ip = ip
         self._port = port
-        self._thread = threading.Thread(target = self.start)
-        self._thread.setDaemon(True)
-        self._thread.start()
 
     def connection_made(self, transport):
         self.transport = transport
@@ -48,10 +45,7 @@ class UDPServer:
         except Exception as e:
             self._logger.exception(f"Exception on connection: {connection}")
 
-    def start(self):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        task = loop.create_datagram_endpoint(lambda: self, local_addr=(self._ip, self._port))
+    async def start(self):
         self._logger.info(f'Serving on {(self._ip, self._port)} ...')
-        loop.run_until_complete(task) # Server starts listening
-        loop.run_forever()
+        await asyncio.get_event_loop().create_datagram_endpoint(lambda: self, local_addr=(self._ip, self._port))
+

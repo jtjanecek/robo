@@ -36,7 +36,8 @@ class Robo():
         self._monolith = Monolith(config)
 
         self._pcap = RoboPacketSniffer(config)    
-        
+
+        self._loop = asyncio.get_event_loop()
         self._mas = TCPServer(self._monolith, 'mas', config['bind_ip'], config['mas']['port'], config['mas']['log_max_mb'], config['mas']['log_backup_count'], config['log_location'])
         self._mls = TCPServer(self._monolith, 'mls', config['bind_ip'], config['mls']['port'], config['mls']['log_max_mb'], config['mls']['log_backup_count'], config['log_location'])
         self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['bind_ip'], config['dmetcp']['port'], config['dmetcp']['log_max_mb'], config['dmetcp']['log_backup_count'], config['log_location'])
@@ -44,7 +45,17 @@ class Robo():
         self._nat = UDPServer(self._monolith, 'nat', config['bind_ip'], config['nat']['port'], config['nat']['log_max_mb'], config['nat']['log_backup_count'], config['log_location'])
         self._api = Api(self._monolith, config['bind_ip'], config['api']['port'], config['api']['sync_rate'], config['api']['log_max_mb'], config['api']['log_backup_count'], config['log_location'])
 
-        self.start()
+        # Start the servers
+        self._loop.create_task(self._mas.start())
+        self._loop.create_task(self._mls.start())
+        self._loop.create_task(self._dmetcp.start())
+        self._loop.create_task(self._dmeudp.start())
+        self._loop.create_task(self._nat.start())
+
+        # Misc functions
+        self._loop.create_task(self.clear_zombie_games())
+
+        self._loop.run_forever()
 
     def read_config(self, config_file: str) -> dict:
         with open(config_file, 'r') as f:
@@ -60,16 +71,6 @@ class Robo():
         while True:
             self._monolith.clear_zombie_games()
             await asyncio.sleep(120)
-
-    async def misc_functions(self):
-        # Add monolith sync to event loop
-        asyncio.create_task(self.clear_zombie_games())
-    
-            # wait forever
-        await asyncio.Event().wait()
-
-    def start(self):
-        asyncio.run(self.misc_functions())
 
 if __name__ == '__main__':
     import argparse
