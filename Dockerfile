@@ -1,7 +1,7 @@
 FROM python:3.9-slim-buster as build-image
 
 RUN apt-get update
-RUN apt-get install tcpdump -y
+RUN apt-get install tcpdump sqlite3 -y
 
 ARG FUNCTION_DIR=/code
 RUN mkdir -p ${FUNCTION_DIR}

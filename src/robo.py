@@ -5,6 +5,7 @@ import argparse
 
 from pcap.robopacketsniffer import RoboPacketSniffer
 from api.api import Api
+from api.api2 import Api2
 from servers.tcpserver import TCPServer
 from servers.udpserver import UDPServer
 from infra.monolith import Monolith
@@ -14,7 +15,7 @@ import logging
 import asyncio
 from logging import handlers
 
-
+from multiprocessing import Process, Value, Array
 
 
 class Robo():
@@ -45,6 +46,14 @@ class Robo():
         self._nat = UDPServer(self._monolith, 'nat', config['bind_ip'], config['nat']['port'], config['nat']['log_max_mb'], config['nat']['log_backup_count'], config['log_location'])
         self._api = Api(self._monolith, config['bind_ip'], config['api']['port'], config['api']['sync_rate'], config['api']['log_max_mb'], config['api']['log_backup_count'], config['log_location'])
 
+        p = Process(target=Api2, args=(
+            config['log_location'], "database.db.backup",
+            config['bind_ip'], config['api2']['port'],
+            config['api2']['log_max_mb'], config['api2']['log_backup_count'],
+            config['log_location']
+        ), daemon=True)
+        p.start()
+
         # Start the servers
         self._loop.create_task(self._mas.start())
         self._loop.create_task(self._mls.start())
@@ -54,6 +63,7 @@ class Robo():
 
         # Misc functions
         self._loop.create_task(self.clear_zombie_games())
+        self._loop.create_task(self.backup_db())
 
         self._loop.run_forever()
 
@@ -66,11 +76,15 @@ class Robo():
             config['public_ip'] = public_ip
         return config
 
-
     async def clear_zombie_games(self):
         while True:
             self._monolith.clear_zombie_games()
-            await asyncio.sleep(120)
+            await asyncio.sleep(60 * 2) # 2 minutes
+
+    async def backup_db(self):
+        while True:
+            self._monolith.backup_db()
+            await asyncio.sleep(60 * 1) # every minute
 
 if __name__ == '__main__':
     import argparse

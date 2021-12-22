@@ -185,6 +185,9 @@ class ClientManager:
 
     # =============== DB Access Methods ===============
 
+    def backup_db(self):
+        self._db.backup()
+
     def get_account_id(self, username=None, session_key=None):
         return self._db.get_account_id(username=username, session_key=session_key)
 
