@@ -14,7 +14,7 @@ from utils import utils
 logger = logging.getLogger('robo.sqllitedb')
 
 class SqlLiteDb():
-    def __init__(self, mode='rwc', db='database.db', db_loc=None, salt='$2b$12$KpQgsoVLTDt3MR/tVYUzZe'):
+    def __init__(self, mode='rwc', db='database.db', db_loc=None, salt=''):
 
         if db_loc == None:
             db_loc = os.path.dirname(os.path.abspath(__file__))
