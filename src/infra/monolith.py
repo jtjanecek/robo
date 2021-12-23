@@ -226,6 +226,8 @@ class Monolith:
 
 # ===================================
 # Misc
+    def backup_db(self):
+        self._client_manager.backup_db()
 
     def clear_zombie_games(self):
         self._client_manager.clear_zombie_games()
