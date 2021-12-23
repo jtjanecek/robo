@@ -63,8 +63,8 @@ class Api2():
         vals = [val[0] for val in vals]
         return str(list(set(vals)))
 
-    async def players(self, request):
-        self._logger.debug("Players request!")
+    async def alts(self, request):
+        self._logger.debug("Alts request!")
         name = request.match_info.get('name', "Anonymous")
         if name == 'Anonymous':
             return web.Response(text=f'You need a player name!')
@@ -99,7 +99,7 @@ class Api2():
         self.conn = sqlite3.connect(db_file, uri=True)
 
         app = web.Application()
-        app.router.add_get('/players/{name}', self.players)
+        app.router.add_get('/alts/{name}', self.alts)
         app.router.add_get('/clans/{name}', self.clans)
 
         runner = web.AppRunner(app)
