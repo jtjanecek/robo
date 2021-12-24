@@ -13,12 +13,18 @@ class ChannelList_ExtraInfo1Serializer:
 
 class ChannelList_ExtraInfo1Handler:
     def process(self, serialized, monolith, con):
-        generic_field1 = 1
-        generic_field2 = 1
+        generic_field1 = 0 # Aquatos [0]/[1]/[2] etc is first bit I think
+        generic_field2 = 0
         generic_field3 = 0
         generic_field4 = 0
-        generic_field_filter = 32
-        
+        generic_field_filter = 0
+
+        # generic_field1 = 1
+        # generic_field2 = 1
+        # generic_field3 = 0
+        # generic_field4 = 0
+        # generic_field_filter = 32
+
         packets = []
         channels = monolith.get_channels()
         for i in range(len(channels)):
