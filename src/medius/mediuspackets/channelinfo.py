@@ -14,12 +14,12 @@ class ChannelInfoSerializer:
 class ChannelInfoHandler:
     def process(self, serialized, monolith, con):
 
-        channels = monolith.get_channels()
+        channels = monolith.get_client_manager().get_channels()
         lobby_name = None
         max_players = 0
         for channel in channels:
             if channel['id'] == serialized['world_id']:
-                lobby_name = channel['name']
+                lobby_name = channel['lobby_name']
                 max_players = channel['max_players']
                 break
 

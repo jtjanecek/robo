@@ -1,6 +1,6 @@
 {
 	"bind_ip": "0.0.0.0",
-	"public_ip": "0.0.0.0",
+	"public_ip": "192.168.100.7",
 	"mas": {
 		"port": 10075,
 		"log_max_mb": 50,
@@ -43,29 +43,55 @@
     "channels": [
         {
             "id": 123,
-            "name": "CY00000000-00",
-            "max_players": 256
+            "lobby_name": "CY00000000-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
         },
         {
             "id": 124,
-            "name": "CY00000001-00",
-            "max_players": 256
+            "lobby_name": "CY00000001-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
+ 
         },
         {
             "id": 125,
-            "name": "CY00000002-00",
-            "max_players": 256
+            "lobby_name": "CY00000002-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
         },
         {
             "id": 126,
-            "name": "CY00000003-00",
-            "max_players": 256
+            "lobby_name": "CY00000003-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
         },
         {
             "id": 127,
-            "name": "CY00000004-00",
-            "max_players": 256
-        }
+            "lobby_name": "CY00000004-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
+      }
     ],
     "locations": [
         {
@@ -89,7 +115,7 @@
             "name": "Veldin"
         }
     ],
-	"bcrypt_salt": "",
+	"bcrypt_salt": "$2b$12$JlJYa81rbAojQ.qGguk80e",
 	"policy": "Test policy", 
 	"announcement": "Test announcement",
 	"console_log_level": "DEBUG",

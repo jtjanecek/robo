@@ -15,7 +15,7 @@ class GetLobbyPlayerNames_ExtraInfoSerializer:
 class GetLobbyPlayerNames_ExtraInfoHandler:
     def process(self, serialized, monolith, con):
 
-        channel_name = [channel for channel in monolith.get_channels() if channel['id'] == serialized['world_id']][0]['name']
+        channel_name = [channel for channel in monolith.get_client_manager().get_channels() if channel['id'] == serialized['world_id']][0]['lobby_name']
         players = monolith.get_client_manager().get_players_by_world(serialized['world_id'])
         packets = []
 

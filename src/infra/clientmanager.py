@@ -38,7 +38,7 @@ class ClientManager:
         self._games_lock = threading.Lock()
 
         # ======================================================
-        self._created_channels = []
+        self._channels = config['channels']
 
 
     def identify(self, connection):
@@ -287,11 +287,27 @@ class ClientManager:
     # =============== Clans ===============
     def create_channel(self, serialized_channel):
         clan_id = serialized_channel['generic_field_1']
-        if clan_id in [channel['generic_field_1'] for channel in self._created_channels]:
-            return
+        channel = self.get_channel_by_clan_id(clan_id)
+        if channel != None:
+            return channel['id']
 
-        # Not created yet, so let's add!
-        self._created_channels.append(serialized_channel)
+        # Have to add it
+        serialized_channel['id'] = self.get_new_channel_id()
+        self._channels.append(serialized_channel)
+        return serialized_channel['id']
+
+    def get_channel_by_clan_id(self, clan_id):
+        for channel in self._channels:
+            if channel['generic_field_1'] == clan_id:
+                return channel
+        return None
+
+    def get_new_channel_id(self):
+        max_id = max([channel['id'] for channel in self._channels])
+        return max_id+1
+
+    def get_channels(self) -> list:
+        return self._channels
 
     # =============== Misc ===============
 
