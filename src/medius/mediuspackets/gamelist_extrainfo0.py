@@ -16,6 +16,14 @@ class GameList_ExtraInfo0Handler:
 
         packets = []
 
+        player = monolith.get_client_manager().get_player_from_mls_con(con)
+        lobby_world_id = player.get_mls_world_id()
+
+        games = [game for game in games if game.get_created_info()['game_level'] == lobby_world_id]
+
+        # We need to filter for the games that are only in the current players lobby world
+        # This is stored in the "gameLevel" field
+
         for i in range(len(games)):
             game = games[i]
             serialized_game = game.get_created_info()

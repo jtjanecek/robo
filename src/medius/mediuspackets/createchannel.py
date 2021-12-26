@@ -16,7 +16,7 @@ class CreateChannelSerializer:
         {'name': 'generic_field_2', 'n_bytes': 4, 'cast': utils.bytes_to_int_little},
         {'name': 'generic_field_3', 'n_bytes': 4, 'cast': utils.bytes_to_int_little},
         {'name': 'generic_field_4', 'n_bytes': 4, 'cast': utils.bytes_to_int_little},
-        {'name': 'generic_field_level', 'n_bytes': 4, 'cast': utils.bytes_to_int_little}
+        {'name': 'generic_field_filter', 'n_bytes': 4, 'cast': utils.bytes_to_int_little}
     ]
 
 class CreateChannelHandler:

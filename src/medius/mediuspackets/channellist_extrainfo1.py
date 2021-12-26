@@ -22,6 +22,8 @@ class ChannelList_ExtraInfo1Handler:
 
         packets = []
         channels = monolith.get_client_manager().get_channels()
+        channels = [channel for channel in channels if 'CY' in channel['lobby_name']]
+
         for i in range(len(channels)):
             packets.append(ChannelList_ExtraInfoResponseSerializer.build(
                 serialized['message_id'],
