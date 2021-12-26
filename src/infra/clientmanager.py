@@ -228,6 +228,9 @@ class ClientManager:
     def get_clan_id_from_account_id(self, account_id: int):
         return self._db.get_clan_id_from_account_id(account_id)
 
+    def get_clan_id_from_name(self, clan_name):
+        return self._db.get_clan_id_from_name(clan_name)
+
     def get_clan_info(self, clan_id: int):
         return self._db.get_clan_info(clan_id)
 

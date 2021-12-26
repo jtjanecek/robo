@@ -17,8 +17,7 @@ class GetClanByNameHandler:
     def process(self, serialized, monolith, con):
         client_manager = monolith.get_client_manager()
 
-        #clan_id = client_manager.get_clan_id_from_name(serialized['clan_name'])
-        clan_id = None
+        clan_id = client_manager.get_clan_id_from_name(serialized['clan_name'])
 
         if clan_id == None:
             # No response
