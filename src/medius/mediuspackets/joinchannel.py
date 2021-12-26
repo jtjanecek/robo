@@ -10,7 +10,7 @@ class JoinChannelSerializer:
         {'name': 'session_key', 'n_bytes': MediusEnum.SESSIONKEY_MAXLEN, 'cast': None},
         {'name': 'buf', 'n_bytes': 2, 'cast': None},
         {'name': 'world_id', 'n_bytes': 4, 'cast': utils.bytes_to_int_little},
-        {'name': 'lobby_channel_password', 'n_bytes': MediusEnum.LOBBYPASSWORD_MAXLEN, 'cast': utils.bytes_to_str}
+        {'name': 'lobby_channel_password', 'n_bytes': MediusEnum.LOBBYPASSWORD_MAXLEN, 'cast': None}
     ]
 
 class JoinChannelHandler:
