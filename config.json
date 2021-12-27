@@ -115,7 +115,7 @@
             "name": "Veldin"
         }
     ],
-	"bcrypt_salt": "",
+	"bcrypt_salt": "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
 	"policy": "Test policy", 
 	"announcement": "Test announcement",
 	"console_log_level": "DEBUG",

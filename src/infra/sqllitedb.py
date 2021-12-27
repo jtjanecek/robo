@@ -623,7 +623,17 @@ class SqlLiteDb():
         select = """DELETE
                     FROM clan_invites WHERE clan_invitation_id = ?;
                 """
-        vals = c.execute(select, [clan_invitation_id]).fetchone()
+        c.execute(select, [clan_invitation_id])
+        self.conn.commit()
+        c.close()
+
+    def remove_clan_invite(self, clan_id, account_id):
+        # Delete the clan invite
+        c = self.conn.cursor()
+        select = """DELETE
+                    FROM clan_invites WHERE clan_id = ? and account_id_invited = ?;
+                """
+        c.execute(select, [clan_id, account_id])
         self.conn.commit()
         c.close()
 
