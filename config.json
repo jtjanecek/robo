@@ -1,6 +1,6 @@
 {
 	"bind_ip": "0.0.0.0",
-	"public_ip": "10.110.95.38",
+	"public_ip": "",
 	"mas": {
 		"port": 10075,
 		"log_max_mb": 50,
@@ -115,7 +115,7 @@
             "name": "Veldin"
         }
     ],
-	"bcrypt_salt": "$2b$12$JlJYa81rbAojQ.qGguk80e",
+	"bcrypt_salt": "",
 	"policy": "Test policy", 
 	"announcement": "Test announcement",
 	"console_log_level": "DEBUG",
