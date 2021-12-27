@@ -270,6 +270,9 @@ class ClientManager:
     def respond_clan_invite(self, clan_invitation_id, accepted):
         return self._db.respond_clan_invite(clan_invitation_id, accepted)
 
+    def remove_clan_invite(self, clan_id, account_id):
+        return self._db.remove_clan_invite(clan_id, account_id)
+
     def disband_clan(self, clan_id: int):
         return self._db.disband_clan(clan_id)
 
