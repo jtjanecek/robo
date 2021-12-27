@@ -329,6 +329,7 @@ class SqlLiteDb():
         self.conn.commit()
         c.close()
 
+
     def get_clan_id_from_name(self, clan_name: str):
         # clan_name should be hex
         if type(clan_name) != str:

@@ -274,5 +274,3 @@ class Monolith:
     def get_announcement(self) -> str:
         return self._config['announcement']
 
-    def get_channels(self) -> list:
-        return self._config['channels']

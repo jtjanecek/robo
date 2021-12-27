@@ -43,29 +43,55 @@
     "channels": [
         {
             "id": 123,
-            "name": "CY00000000-00",
-            "max_players": 256
+            "lobby_name": "CY00000000-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
         },
         {
             "id": 124,
-            "name": "CY00000000-01",
-            "max_players": 256
+            "lobby_name": "CY00000001-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
+ 
         },
         {
             "id": 125,
-            "name": "CY00000000-02",
-            "max_players": 256
+            "lobby_name": "CY00000002-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
         },
         {
             "id": 126,
-            "name": "CY00000000-03",
-            "max_players": 256
+            "lobby_name": "CY00000003-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
         },
         {
             "id": 127,
-            "name": "CY00000000-04",
-            "max_players": 256
-        }
+            "lobby_name": "CY00000004-00",
+            "max_players": 256,
+            "generic_field_1": 0,
+            "generic_field_2": 0,
+            "generic_field_3": 0,
+            "generic_field_4": 0,
+            "generic_field_filter": 32
+      }
     ],
     "locations": [
         {

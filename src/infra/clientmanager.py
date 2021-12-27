@@ -37,6 +37,10 @@ class ClientManager:
         self._games = {}
         self._games_lock = threading.Lock()
 
+        # ======================================================
+        self._channels = config['channels']
+
+
     def identify(self, connection):
         if connection.server_name == 'mas':
             return None
@@ -173,7 +177,11 @@ class ClientManager:
 
     # MLS Call
     def get_players_by_world(self, world_id: int):
-        return self._players.values()
+        result = []
+        for player in self._players.values():
+            if player.get_mls_world_id() == world_id:
+                result.append(player)
+        return result
 
     def get_player(self, account_id: int) -> Player:
         if account_id not in self._players.keys():
@@ -219,6 +227,9 @@ class ClientManager:
 
     def get_clan_id_from_account_id(self, account_id: int):
         return self._db.get_clan_id_from_account_id(account_id)
+
+    def get_clan_id_from_name(self, clan_name):
+        return self._db.get_clan_id_from_name(clan_name)
 
     def get_clan_info(self, clan_id: int):
         return self._db.get_clan_info(clan_id)
@@ -276,6 +287,30 @@ class ClientManager:
 
     def remove_buddy(self, account_id, buddy_id):
         return self._db.remove_buddy(account_id, buddy_id)
+    # =============== Clans ===============
+    def create_channel(self, serialized_channel):
+        clan_id = serialized_channel['generic_field_1']
+        channel = self.get_channel_by_clan_id(clan_id)
+        if channel != None:
+            return channel['id']
+
+        # Have to add it
+        serialized_channel['id'] = self.get_new_channel_id()
+        self._channels.append(serialized_channel)
+        return serialized_channel['id']
+
+    def get_channel_by_clan_id(self, clan_id):
+        for channel in self._channels:
+            if channel['generic_field_1'] == clan_id:
+                return channel
+        return None
+
+    def get_new_channel_id(self):
+        max_id = max([channel['id'] for channel in self._channels])
+        return max_id+1
+
+    def get_channels(self) -> list:
+        return self._channels
 
     # =============== Misc ===============
 
@@ -341,3 +376,5 @@ class ClientManager:
         for player in self._players.values():
             result += '\n' + str(player)
         return result
+
+
