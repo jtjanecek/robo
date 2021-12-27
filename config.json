@@ -1,6 +1,6 @@
 {
 	"bind_ip": "0.0.0.0",
-	"public_ip": "",
+	"public_ip": "0.0.0.0",
 	"mas": {
 		"port": 10075,
 		"log_max_mb": 50,
