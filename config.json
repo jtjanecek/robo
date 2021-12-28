@@ -34,11 +34,6 @@
 		"log_max_mb": 50,
 		"log_backup_count": 5
 	},
-	"api2": {
-		"port": 8282,
-		"log_max_mb": 50,
-		"log_backup_count": 5
-	},
 	"app_id": 10684,
     "channels": [
         {
