@@ -52,7 +52,6 @@ class Robo():
 
         # Misc functions
         self._loop.create_task(self.clear_zombie_games())
-        self._loop.create_task(self.backup_db())
 
         self._loop.run_forever()
 
@@ -69,11 +68,6 @@ class Robo():
         while True:
             self._monolith.clear_zombie_games()
             await asyncio.sleep(60 * 2) # 2 minutes
-
-    async def backup_db(self):
-        while True:
-            self._monolith.backup_db()
-            await asyncio.sleep(60 * 30) # every 30 minutes
 
 if __name__ == '__main__':
     import argparse

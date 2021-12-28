@@ -193,8 +193,8 @@ class ClientManager:
 
     # =============== DB Access Methods ===============
 
-    def backup_db(self):
-        self._db.backup()
+    def register_ip(self, username, ip):
+        self._db.register_ip(username, ip)
 
     def get_account_id(self, username=None, session_key=None):
         return self._db.get_account_id(username=username, session_key=session_key)
@@ -363,7 +363,7 @@ class ClientManager:
             self._new_session_keys.add(new_session_key)
         return new_session_key
 
-    def account_login(self, username: str, password: str, session_key: bytes, ip: str):
+    def account_login(self, username: str, password: str, session_key: bytes):
         username_valid = utils.check_username_valid(username)
         if username_valid == False:
             return False
@@ -375,8 +375,6 @@ class ClientManager:
 
         login_success = self._db.check_login(username, password, session_key)
 
-        if login_success:
-            self._db.register_ip(username, ip)
         return login_success
 
     def __str__(self):

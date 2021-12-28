@@ -36,6 +36,9 @@ class ClientConnectTcpHandler:
             if not client_manager.mls_connected(con, serialized['session_key'], serialized['target_world_id']):
                 raise Exception("Invalid session key")
 
+            username = client_manager.get_username(session_key=serialized['session_key'])
+            client_manager.register_ip(username, con.addr)
+
             return [
                 ServerConnectAcceptTcpSerializer.build(con.addr),
                 ServerConnectCompleteSerializer.build()            
