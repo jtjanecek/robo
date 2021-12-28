@@ -61,6 +61,10 @@ class Robo():
         self._loop.create_task(self._dmeudp.start())
         self._loop.create_task(self._nat.start())
 
+        # Start API
+        self._loop.run_until_complete(self._api.start())
+        self._loop.create_task(self._api.monolith_sync())
+
         # Misc functions
         self._loop.create_task(self.clear_zombie_games())
         self._loop.create_task(self.backup_db())

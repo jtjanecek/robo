@@ -33,9 +33,6 @@ class Api():
         self._ip = ip
         self._port = port
         self._sync_rate = sync_rate
-        self._thread = threading.Thread(target = self.start)
-        self._thread.setDaemon(True)
-        self._thread.start()
 
     async def monolith_sync(self):
         while True:
@@ -88,7 +85,7 @@ class Api():
         self._logger.debug(self._chat)
         return web.Response(text=json.dumps(self._chat))
 
-    async def main(self):
+    async def start(self):
         # add stuff to the loop, e.g. using asyncio.create_task()
 
         app = web.Application()
@@ -103,14 +100,6 @@ class Api():
 
         self._logger.info(f"Serving on ('{self._ip}', {self._port}) ...")
 
-        # Add monolith sync to event loop
-        asyncio.create_task(self.monolith_sync())
-    
-            # wait forever
-        await asyncio.Event().wait()
-
-    def start(self):
-        asyncio.run(self.main())
 
 if __name__ == '__main__':
     a = Api()
