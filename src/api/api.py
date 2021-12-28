@@ -25,76 +25,73 @@ class Api():
         filehandler.setFormatter(formatter)
         self._logger.addHandler(filehandler)
 
-        self._players = "[]"
-        self._games = "[]"
-        self._chat = []
-
         self._monolith = monolith
         self._ip = ip
         self._port = port
         self._sync_rate = sync_rate
-        self._thread = threading.Thread(target = self.start)
-        self._thread.setDaemon(True)
-        self._thread.start()
-
-    async def monolith_sync(self):
-        while True:
-            self._logger.info("Syncing to monolith ...")
-
-            # Sync player list
-            players = self._monolith.api_req_players()
-            self._players = json.dumps(players)
-
-            # Sync game list
-            games = self._monolith.api_req_games()
-            for game in games:
-                game['weapons'] = weaponParser(game['player_skill_level'])
-                game['advanced_rules'] = advancedRulesParser(game['generic_field_3'])
-                game['map'] = mapParser(game['generic_field_3'])
-                game['game_length'] = timeParser(game['generic_field_3'])
-                game_mode, submode = gamerulesParser(game['generic_field_3'])
-                game['game_mode'] = game_mode
-                game['submode'] = submode
-
-                binary = bin(game['generic_field_3'])[2:]
-                length = len(binary)
-                leftover = 32 - length
-                binary_full = leftover*'0' + binary
-                if game_mode == 'CTF':
-                    game['cap_limit'] = int(binary_full[5:9],2)
-                elif game_mode == 'Deathmatch':
-                    game['frag'] = int(binary_full[10:13],2)*5
-
-
-            self._games = json.dumps(games)
-
-            # Sync chat
-            self._chat += self._monolith.api_req_chat()
-            # only save last 10 minutes
-            self._chat = [c for c in self._chat if (datetime.now().timestamp() - c['ts']) / 60 < 10]
-
-            await asyncio.sleep(self._sync_rate)
 
     async def players(self, request):
         self._logger.debug("Players request!")
-        return web.Response(text=self._players)
+
+        # Sync player list
+        players = self._monolith.api_req_players()
+        players = json.dumps(players)
+
+        return web.Response(text=players)
 
     async def games(self, request):
         self._logger.debug("Games request!")
-        return web.Response(text=self._games)
+
+        # Sync game list
+        games = self._monolith.api_req_games()
+        for game in games:
+            game['weapons'] = weaponParser(game['player_skill_level'])
+            game['advanced_rules'] = advancedRulesParser(game['generic_field_3'])
+            game['map'] = mapParser(game['generic_field_3'])
+            game['game_length'] = timeParser(game['generic_field_3'])
+            game_mode, submode = gamerulesParser(game['generic_field_3'])
+            game['game_mode'] = game_mode
+            game['submode'] = submode
+
+            binary = bin(game['generic_field_3'])[2:]
+            length = len(binary)
+            leftover = 32 - length
+            binary_full = leftover * '0' + binary
+            if game_mode == 'CTF':
+                game['cap_limit'] = int(binary_full[5:9], 2)
+            elif game_mode == 'Deathmatch':
+                game['frag'] = int(binary_full[10:13], 2) * 5
+
+        games = json.dumps(games)
+        return web.Response(text=games)
 
     async def chat(self, request):
         self._logger.debug("Chat request!")
-        self._logger.debug(self._chat)
-        return web.Response(text=json.dumps(self._chat))
 
-    async def main(self):
+        # Sync chat
+        chat = self._monolith.api_req_chat()
+        # only save last 10 minutes
+        chat = [c for c in self._chat if (datetime.now().timestamp() - c['ts']) / 60 < 10]
+
+        return web.Response(text=json.dumps(chat))
+
+    async def alts(self, request):
+        self._logger.debug("Alts request!")
+        name = request.match_info.get('name', "Anonymous")
+        if name == 'Anonymous':
+            return web.Response(text=f'You need a player name!')
+
+        usernames = self._monolith.api_req_check_alts(name)
+        return web.Response(text=usernames)
+
+    async def start(self):
         # add stuff to the loop, e.g. using asyncio.create_task()
 
         app = web.Application()
         app.router.add_get('/players', self.players)
         app.router.add_get('/games', self.games)
         app.router.add_get('/chat', self.chat)
+        app.router.add_get('/alts/{name}', self.alts)
 
         runner = web.AppRunner(app)
         await runner.setup()
@@ -103,14 +100,6 @@ class Api():
 
         self._logger.info(f"Serving on ('{self._ip}', {self._port}) ...")
 
-        # Add monolith sync to event loop
-        asyncio.create_task(self.monolith_sync())
-    
-            # wait forever
-        await asyncio.Event().wait()
-
-    def start(self):
-        asyncio.run(self.main())
 
 if __name__ == '__main__':
     a = Api()

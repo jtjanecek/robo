@@ -224,6 +224,9 @@ class Monolith:
             result.append(self._chat_messages.get())
         return result
 
+    def api_req_check_alts(self, username):
+        return self._client_manager.api_check_alts(username)
+
 # ===================================
 # Misc
     def backup_db(self):
