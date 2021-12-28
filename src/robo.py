@@ -1,11 +1,8 @@
 import os
-from time import sleep
 import json
-import argparse
 
 from pcap.robopacketsniffer import RoboPacketSniffer
 from api.api import Api
-from api.api2 import Api2
 from servers.tcpserver import TCPServer
 from servers.udpserver import UDPServer
 from infra.monolith import Monolith
@@ -14,9 +11,6 @@ import requests
 import logging
 import asyncio
 from logging import handlers
-
-from multiprocessing import Process, Value, Array
-
 
 class Robo():
     def __init__(self, config_file: str):
@@ -46,14 +40,6 @@ class Robo():
         self._nat = UDPServer(self._monolith, 'nat', config['bind_ip'], config['nat']['port'], config['nat']['log_max_mb'], config['nat']['log_backup_count'], config['log_location'])
         self._api = Api(self._monolith, config['bind_ip'], config['api']['port'], config['api']['sync_rate'], config['api']['log_max_mb'], config['api']['log_backup_count'], config['log_location'])
 
-        p = Process(target=Api2, args=(
-            config['log_location'], "database.db.backup",
-            config['bind_ip'], config['api2']['port'],
-            config['api2']['log_max_mb'], config['api2']['log_backup_count'],
-            config['log_location']
-        ), daemon=True)
-        p.start()
-
         # Start the servers
         self._loop.create_task(self._mas.start())
         self._loop.create_task(self._mls.start())
@@ -63,7 +49,6 @@ class Robo():
 
         # Start API
         self._loop.run_until_complete(self._api.start())
-        self._loop.create_task(self._api.monolith_sync())
 
         # Misc functions
         self._loop.create_task(self.clear_zombie_games())

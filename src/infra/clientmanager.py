@@ -290,6 +290,7 @@ class ClientManager:
 
     def remove_buddy(self, account_id, buddy_id):
         return self._db.remove_buddy(account_id, buddy_id)
+
     # =============== Clans ===============
     def create_channel(self, serialized_channel):
         clan_id = serialized_channel['generic_field_1']
@@ -322,11 +323,15 @@ class ClientManager:
         for player_dict in result:
             player_dict['stats'] = self.get_player_stats(player_dict['account_id'])
             player_dict['ladderstatswide'] = self.get_player_ladderstatswide(player_dict['account_id'])
+            player_dict['alts'] = self.api_check_alts(player_dict['username'])
         return result
 
     def api_req_games(self) -> list:
         result = [game.to_json() for game in self._games.values()]
         return result
+
+    def api_check_alts(self, username):
+        return self._db.check_alts(username)
 
     def clear_zombie_games(self):
         for dme_world_id in list(self._games.keys()):

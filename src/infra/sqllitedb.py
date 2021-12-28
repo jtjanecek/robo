@@ -673,4 +673,31 @@ class SqlLiteDb():
         self.conn.commit()
         c.close()
 
+    def check_alts(self, username):
+        c = self.conn.cursor()
+        select = """SELECT hash
+                    FROM alts WHERE lower(username) = lower(?);
+                """
+        vals = c.execute(select, [username]).fetchall()
+        c.close()
+        if not vals: # This already exists in the db
+            return '[]'
+        logger.info(vals)
+        # Otherwise, we found some hashes. So let's find all usernames with this hash
+        hashes = [f"'{val[0]}'" for val in vals]
+        hashes = ', '.join(hashes)
+
+        logger.info(f"Found hashes for username {username}: {hashes}")
+
+        c = self.conn.cursor()
+        select = f"""SELECT username
+                    FROM alts WHERE hash in ({hashes});
+                """
+        logger.info(f"Executing: {select}")
+        vals = c.execute(select).fetchall()
+        logger.info(vals)
+        c.close()
+
+        vals = [val[0] for val in vals]
+        return str(list(set(vals)))
 
