@@ -175,6 +175,42 @@ class SqlLiteDb():
             return vals[0]
         return None
 
+    def get_all_user_info_from_account_id(self, account_id: int):
+        c = self.conn.cursor()
+        select = """SELECT account_id, account_type, username, stats, ladderstatswide
+                    FROM users WHERE account_id = ?;
+                """
+        vals = c.execute(select, [account_id]).fetchone()
+        c.close()
+
+        if not vals: # No result
+            return {}
+        return {
+            'account_id': vals[0], 
+            'account_type': vals[1], 
+            'username': vals[2],
+            'stats': vals[3],
+            'ladderstatswide': vals[4]
+        }
+
+    def get_all_user_info_from_username(self, username: str):
+        c = self.conn.cursor()
+        select = """SELECT account_id, account_type, username, stats, ladderstatswide
+                    FROM users WHERE lower(username) = lower(?);
+                """
+        vals = c.execute(select, [username]).fetchone()
+        c.close()
+
+        if not vals: # No result
+            return {}
+        return {
+            'account_id': vals[0], 
+            'account_type': vals[1], 
+            'username': vals[2],
+            'stats': vals[3],
+            'ladderstatswide': vals[4]
+        }
+
     def get_username(self, account_id=None, session_key=None):
         c = self.conn.cursor()
         if account_id != None:
@@ -437,21 +473,47 @@ class SqlLiteDb():
 
     def get_clan_info(self, clan_id: int):
         c = self.conn.cursor()
-        select = """SELECT clan_id, clan_name, leader_account_id, leader_account_name, stats, clan_status
+        select = """SELECT clan_id, clan_name, leader_account_id, leader_account_name, stats, clan_status, statswide
                     FROM clans WHERE clan_id = ?;
                 """
         vals = c.execute(select, [clan_id]).fetchone()
         c.close()
 
+        if not vals:
+            return {}
         clan_info = {
             'clan_id': vals[0],
             'clan_name': vals[1],
             'leader_account_id': vals[2],
             'leader_account_name': vals[3],
             'clan_stats': vals[4],
-            'clan_status': vals[5]
+            'clan_status': vals[5],
+            'clan_statswide': vals[6]
         }
         return clan_info
+
+    def get_clan_info_from_name(self, clan_name: str):
+        c = self.conn.cursor()
+        select = """SELECT clan_id, clan_name, leader_account_id, leader_account_name, stats, clan_status, statswide
+                    FROM clans WHERE lower(clan_name) = lower(?);
+                """
+        vals = c.execute(select, [clan_name]).fetchone()
+        c.close()
+
+        if not vals:
+            return {}
+        clan_info = {
+            'clan_id': vals[0],
+            'clan_name': vals[1],
+            'leader_account_id': vals[2],
+            'leader_account_name': vals[3],
+            'clan_stats': vals[4],
+            'clan_status': vals[5],
+            'clan_statswide': vals[6]
+        }
+        return clan_info
+
+
 
     def get_clan_leader_account_id(self, clan_id):
         c = self.conn.cursor()
@@ -699,5 +761,4 @@ class SqlLiteDb():
         c.close()
 
         vals = [val[0] for val in vals]
-        return str(list(set(vals)))
-
+        return list(set(vals))
