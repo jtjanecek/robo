@@ -7,6 +7,11 @@ Current API endpoints (port 8281 default):
 - `/players`
 - `/games`
 - `/chat`
+- `/alts/[username]`
+- `/accounts/id/[account_id]`
+- `/accounts/username/[username]`
+- `/clans/id/[clan_id]`
+- `/clans/name/[clan_name]`
 
 ## Colored Clan Tags
 You are able to customize colors in your clan tags without the need for cheats or hacks. I have built a way to do this  through the standard menus. Listed below are the steps to add colors to your clan tags:
