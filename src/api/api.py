@@ -30,6 +30,8 @@ class Api():
         self._port = port
         self._sync_rate = sync_rate
 
+        self._chat_messages = []
+
     async def players(self, request):
         self._logger.debug("Players request!")
 
@@ -69,11 +71,11 @@ class Api():
         self._logger.debug("Chat request!")
 
         # Sync chat
-        chat = self._monolith.api_req_chat()
+        self._chat_messages += self._monolith.api_req_chat()
         # only save last 10 minutes
-        chat = [c for c in self._chat if (datetime.now().timestamp() - c['ts']) / 60 < 10]
+        self._chat_messages = [c for c in self._chat_messages if (datetime.now().timestamp() - c['ts']) / 60 < 10]
 
-        return web.Response(text=json.dumps(chat))
+        return web.Response(text=json.dumps(self._chat_messages))
 
     async def alts(self, request):
         self._logger.debug("Alts request!")
