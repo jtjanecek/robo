@@ -82,7 +82,44 @@ class Api():
             return web.Response(text=f'You need a player name!')
 
         usernames = self._monolith.api_req_check_alts(name)
-        return web.Response(text=usernames)
+        return web.Response(text=json.dumps(usernames))
+
+    async def account_id(self, request):
+        self._logger.debug("Account id request!")
+        account_id = request.match_info.get('account_id', "Anonymous")
+        if account_id == 'Anonymous':
+            return web.Response(text=f'You need an account id!')
+
+        data = self._monolith.api_req_account_id(int(account_id))
+        return web.Response(text=json.dumps(data))
+
+    async def account_username(self, request):
+        self._logger.debug("Account username request!")
+        username = request.match_info.get('username', "Anonymous")
+        if username == 'Anonymous':
+            return web.Response(text=f'You need an account username!')
+
+        data = self._monolith.api_req_username(username)
+        return web.Response(text=json.dumps(data))
+
+    async def clan_id(self, request):
+        self._logger.debug("Clan id request!")
+        clan_id = request.match_info.get('clan_id', "Anonymous")
+        if clan_id == 'Anonymous':
+            return web.Response(text=f'You need a clan_id!')
+
+        data = self._monolith.api_req_clan_id(int(clan_id))
+        return web.Response(text=json.dumps(data))
+
+    async def clan_name(self, request):
+        self._logger.debug("Clan name request!")
+        clan_name = request.match_info.get('clan_name', "Anonymous")
+        if clan_name == 'Anonymous':
+            return web.Response(text=f'You need a clan_name!')
+
+        data = self._monolith.api_req_clan_name(clan_name)
+        return web.Response(text=json.dumps(data))
+
 
     async def start(self):
         # add stuff to the loop, e.g. using asyncio.create_task()
@@ -92,6 +129,10 @@ class Api():
         app.router.add_get('/games', self.games)
         app.router.add_get('/chat', self.chat)
         app.router.add_get('/alts/{name}', self.alts)
+        app.router.add_get('/accounts/id/{account_id}', self.account_id)
+        app.router.add_get('/accounts/username/{username}', self.account_username)
+        app.router.add_get('/clans/id/{clan_id}', self.clan_id)
+        app.router.add_get('/clans/name/{clan_name}', self.clan_name)
 
         runner = web.AppRunner(app)
         await runner.setup()

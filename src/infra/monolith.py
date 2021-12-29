@@ -227,6 +227,18 @@ class Monolith:
     def api_req_check_alts(self, username):
         return self._client_manager.api_check_alts(username)
 
+    def api_req_account_id(self, account_id):
+        return self._client_manager.api_req_account_id(account_id)
+
+    def api_req_username(self, username):
+        return self._client_manager.api_req_username(username)
+
+    def api_req_clan_id(self, clan_id):
+        return self._client_manager.api_req_clan_id(clan_id)
+
+    def api_req_clan_name(self, clan_name):
+        return self._client_manager.api_req_clan_name(clan_name)
+
 # ===================================
 # Misc
 

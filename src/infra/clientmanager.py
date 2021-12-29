@@ -323,7 +323,6 @@ class ClientManager:
         for player_dict in result:
             player_dict['stats'] = self.get_player_stats(player_dict['account_id'])
             player_dict['ladderstatswide'] = self.get_player_ladderstatswide(player_dict['account_id'])
-            player_dict['alts'] = self.api_check_alts(player_dict['username'])
         return result
 
     def api_req_games(self) -> list:
@@ -332,6 +331,20 @@ class ClientManager:
 
     def api_check_alts(self, username):
         return self._db.check_alts(username)
+
+    # new ones
+    def api_req_account_id(self, account_id):
+        return self._db.get_all_user_info_from_account_id(account_id)
+
+    def api_req_username(self, username):
+        return self._db.get_all_user_info_from_username(username)
+
+    def api_req_clan_id(self, clan_id):
+        return self._db.get_clan_info(clan_id)
+
+    def api_req_clan_name(self, clan_name):
+        return self._db.get_clan_info_from_name(clan_name)
+
 
     def clear_zombie_games(self):
         for dme_world_id in list(self._games.keys()):
