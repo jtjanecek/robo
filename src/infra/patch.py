@@ -12,7 +12,7 @@ class PatchManager:
             10684: Patch(10684, 
                 "./bin/patch-ntsc.bin", 0x000D0000, 
                 "./bin/unpatch-ntsc.bin", 0x000E0000,
-                config['patch']['hook_addr'], "j")
+                eval(config['patch']['hook_addr']), "j")
         }
 
     def process_login(self, player):
