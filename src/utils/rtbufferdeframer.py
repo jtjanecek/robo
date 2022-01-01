@@ -1,53 +1,41 @@
 from utils import utils
-
-class RtBuffer():
-    def __init__(self):
-        self._buffer = [0] * 2048
-        self._cursor = 0
-        self._encrypted = False
-
-    def process(self, b): 
-        self._buffer[self._cursor] = b
-
-        if (self._cursor == 0):
-            # Check if id is > 0x80
-            self._encrypted = (self._buffer[0] & 0xFF) >= 128
-
-        self._cursor += 1
-
-    def is_full(self) -> bool:
-        if (self._cursor < 3):
-            return False
-        return self._cursor == self.get_full_length()
-
-    def get_full_length(self) -> int:
-        length = 1 + 2 + utils.bytes_to_int_little(self._buffer[1:3])
-        if (self._encrypted): # hash
-            length += 4
-        return length
-
-    def to_bytes(self) -> bytes:
-        return bytes(self._buffer[0:self.get_full_length()])
-
-    def clear(self):
-        self._cursor = 0
+import numpy as np
 
 class RtBufferDeframer():
     def __init__(self):
-        self._rtbuffer = RtBuffer()
+        self._buffer = None
 
-    def deframe(self, data_list: [bytes]):
+    def deframe(self, data: bytes):
+        data = np.frombuffer(data, dtype=np.uint8, count=-1)
+
+        if self._buffer is not None:
+            data = np.concatenate((self._buffer,data), axis=None)
+            self._buffer = None
+
         results = []
-        for data in data_list:
-            for b in data:
-                self._rtbuffer.process(b)
 
-                if self._rtbuffer.is_full():
-                    results.append(self._rtbuffer.to_bytes())
-                    self._rtbuffer.clear()
+        while True:
+
+            packet_length = 1 + 2 + utils.bytes_to_int_little(data[1:3])
+            if (data[0] & 0xFF) >= 128: # Encrypted. So we need to add the hash to the packet length
+                packet_length += 4
+
+            if packet_length == data.size: # Perfect fit
+                results.append(data.tobytes())
+                return results
+            elif packet_length > data.size: # This happens when the packet is cut-off
+                self._buffer = data
+                return results
+            elif packet_length < data.size: # Multiple packets here
+                results.append(data[0:packet_length].tobytes())
+                data = data[packet_length:]
+            else:
+                raise Exception("Unknown error!")
+
         return results
 
     @classmethod
-    def basic_deframe(self, data: [bytes]):
+    def basic_deframe(self, data: bytes):
         deframer = RtBufferDeframer()
         return deframer.deframe(data)
+
