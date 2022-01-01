@@ -44,7 +44,6 @@ class Monolith:
                 port = utils.int_to_bytes_little(2, con.port)
                 con.send(ip_formatted + port)
             return []
-        packets = [data]
         # This means its dmeudp. 
         # We need to tie this to a tcp connection to deframe if it's > 100 bytes
 
@@ -53,11 +52,11 @@ class Monolith:
         ###### DEFRAME
         # Player has been identified
         if player != None:
-            packets = player.deframe(con, packets)
+            packets = player.deframe(con, data)
             # for packet in packets:
             #     logger.debug(f"{player} | Deframe | {utils.bytes_to_hex(packet)}")
         else: # Player has not been identified
-            packets = RtBufferDeframer.basic_deframe(packets)
+            packets = RtBufferDeframer.basic_deframe(data)
 
         ## SERIALIZE
         serialized = [self._serialize(packetBytes) for packetBytes in packets]
@@ -81,19 +80,17 @@ class Monolith:
     #################################################################################
 
     def process_tcp(self, con: Connection, data: bytes, logger):
-        packets = [data]
-
         # Identify the player -- if the player is not identified, then run anonymous pipeline
         player = self._client_manager.identify(con)
 
         ###### DEFRAME
         # Player has been identified
         if player != None:
-            packets = player.deframe(con, packets)
+            packets = player.deframe(con, data)
             for packet in packets:
                 logger.debug(f"{player} | Deframe | {utils.bytes_to_hex(packet)}")
         else: # Player has not been identified
-            packets = RtBufferDeframer.basic_deframe(packets)
+            packets = RtBufferDeframer.basic_deframe(data)
 
         ###### DECRYPT
         # We only need to decrypt in mas

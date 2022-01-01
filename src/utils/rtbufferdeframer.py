@@ -1,8 +1,10 @@
 from utils import utils
+import numpy as np
 
 class RtBuffer():
     def __init__(self):
         self._buffer = [0] * 2048
+
         self._cursor = 0
         self._encrypted = False
 
@@ -36,18 +38,19 @@ class RtBufferDeframer():
     def __init__(self):
         self._rtbuffer = RtBuffer()
 
-    def deframe(self, data_list: [bytes]):
+    def deframe(self, data: bytes):
         results = []
-        for data in data_list:
-            for b in data:
-                self._rtbuffer.process(b)
+        for b in data:
+            self._rtbuffer.process(b)
 
-                if self._rtbuffer.is_full():
-                    results.append(self._rtbuffer.to_bytes())
-                    self._rtbuffer.clear()
+            if self._rtbuffer.is_full():
+                results.append(self._rtbuffer.to_bytes())
+                self._rtbuffer.clear()
         return results
 
     @classmethod
     def basic_deframe(self, data: [bytes]):
         deframer = RtBufferDeframer()
         return deframer.deframe(data)
+
+ 
