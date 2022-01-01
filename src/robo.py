@@ -12,6 +12,7 @@ import logging
 import asyncio
 from logging import handlers
 
+
 class Robo():
     def __init__(self, config_file: str):
         config = self.read_config(config_file)

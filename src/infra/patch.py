@@ -6,11 +6,17 @@ import logging
 logger = logging.getLogger('robo.patch')
 
 class PatchManager:
-    def __init__(self):
-        pass
+    def __init__(self, config):
+        # patch collection by app id
+        self.Patches = {
+            10684: Patch(10684, 
+                "./bin/patch-ntsc.bin", 0x000D0000, 
+                "./bin/unpatch-ntsc.bin", 0x000E0000,
+                eval(config['patch']['hook_addr']), "j")
+        }
 
     def process_login(self, player):
-        patch = Patches.get(10684)
+        patch = self.Patches.get(10684)
         if patch is not None:
             patch.send(player)
 
@@ -90,10 +96,3 @@ class Patch:
         return self.send(player)
 
 
-# patch collection by app id
-Patches = {
-    10684: Patch(10684, 
-        "./bin/patch-ntsc.bin", 0x000D0000, 
-        "./bin/unpatch-ntsc.bin", 0x000E0000,
-        0, "j")
-}
