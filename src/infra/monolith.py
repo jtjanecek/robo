@@ -25,7 +25,7 @@ class Monolith:
         self._client_manager = ClientManager(config)
         self._chat_commands = ChatCommands()
         self._logger = logging.getLogger('robo.monolith')
-        self._patch_manager = PatchManager()
+        self._patch_manager = PatchManager(self._config)
 
         self._chat_messages = queue.Queue()
 

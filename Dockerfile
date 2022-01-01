@@ -1,5 +1,7 @@
 FROM python:3.9-slim-buster as build-image
 
+ENV IN_DOCKER Yes
+
 RUN apt-get update
 RUN apt-get install tcpdump sqlite3 -y
 
