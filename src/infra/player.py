@@ -95,7 +95,7 @@ class Player():
     async def send_patch(self, packets: [bytes]):
         for packet in packets:
             self.send_mls(packet)
-            await asyncio.sleep(1)
+            await asyncio.sleep(.1)
 
     #############################################################
     # MLS Sending data 
