@@ -92,6 +92,10 @@ class Player():
                 logger.error(f"Player [{self.__str__()}] was unable to cancel UDP flush routine [{result}]")
             self._dmeudp_flush_task = None
 
+    async def send_patch(self, packets: [bytes]):
+        for packet in packets:
+            self.send_mls(packet)
+            await asyncio.sleep(1)
 
     #############################################################
     # MLS Sending data 

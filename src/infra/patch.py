@@ -1,6 +1,8 @@
+import asyncio
 from utils import utils
 from enums.enums import MediusEnum, RtIdEnum, MediusChatMessageType
 from medius.rtpackets.servermemorypoke import ServerMemoryPokeSerializer
+
 
 import logging
 logger = logging.getLogger('robo.patch')
@@ -42,29 +44,35 @@ class Patch:
     
     # 
     def send(self, player):
+
+        packets_to_send = []
+
         try:
             # reset hook
             if self.Hook > 0 and self.HookType == "j":
                 packet = ServerMemoryPokeSerializer.build(self.Hook, utils.hex_to_bytes("03E00008"))
                 packet = utils.rtpacket_to_bytes(packet)
-                player.send_mls(packet)
+                packets_to_send.append(packet)
 
             # send unpatch first
             if self.UnhookPayloadPath != "":
-                self.sendFile(player, self.UnhookPayloadPath, self.UnhookAddress, True)
+                packets_to_send += self.sendFile(player, self.UnhookPayloadPath, self.UnhookAddress, True)
 
 
             # send patch last
             if self.PayloadPath != "":
-                self.sendFile(player, self.PayloadPath, self.Address, True)
+                packets_to_send += self.sendFile(player, self.PayloadPath, self.Address, True)
             
             logger.debug('sent patch to {0}'.format(player))
 
         except:
             logger.exception('error')
 
+        # pass all packets to player method
+        asyncio.create_task(player.send_patch(packets_to_send))
     # 
     def sendFile(self, player, path, address, hook):
+        packets_to_send = []
 
         # determine hook
         hookValue = int(address / 4)
@@ -83,13 +91,15 @@ class Patch:
         # generate messages 
         packet = ServerMemoryPokeSerializer.build(address, data)
         packet = utils.rtpacket_to_bytes(packet)
-        player.send_mls(packet)
+        packets_to_send.append(packet)
 
         # send hook
         if hook and hookValue > 0 and self.Hook > 0:
             packet = ServerMemoryPokeSerializer.build(self.Hook, utils.int_to_bytes_little(4, hookValue))
             packet = utils.rtpacket_to_bytes(packet)
+            packets_to_send.append(packet)
             player.send_mls(packet)
+        return packets_to_send
 
     # send patch to client
     def apply(self, player):
