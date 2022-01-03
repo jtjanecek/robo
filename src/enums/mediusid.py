@@ -1,13 +1,7 @@
 from medius.mediuspackets import *
-from collections import deque
-
-
-
-
-
-
-
-
+import numpy as np
+from numba import jit
+from utils import utils
 
 class MediusId():
 
@@ -19,26 +13,7 @@ class MediusId():
         mediuspacket = MediusId.map[mediusid]
         data_dict = mediuspacket['serializer'].data_dict
 
-        byteList = deque(data)
-        results = {'packet': mediuspacket['name']}
-        for pair in data_dict:
-            if len(byteList) <= 0:
-                break
-            thisBytes = []
-
-            if pair['n_bytes'] == None:
-                while len(byteList) != 0:
-                    thisBytes.append(byteList.popleft())
-            else:
-                for _ in range(pair['n_bytes']):
-                    thisBytes.append(byteList.popleft())
-
-            if pair['cast'] == None:
-                results[pair['name']] = bytes(thisBytes)
-            else:
-                results[pair['name']] = pair['cast'](bytes(thisBytes))
-
-        return results
+        return utils.serialize(data, data_dict, mediuspacket['name'])
 
     map = {
         b'\x00\x00' : {'name': 'DMEServerVersion', 'serializer': dmeserverversion.DMEServerVersionSerializer(), 'handler': dmeserverversion.DMEServerVersionHandler()},
