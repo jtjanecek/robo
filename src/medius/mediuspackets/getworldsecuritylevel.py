@@ -25,10 +25,16 @@ class GetWorldSecurityLevelHandler:
                 0,
                 0
             )]
+
+        if game.get_created_info()['game_password'][0] != 0x00:
+            security_type = WorldSecurityLevelType.WORLD_SECURITY_PLAYER_PASSWORD
+        else:
+            security_type = WorldSecurityLevelType.WORLD_SECURITY_NONE
+
         return [GetWorldSecurityLevelResponseSerializer.build(
             serialized['message_id'],
             CallbackStatus.SUCCESS,
             serialized['world_id'],
             serialized['app_type'],
-            WorldSecurityLevelType.WORLD_SECURITY_NONE # TODO: implement games with password protection
+            security_type
             )]

@@ -27,6 +27,13 @@ class GameList_ExtraInfo0Handler:
         for i in range(len(games)):
             game = games[i]
             serialized_game = game.get_created_info()
+
+            if game.get_created_info()['game_password'][0] != 0x00:
+                security_type = WorldSecurityLevelType.WORLD_SECURITY_PLAYER_PASSWORD
+            else:
+                security_type = WorldSecurityLevelType.WORLD_SECURITY_NONE
+
+
             packets.append(GameList_ExtraInfoResponse0Serializer.build(
                 serialized['message_id'],
                 game.get_dme_world_id(),
@@ -40,7 +47,7 @@ class GameList_ExtraInfo0Handler:
                 serialized_game['generic_field_1'],
                 serialized_game['generic_field_2'],
                 serialized_game['generic_field_3'],
-                WorldSecurityLevelType.WORLD_SECURITY_NONE,
+                security_type,
                 game.get_game_status(),
                 serialized_game['game_host_type'],
                 serialized_game['game_name'],
