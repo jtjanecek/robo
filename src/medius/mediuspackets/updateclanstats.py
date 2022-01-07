@@ -1,4 +1,5 @@
 from enums.enums import MediusEnum, CallbackStatus, COLOR_MAP_1, CLANTAG_ALLOWED_CHARACTERS
+from enums.enums import COLOR_MAP_1, COLOR_MAP_2, COLOR_MAP_3 
 from utils import utils
 from medius.mediuspackets.updateclanstatsresponse import UpdateClanStatsResponseSerializer
 
@@ -32,6 +33,30 @@ class UpdateClanStatsHandler:
                 character = CLANTAG_ALLOWED_CHARACTERS[clan_tag[i]]
                 if character in COLOR_MAP_1.keys():
                     clan_tag[i] = COLOR_MAP_1[character]
+            clan_tag = ''.join(clan_tag)
+            clan_tag = utils.hex_to_bytes(clan_tag)
+            clan_stats = bytearray(clan_stats)
+            clan_stats[16:24] = clan_tag
+
+        elif clan_message == 'Colors 2':
+
+            clan_tag = [clan_tag[i:i+4] for i in range(0,len(clan_tag),4)]
+            for i in range(len(clan_tag)):
+                character = CLANTAG_ALLOWED_CHARACTERS[clan_tag[i]]
+                if character in COLOR_MAP_2.keys():
+                    clan_tag[i] = COLOR_MAP_2[character]
+            clan_tag = ''.join(clan_tag)
+            clan_tag = utils.hex_to_bytes(clan_tag)
+            clan_stats = bytearray(clan_stats)
+            clan_stats[16:24] = clan_tag
+
+        elif clan_message == 'Colors 3':
+
+            clan_tag = [clan_tag[i:i+4] for i in range(0,len(clan_tag),4)]
+            for i in range(len(clan_tag)):
+                character = CLANTAG_ALLOWED_CHARACTERS[clan_tag[i]]
+                if character in COLOR_MAP_3.keys():
+                    clan_tag[i] = COLOR_MAP_3[character]
             clan_tag = ''.join(clan_tag)
             clan_tag = utils.hex_to_bytes(clan_tag)
             clan_stats = bytearray(clan_stats)
