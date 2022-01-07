@@ -18,6 +18,8 @@ class GameList_ExtraInfo0Handler:
 
         player = monolith.get_client_manager().get_player_from_mls_con(con)
         lobby_world_id = player.get_mls_world_id()
+        if lobby_world_id == 0:
+            lobby_world_id = monolith.get_client_manager().get_channels()[0]['id']
 
         games = [game for game in games if game.get_created_info()['game_level'] == lobby_world_id]
 
