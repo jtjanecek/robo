@@ -10,18 +10,30 @@ class LadderPosition_ExtraInfoSerializer:
 
 class LadderPosition_ExtraInfoHandler:
     def process(self, serialized, monolith, con):
+
+        player = monolith.get_client_manager().get_player_from_mls_con(con)
+        player_account_id = player.get_account_id()
+        username = player.get_username()
+
+        stats = monolith.get_client_manager().get_player_stats(player_account_id)
         return [LadderPosition_ExtraInfoResponseSerializer.build(
                 serialized['message_id'],
                 CallbackStatus.SUCCESS,
                 1, # ladder position,
-                1, # ladder stat,
-                1, # account_id
-                "", # username
-                "", # account stats
-                0, # onlinestate1,
-                0, # onlinestate2,
-                0, # onlinestate3,
-                "", # onlinestatelobbyname
-                "", # onlinestategamename
-                1 # endoflist
-            )]
+                1000, # total rankings,
+        )]
+        # return [LadderPosition_ExtraInfoResponseSerializer.build(
+        #         serialized['message_id'],
+        #         CallbackStatus.SUCCESS,
+        #         1, # ladder position,
+        #         1, # ladder stat,
+        #         player_account_id, # account_id
+        #         username, # username
+        #         stats, # account stats
+        #         0, # onlinestate1,
+        #         0, # onlinestate2,
+        #         0, # onlinestate3,
+        #         "", # onlinestatelobbyname
+        #         "", # onlinestategamename
+        #         1 # endoflist
+        #     )]

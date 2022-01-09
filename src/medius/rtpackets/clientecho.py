@@ -4,7 +4,7 @@ from utils import utils
 class ClientEchoSerializer:
     data_dict = [
         {'name': 'rtid', 'n_bytes': 1, 'cast': None},
-        {'name': 'len', 'n_bytes': 1, 'cast': utils.bytes_to_int_little},
+        {'name': 'len', 'n_bytes': 2, 'cast': utils.bytes_to_int_little},
         {'name': 'heartbeat', 'n_bytes': 1, 'cast': None}
     ]
 
