@@ -3,7 +3,6 @@ from utils import utils
 import asyncio
 from queue import Queue
 from enums.enums import MediusPlayerStatus
-
 import logging
 logger = logging.getLogger("robo.player")
 
@@ -35,9 +34,9 @@ class Player():
         self._dmetcp_flush_task = None
         self._dmeudp_flush_task = None
 
-    
+
     #############################################################
-    # DME Sending data 
+    # DME Sending data
     #############################################################
 
     def send_dmetcp(self, data: bytes):
@@ -55,11 +54,11 @@ class Player():
     async def tcpflusher(self):
         while True:
             size = self._dmetcp_queue.qsize()
-            
+
             if size != 0:
                 final_data = b''
                 for i in range(size):
-                       final_data += self._dmetcp_queue.get()
+                    final_data += self._dmetcp_queue.get()
                 self._dmetcp_connection.writer.write(final_data)
                 await self._dmetcp_connection.writer.drain()
             await asyncio.sleep(self._dmetcp_aggtime)
@@ -67,12 +66,21 @@ class Player():
     async def udpflusher(self):
         while True:
             size = self._dmeudp_queue.qsize()
-            
+
             if size != 0:
+
                 final_data = b''
-                for i in range(size):
-                       final_data += self._dmeudp_queue.get()
-                self._dmeudp_connection.send(final_data)
+                for _ in range(size):
+                    popped = self._dmeudp_queue.get()
+                    if len(final_data) + len(popped) > 500:
+                        self._dmeudp_connection.send(final_data)
+                        final_data = popped
+                    else:
+                        final_data += popped
+
+                if final_data != b'':
+                    self._dmeudp_connection.send(final_data)
+
             await asyncio.sleep(self._dmeudp_aggtime)
 
     def close(self):
@@ -98,7 +106,7 @@ class Player():
             await asyncio.sleep(.1)
 
     #############################################################
-    # MLS Sending data 
+    # MLS Sending data
     #############################################################
 
     def send_mls(self, data: bytes):
@@ -182,17 +190,3 @@ class Player():
             'dmetcp_aggtime': self._dmetcp_aggtime,
             'dmeudp_aggtime': self._dmeudp_aggtime
         }
-    
-
-
-
-
-
-
-
-
-
-
-
-                
-
