@@ -1,6 +1,17 @@
 {
-	"bind_ip": "0.0.0.0",
-	"public_ip": "0.0.0.0",
+    "public_ip": "0.0.0.0",
+    "patch": {
+        "hook_addr": "0x00000000"
+    },
+	"bcrypt_salt": "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
+	"policy": "Placeholder policy", 
+	"announcement": "Placeholder announcement",
+	"console_log_level": "INFO",
+	"pcap": {
+		"log_max_mb": 250,
+		"log_backup_count": 5
+	},
+	"log_location": "/logs",
 	"mas": {
 		"port": 10075,
 		"log_max_mb": 50,
@@ -109,17 +120,5 @@
             "id": 44,
             "name": "Veldin"
         }
-    ],
-    "patch": {
-        "hook_addr": "0x00000000"
-    },
-	"bcrypt_salt": "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
-	"policy": "Placeholder policy", 
-	"announcement": "Placeholder announcement",
-	"console_log_level": "DEBUG",
-	"pcap": {
-		"log_max_mb": 250,
-		"log_backup_count": 5
-	},
-	"log_location": "/logs"
+    ]
 }

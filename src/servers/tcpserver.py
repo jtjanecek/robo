@@ -10,7 +10,7 @@ from logging import handlers
 
 
 class TCPServer:
-    def __init__(self, monolith, name, ip, port, log_max_mb, log_backup_count, log_location):
+    def __init__(self, monolith, name, port, log_max_mb, log_backup_count, log_location):
 
         self._logger = logging.getLogger(f"robo.{name}")
         formatter = logging.Formatter('%(asctime)s %(name)s | %(levelname)s | %(message)s')
@@ -22,7 +22,7 @@ class TCPServer:
 
         self._monolith = monolith
         self._name = name
-        self._ip = ip
+        self._ip = '0.0.0.0'
         self._port = port
 
 
@@ -66,14 +66,13 @@ class TCPServer:
                 await writer.wait_closed()
             except Exception as e:
                 self._logger.exception(f"Exception on connection: {connection}")
-                
+
     async def start(self):
         server = await asyncio.start_server(
         self.handle_incoming, self._ip, self._port)
-    
+
         addr = server.sockets[0].getsockname()
         self._logger.info(f'Serving on {addr} ...')
 
         async with server:
             await server.serve_forever()
-

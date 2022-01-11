@@ -17,7 +17,7 @@ from api.parser import gamerulesParser
 
 
 class Api():
-    def __init__(self, monolith, ip: str, port: int, sync_rate: int, log_max_mb, log_backup_count, log_location):
+    def __init__(self, monolith, port: int, sync_rate: int, log_max_mb, log_backup_count, log_location):
         self._logger = logging.getLogger(f"robo.api")
         formatter = logging.Formatter('%(asctime)s API | %(levelname)s | %(message)s')
         filehandler = handlers.RotatingFileHandler(os.path.join(log_location,'api.log'), mode='w', maxBytes=log_max_mb*1000000, backupCount=log_backup_count)
@@ -26,7 +26,7 @@ class Api():
         self._logger.addHandler(filehandler)
 
         self._monolith = monolith
-        self._ip = ip
+        self._ip = '0.0.0.0'
         self._port = port
         self._sync_rate = sync_rate
 
@@ -138,7 +138,7 @@ class Api():
 
         runner = web.AppRunner(app)
         await runner.setup()
-        site = web.TCPSite(runner, self._ip, self._port)    
+        site = web.TCPSite(runner, self._ip, self._port)
         await site.start()
 
         self._logger.info(f"Serving on ('{self._ip}', {self._port}) ...")

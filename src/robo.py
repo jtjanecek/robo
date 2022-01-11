@@ -31,15 +31,15 @@ class Robo():
 
         self._monolith = Monolith(config)
 
-        self._pcap = RoboPacketSniffer(config)    
+        self._pcap = RoboPacketSniffer(config)
 
         self._loop = asyncio.get_event_loop()
-        self._mas = TCPServer(self._monolith, 'mas', config['bind_ip'], config['mas']['port'], config['mas']['log_max_mb'], config['mas']['log_backup_count'], config['log_location'])
-        self._mls = TCPServer(self._monolith, 'mls', config['bind_ip'], config['mls']['port'], config['mls']['log_max_mb'], config['mls']['log_backup_count'], config['log_location'])
-        self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['bind_ip'], config['dmetcp']['port'], config['dmetcp']['log_max_mb'], config['dmetcp']['log_backup_count'], config['log_location'])
-        self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['bind_ip'], config['dmeudp']['port'], config['dmeudp']['log_max_mb'], config['dmeudp']['log_backup_count'], config['log_location'])
-        self._nat = UDPServer(self._monolith, 'nat', config['bind_ip'], config['nat']['port'], config['nat']['log_max_mb'], config['nat']['log_backup_count'], config['log_location'])
-        self._api = Api(self._monolith, config['bind_ip'], config['api']['port'], config['api']['sync_rate'], config['api']['log_max_mb'], config['api']['log_backup_count'], config['log_location'])
+        self._mas = TCPServer(self._monolith, 'mas', config['mas']['port'], config['mas']['log_max_mb'], config['mas']['log_backup_count'], config['log_location'])
+        self._mls = TCPServer(self._monolith, 'mls', config['mls']['port'], config['mls']['log_max_mb'], config['mls']['log_backup_count'], config['log_location'])
+        self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['dmetcp']['port'], config['dmetcp']['log_max_mb'], config['dmetcp']['log_backup_count'], config['log_location'])
+        self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['dmeudp']['port'], config['dmeudp']['log_max_mb'], config['dmeudp']['log_backup_count'], config['log_location'])
+        self._nat = UDPServer(self._monolith, 'nat', config['nat']['port'], config['nat']['log_max_mb'], config['nat']['log_backup_count'], config['log_location'])
+        self._api = Api(self._monolith, config['api']['port'], config['api']['sync_rate'], config['api']['log_max_mb'], config['api']['log_backup_count'], config['log_location'])
 
         # Start the servers
         self._loop.create_task(self._mas.start())
