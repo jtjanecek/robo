@@ -1,6 +1,10 @@
 
 from utils import utils
 
+import logging
+
+logger = logging.getLogger("robo.clientflush")
+
 class ClientFlushSingleSerializer:
     data_dict = [
         {'name': 'rtid', 'n_bytes': 1, 'cast': None},
@@ -12,4 +16,12 @@ class ClientFlushSingleSerializer:
 
 class ClientFlushSingleHandler:
     def process(self, serialized, monolith, con):
+        # Con has to be either dmetcp or dmeudp
+        if con.server_name == 'dmetcp':
+            logger.warning("DMETCPFLUSH WARNING -- SINGLE!")
+        elif con.server_name == 'dmeudp':
+            monolith.get_client_manager().dmeudp_flush(con)
+        else:
+            raise Exception('Unimplemented Handler: ClientAppBroadcastHandler')
+
         return []

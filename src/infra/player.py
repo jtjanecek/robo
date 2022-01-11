@@ -63,24 +63,26 @@ class Player():
                 await self._dmetcp_connection.writer.drain()
             await asyncio.sleep(self._dmetcp_aggtime)
 
+    def flush_udp(self):
+        size = self._dmeudp_queue.qsize()
+
+        if size != 0:
+
+            final_data = b''
+            for _ in range(size):
+                popped = self._dmeudp_queue.get()
+                if len(final_data) + len(popped) > 500:
+                    self._dmeudp_connection.send(final_data)
+                    final_data = popped
+                else:
+                    final_data += popped
+
+            if final_data != b'':
+                self._dmeudp_connection.send(final_data)
+
     async def udpflusher(self):
         while True:
-            size = self._dmeudp_queue.qsize()
-
-            if size != 0:
-
-                final_data = b''
-                for _ in range(size):
-                    popped = self._dmeudp_queue.get()
-                    if len(final_data) + len(popped) > 500:
-                        self._dmeudp_connection.send(final_data)
-                        final_data = popped
-                    else:
-                        final_data += popped
-
-                if final_data != b'':
-                    self._dmeudp_connection.send(final_data)
-
+            self.flush_udp()
             await asyncio.sleep(self._dmeudp_aggtime)
 
     def close(self):

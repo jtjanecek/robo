@@ -76,7 +76,7 @@ class ClientManager:
 
         return True
 
-    def dmetcp_connected(self, con, session_key: bytes, dme_world_id: int) -> bool:        
+    def dmetcp_connected(self, con, session_key: bytes, dme_world_id: int) -> bool:
         # Get the account id of the user who connected
         account_id = self._db.get_account_id(session_key = session_key)
 
@@ -91,7 +91,7 @@ class ClientManager:
 
         return True
 
-    def dmeudp_connected(self, con: UdpConnection, serialized: dict) -> bool:        
+    def dmeudp_connected(self, con: UdpConnection, serialized: dict) -> bool:
         # Get the account id of the user who connected
         dme_player_id = serialized['dme_player_id']
         dme_world_id = serialized['dme_world_id']
@@ -148,6 +148,13 @@ class ClientManager:
         game = source_player.get_game()
         game.dmeudp_broadcast(source_player, data)
 
+    def dmeudp_flush(self, con: UdpConnection):
+        source_player = self._dmeudp_cons[con.hash()]
+        game = source_player.get_game()
+        game.dmeudp_flush(source_player)
+
+
+
     # =============== Dme ===============
     def create_game(self, create_game_serialized: dict, dmetcp_aggtime, dmeudp_aggtime):
         with self._games_lock:
@@ -167,7 +174,7 @@ class ClientManager:
             return MediusWorldStatus.WORLD_CLOSED
         return self._games[dme_world_id].get_game_status()
 
-    def get_games(self): 
+    def get_games(self):
         return list(self._games.values())
 
     def get_game(self, dme_world_id):
@@ -395,5 +402,3 @@ class ClientManager:
         for player in self._players.values():
             result += '\n' + str(player)
         return result
-
-

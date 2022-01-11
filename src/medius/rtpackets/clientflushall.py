@@ -12,4 +12,12 @@ class ClientFlushAllSerializer:
 
 class ClientFlushAllHandler:
     def process(self, serialized, monolith, con):
+        # Con has to be either dmetcp or dmeudp
+        if con.server_name == 'dmetcp':
+            logger.warning("DMETCPFLUSH WARNING -- ALL!")
+        elif con.server_name == 'dmeudp':
+            monolith.get_client_manager().dmeudp_flush(con)
+        else:
+            raise Exception('Unimplemented Handler: ClientAppBroadcastHandler')
+
         return []

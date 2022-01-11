@@ -89,7 +89,7 @@ class Game:
 
         for dest_player in self._players.values():
             if dest_player != player:
-                # send server notify 
+                # send server notify
                 dest_player.send_dmetcp(packet)
 
     def send_server_notify_disconnected(self, player):
@@ -100,7 +100,7 @@ class Game:
 
         for dest_player in self._players.values():
             if dest_player != player:
-                # send server notify 
+                # send server notify
                 dest_player.send_dmetcp(packet)
 
     def dmetcp_single(self, player, data: bytes):
@@ -173,6 +173,11 @@ class Game:
         for dest_player in self._players.values():
             if dest_player != player:
                 dest_player.send_dmeudp(packet)
+
+    def dmeudp_flush(self, player):
+        for dest_player in self._players.values():
+            if dest_player != player:
+                dest_player.flush_udp()
 
     def get_created_date(self):
         return self._created_date
