@@ -1,3 +1,4 @@
+*.elf
 *.pdf
 *.db
 .idea

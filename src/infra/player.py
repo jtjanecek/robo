@@ -101,14 +101,17 @@ class Player():
             self._dmeudp_flush_task = None
 
     async def send_patch(self, packets: [bytes]):
+        max_packet_size = 500
+        packet_delay = .005
+
         for packet in packets:
-            while len(packet) > 256:
-                packet_mini = packet[0:256]
+            while len(packet) > max_packet_size:
+                packet_mini = packet[0:max_packet_size]
                 self.send_mls(packet_mini)
-                packet = packet[256:]
-                await asyncio.sleep(.1)
+                packet = packet[max_packet_size:]
+                await asyncio.sleep(packet_delay)
             self.send_mls(packet)
-            await asyncio.sleep(.1)
+            await asyncio.sleep(packet_delay)
 
 
     #############################################################
