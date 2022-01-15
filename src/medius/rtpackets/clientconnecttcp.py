@@ -39,9 +39,13 @@ class ClientConnectTcpHandler:
             username = client_manager.get_username(session_key=serialized['session_key'])
             client_manager.register_ip(username, con.addr)
 
+            player = client_manager.get_player_from_mls_con(con)
+
+            player.set_app_id(serialized['app_id'])
+
             return [
                 ServerConnectAcceptTcpSerializer.build(con.addr),
-                ServerConnectCompleteSerializer.build()            
+                ServerConnectCompleteSerializer.build()
             ]
 
         # mas
@@ -54,6 +58,5 @@ class ClientConnectTcpHandler:
             return [
                 ServerCryptkeyGameSerializer.build(server_rc4_key),
                 ServerConnectAcceptTcpSerializer.build(con.addr),
-                ServerConnectCompleteSerializer.build()            
+                ServerConnectCompleteSerializer.build()
             ]
-            

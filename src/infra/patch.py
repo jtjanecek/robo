@@ -1,3 +1,4 @@
+import os
 import asyncio
 from utils import utils
 from enums.enums import MediusEnum, RtIdEnum, MediusChatMessageType
@@ -10,19 +11,40 @@ logger = logging.getLogger('robo.patch')
 class PatchManager:
     def __init__(self, config):
         # patch collection by app id
-        self.Patches = {
-            10684: Patch(10684, 
-                "./bin/patch-ntsc.bin", 0x000D0000, 
+        self.Patches = {}
+
+        if not os.path.exists(os.path.join('.','bin','patch-pal.bin')) or not os.path.exists(os.path.join('.','bin','unpatch-pal.bin')):
+            logger.warning("No PAL Patch found! Patch disabled for PAL players")
+        else:
+            logger.info("PAL Patch found!")
+            self.Patches[10683] = Patch(10683,
+                "./bin/patch-pal.bin", 0x000D0000,
+                "./bin/unpatch-pal.bin", 0x000E0000,
+                eval(config['patch']['hook_addr']), "j")
+
+        if not os.path.exists(os.path.join('.','bin','patch-ntsc.bin')) or not os.path.exists(os.path.join('.','bin','unpatch-ntsc.bin')):
+            logger.warning("No NTSC Patch found! Patch disabled for NTSC players")
+        else:
+            logger.info("NTSC Patch found!")
+            self.Patches[10684] = Patch(10684,
+                "./bin/patch-ntsc.bin", 0x000D0000,
                 "./bin/unpatch-ntsc.bin", 0x000E0000,
                 eval(config['patch']['hook_addr']), "j")
-        }
+
 
     def process_login(self, player):
-        patch = self.Patches.get(10684)
+
+        app_id = player.get_app_id()
+
+        if app_id not in self.Patches.keys():
+            return
+
+        patch = self.Patches[app_id]
         if patch is not None:
             patch.send(player)
 
-# 
+
+#
 class Patch:
 
     ApplicationId = -1
@@ -41,8 +63,8 @@ class Patch:
         self.UnhookAddress = unhookAddress
         self.Hook = hook
         self.HookType = hookType
-    
-    # 
+
+    #
     def send(self, player):
 
         packets_to_send = []
@@ -62,7 +84,7 @@ class Patch:
             # send patch last
             if self.PayloadPath != "":
                 packets_to_send += self.sendFile(player, self.PayloadPath, self.Address, True)
-            
+
             logger.debug('sent patch to {0}'.format(player))
 
         except:
@@ -70,7 +92,7 @@ class Patch:
 
         # pass all packets to player method
         asyncio.create_task(player.send_patch(packets_to_send))
-    # 
+    #
     def sendFile(self, player, path, address, hook):
         packets_to_send = []
 
@@ -88,7 +110,7 @@ class Patch:
         data = in_file.read()
         in_file.close()
 
-        # generate messages 
+        # generate messages
         packet = ServerMemoryPokeSerializer.build(address, data)
         packet = utils.rtpacket_to_bytes(packet)
         packets_to_send.append(packet)
@@ -103,5 +125,3 @@ class Patch:
     # send patch to client
     def apply(self, player):
         return self.send(player)
-
-

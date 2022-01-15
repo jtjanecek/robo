@@ -8,6 +8,8 @@ logger = logging.getLogger("robo.player")
 
 class Player():
     def __init__(self, account_id, username, session_key, mls_world_id, mls_con):
+        self._app_id = None
+
         # Basic info
         self._account_id = account_id
         self._username = username
@@ -143,6 +145,12 @@ class Player():
         elif connection.server_name == 'dmeudp':
             return self._dmeudp_deframe_buffer.deframe(data)
 
+    def set_app_id(self, app_id):
+        self._app_id = app_id
+
+    def get_app_id(self):
+        return self._app_id
+
     def get_mls_world_id(self) -> int:
         return self._mls_world_id
 
@@ -192,6 +200,7 @@ class Player():
 
     def to_json(self) -> dict:
         return {
+            'region': 'PAL' if self._app_id == 10683 else 'NTSC',
             'status': self._status,
             'account_id': self._account_id,
             'username': self._username,
