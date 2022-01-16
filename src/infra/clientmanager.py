@@ -76,7 +76,7 @@ class ClientManager:
 
         return True
 
-    def dmetcp_connected(self, con, session_key: bytes, dme_world_id: int) -> bool:        
+    def dmetcp_connected(self, con, session_key: bytes, dme_world_id: int) -> bool:
         # Get the account id of the user who connected
         account_id = self._db.get_account_id(session_key = session_key)
 
@@ -91,7 +91,7 @@ class ClientManager:
 
         return True
 
-    def dmeudp_connected(self, con: UdpConnection, serialized: dict) -> bool:        
+    def dmeudp_connected(self, con: UdpConnection, serialized: dict) -> bool:
         # Get the account id of the user who connected
         dme_player_id = serialized['dme_player_id']
         dme_world_id = serialized['dme_world_id']
@@ -167,7 +167,7 @@ class ClientManager:
             return MediusWorldStatus.WORLD_CLOSED
         return self._games[dme_world_id].get_game_status()
 
-    def get_games(self): 
+    def get_games(self):
         return list(self._games.values())
 
     def get_game(self, dme_world_id):
@@ -266,6 +266,16 @@ class ClientManager:
 
     def get_clan_name(self, clan_id: int):
         return self._db.get_clan_name(clan_id)
+
+    def get_clan_name_from_account_id(self, account_id: int):
+        clan_id = self.get_clan_id_from_account_id(account_id)
+        if clan_id == None:
+            return ''
+        clan_name = self.get_clan_name(clan_id)
+        return clan_name
+
+    def get_clan_tag_from_account_id(self, account_id: int):
+        return ''
 
     def respond_clan_invite(self, clan_invitation_id, accepted):
         return self._db.respond_clan_invite(clan_invitation_id, accepted)
@@ -395,5 +405,3 @@ class ClientManager:
         for player in self._players.values():
             result += '\n' + str(player)
         return result
-
-

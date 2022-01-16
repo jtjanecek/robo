@@ -43,6 +43,13 @@ class ClientConnectTcpHandler:
 
             player.set_app_id(serialized['app_id'])
 
+            # Set clan id and clan tag
+            clan_name = client_manager.get_clan_name_from_account_id(player.get_account_id())
+            clan_tag = client_manager.get_clan_tag_from_account_id(player.get_account_id())
+
+            player.set_clan(clan_name)
+            player.set_clan_tag(clan_tag)
+
             return [
                 ServerConnectAcceptTcpSerializer.build(con.addr),
                 ServerConnectCompleteSerializer.build()
