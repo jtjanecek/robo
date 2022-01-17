@@ -36,6 +36,9 @@ class Player():
         self._dmetcp_flush_task = None
         self._dmeudp_flush_task = None
 
+        self._clan = ''
+        self._clan_tag = ''
+
 
     #############################################################
     # DME Sending data
@@ -198,8 +201,16 @@ class Player():
     def get_dmeudp_aggtime(self):
         return self._dmeudp_aggtime
 
+    def set_clan(self, clan):
+        self._clan = clan
+
+    def set_clan_tag(self, clan_tag):
+        self._clan_tag = clan_tag
+
     def to_json(self) -> dict:
         return {
+            'clan': self._clan,
+            'clan_tag': self._clan_tag,
             'region': 'PAL' if self._app_id == 10683 else 'NTSC',
             'status': self._status,
             'account_id': self._account_id,
