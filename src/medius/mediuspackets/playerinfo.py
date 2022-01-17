@@ -18,12 +18,13 @@ class PlayerInfoHandler:
 
         client_manager = monolith.get_client_manager()
         account_name = client_manager.get_username(account_id=account_id)
+        callback = CallbackStatus.SUCCESS
         player_status = client_manager.get_player_status(account_id)
         connection_class = 1
         stats = client_manager.get_player_stats(account_id)
         return [PlayerInfoResponseSerializer.build(
             serialized['message_id'],
-            CallbackStatus.SUCCESS,
+            callback,
             account_name,
             monolith.get_app_id(),
             player_status,
