@@ -1,6 +1,6 @@
 import threading
 import random
-from enums.enums import MediusEnum, MediusPlayerStatus, MediusWorldStatus
+from enums.enums import MediusEnum, MediusPlayerStatus, MediusWorldStatus, CLANTAG_ALLOWED_CHARACTERS
 from infra.sqllitedb import SqlLiteDb
 from infra.game import Game
 from infra.connection import UdpConnection, Connection
@@ -275,7 +275,21 @@ class ClientManager:
         return clan_name
 
     def get_clan_tag_from_account_id(self, account_id: int):
-        return ''
+        clan_id = self.get_clan_id_from_account_id(account_id)
+        if clan_id == None:
+            return ''
+
+        clan_info = self.get_clan_info(clan_id)
+        tag = utils.hex_to_bytes(clan_info['clan_stats'])[16:24].hex().upper()
+
+        clan_tag = [tag[i:i+4] for i in range(0,len(tag),4)]
+        result = []
+        for i in range(len(clan_tag)):
+            character = CLANTAG_ALLOWED_CHARACTERS[clan_tag[i]]
+            if len(character) == 1:
+                result.append(character)
+        result = ''.join(list(reversed(result)))
+        return result
 
     def respond_clan_invite(self, clan_invitation_id, accepted):
         return self._db.respond_clan_invite(clan_invitation_id, accepted)
