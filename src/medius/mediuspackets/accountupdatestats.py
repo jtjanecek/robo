@@ -3,7 +3,8 @@ from utils import utils
 from medius.mediuspackets.accountupdatestatsresponse import AccountUpdateStatsResponseSerializer
 
 import logging
-logger = logging.getLogger('robo')
+logger = logging.getLogger('robo.tests')
+
 class AccountUpdateStatsSerializer:
     data_dict = [
         {'name': 'mediusid', 'n_bytes': 2, 'cast': None},
@@ -20,6 +21,11 @@ class AccountUpdateStatsHandler:
         player_account_id = player.get_account_id()
 
         client_manager.update_player_stats(player_account_id, serialized['stats'])
+
+        updated_at = client_manager.get_player_stats(player_account_id)
+
+        if serialized['stats'] != updated_at:
+            logger.warning(f"Player stats did not get updated (account_id: {player_account_id})! Expected: {serialized['stats']}, actual: {updated_at}")
 
         return [AccountUpdateStatsResponseSerializer.build(
             serialized['message_id'],
