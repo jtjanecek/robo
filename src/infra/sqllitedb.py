@@ -186,8 +186,8 @@ class SqlLiteDb():
         if not vals: # No result
             return {}
         return {
-            'account_id': vals[0], 
-            'account_type': vals[1], 
+            'account_id': vals[0],
+            'account_type': vals[1],
             'username': vals[2],
             'stats': vals[3],
             'ladderstatswide': vals[4]
@@ -204,8 +204,8 @@ class SqlLiteDb():
         if not vals: # No result
             return {}
         return {
-            'account_id': vals[0], 
-            'account_type': vals[1], 
+            'account_id': vals[0],
+            'account_type': vals[1],
             'username': vals[2],
             'stats': vals[3],
             'ladderstatswide': vals[4]
@@ -253,9 +253,23 @@ class SqlLiteDb():
         c.close()
 
         if vals:
+            if vals[0] == '':
+                self._update_password(account_id, encrypted_password)
+                return True
             return vals[0] == encrypted_password
         raise Exception("Unable to find password for account id: " + str(account_id))
 
+    def _update_password(self, account_id, encrypted_password):
+        c = self.conn.cursor()
+        update = '''
+            UPDATE users
+            SET password = ?
+            WHERE
+                account_id = ?;
+        '''
+        c.execute(update, [encrypted_password, account_id])
+        self.conn.commit()
+        c.close()
 
     def _update_session_key(self, account_id, session_key):
         c = self.conn.cursor()
@@ -296,7 +310,7 @@ class SqlLiteDb():
         c = self.conn.cursor()
         update = '''
             UPDATE users
-            SET stats = ?  
+            SET stats = ?
             WHERE
                 account_id = ?;
         '''
@@ -641,7 +655,7 @@ class SqlLiteDb():
             return
 
         insert_command = """INSERT INTO clan_invites
-                            (account_id_invited, clan_id, 
+                            (account_id_invited, clan_id,
                             invite_message, response_msg)
                             values(?,?,?,?);
                             """
