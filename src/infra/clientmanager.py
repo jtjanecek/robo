@@ -7,6 +7,8 @@ from infra.connection import UdpConnection, Connection
 from infra.player import Player
 from datetime import datetime
 from utils import utils
+from api.parser import get_clean_clan_tag_from_stats
+
 
 import logging
 logger = logging.getLogger("robo.clientmanager")
@@ -280,16 +282,10 @@ class ClientManager:
             return ''
 
         clan_info = self.get_clan_info(clan_id)
-        tag = utils.hex_to_bytes(clan_info['clan_stats'])[16:24].hex().upper()
 
-        clan_tag = [tag[i:i+4] for i in range(0,len(tag),4)]
-        result = []
-        for i in range(len(clan_tag)):
-            character = CLANTAG_ALLOWED_CHARACTERS[clan_tag[i]]
-            if len(character) == 1:
-                result.append(character)
-        result = ''.join(list(reversed(result)))
-        return result
+        tag = get_clean_clan_tag_from_stats(clan_info['clan_stats'])
+
+        return tag
 
     def respond_clan_invite(self, clan_invitation_id, accepted):
         return self._db.respond_clan_invite(clan_invitation_id, accepted)

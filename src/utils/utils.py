@@ -5,10 +5,10 @@ from hashlib import sha512
 
 def rtpacket_to_bytes(packet: list):
     '''
-    Create a byte array from an rt id and the 
-    byte arrays that go into that payload. 
+    Create a byte array from an rt id and the
+    byte arrays that go into that payload.
 
-    If an arg is a dict, it is interpreted as a 
+    If an arg is a dict, it is interpreted as a
     medius packet, and will be consolidated into
     the packet
 
@@ -133,6 +133,7 @@ def check_username_valid(username: str) -> bool:
             return False
     return True
 
+
 ############################ Conversions
 
 def sha512_encrypt(data):
@@ -167,11 +168,10 @@ def bytes_to_str(data: bytes) -> str:
             return res
         res += chr(b)
     return res
-    
+
 def str_to_bytes(data: str, length: int) -> bytes:
     str_bytes = data
     assert(length > len(data))
     while (len(str_bytes) != length):
         str_bytes += '\0'
     return str_bytes.encode()
-

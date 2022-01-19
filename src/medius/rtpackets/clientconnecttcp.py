@@ -5,6 +5,7 @@ from medius.rtpackets.serverconnectaccepttcp import ServerConnectAcceptTcpSerial
 from medius.rtpackets.serverconnectcomplete import ServerConnectCompleteSerializer
 from medius.rtpackets.servercryptkeygame import ServerCryptkeyGameSerializer
 
+
 class ClientConnectTcpSerializer:
     data_dict = [
         {'name': 'rtid', 'n_bytes': 1, 'cast': None},

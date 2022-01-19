@@ -14,6 +14,7 @@ from api.parser import advancedRulesParser
 from api.parser import mapParser
 from api.parser import timeParser
 from api.parser import gamerulesParser
+from api.parser import get_clean_clan_tag_from_stats
 
 
 class Api():
@@ -111,6 +112,8 @@ class Api():
             return web.Response(text=f'You need a clan_id!')
 
         data = self._monolith.api_req_clan_id(int(clan_id))
+        if data != {}:
+            data['clan_tag'] = get_clean_clan_tag_from_stats(data['clan_stats'])
         return web.Response(text=json.dumps(data))
 
     async def clan_name(self, request):
@@ -120,6 +123,8 @@ class Api():
             return web.Response(text=f'You need a clan_name!')
 
         data = self._monolith.api_req_clan_name(clan_name)
+        if data != {}:
+            data['clan_tag'] = get_clean_clan_tag_from_stats(data['clan_stats'])
         return web.Response(text=json.dumps(data))
 
 

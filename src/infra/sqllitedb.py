@@ -507,27 +507,8 @@ class SqlLiteDb():
         return clan_info
 
     def get_clan_info_from_name(self, clan_name: str):
-        c = self.conn.cursor()
-        select = """SELECT clan_id, clan_name, leader_account_id, leader_account_name, stats, clan_status, statswide
-                    FROM clans WHERE lower(clan_name) = lower(?);
-                """
-        vals = c.execute(select, [clan_name]).fetchone()
-        c.close()
-
-        if not vals:
-            return {}
-        clan_info = {
-            'clan_id': vals[0],
-            'clan_name': vals[1],
-            'leader_account_id': vals[2],
-            'leader_account_name': vals[3],
-            'clan_stats': vals[4],
-            'clan_status': vals[5],
-            'clan_statswide': vals[6]
-        }
-        return clan_info
-
-
+        clan_id = self.get_clan_id_from_name(clan_name)
+        return self.get_clan_info(clan_id)
 
     def get_clan_leader_account_id(self, clan_id):
         c = self.conn.cursor()
