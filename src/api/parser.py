@@ -158,3 +158,12 @@ def get_clean_clan_tag_from_stats(tag: str):
             result.append(character)
     result = ''.join(list(reversed(result)))
     return result
+
+def parse_clanstats_wide(data: dict):
+    statswide = data['clan_statswide']
+    statswide = utils.hex_to_bytes(statswide)
+    data['kills'] = utils.bytes_to_int_little(statswide[0:4])
+    data['deaths'] = utils.bytes_to_int_little(statswide[4:8])
+    data['wins'] = utils.bytes_to_int_little(statswide[8:12])
+    data['losses'] = utils.bytes_to_int_little(statswide[12:16])
+    return data
