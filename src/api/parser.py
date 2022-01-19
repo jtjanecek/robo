@@ -1,3 +1,6 @@
+from utils import utils
+from enums.enums import CLANTAG_ALLOWED_CHARACTERS
+
 
 weapons = {
     0:"Lava Gun",
@@ -26,7 +29,7 @@ def weaponParser(num):
 import struct
 OTHER_RULES = {
     'base_defenses' : 19,
-    "spawn_charge_boots":18,   
+    "spawn_charge_boots":18,
     'spawn_weapons':17,
     'unlimited_ammo':16,
     "player_names":9,
@@ -99,7 +102,7 @@ def timeParser(num):
     num=num[0:2]
     num = int(num,16)
     num = format(num, "#010b")[2:]
-    game_time = num[5:]  
+    game_time = num[5:]
     game_time = TIME[game_time]
     return game_time
 
@@ -111,7 +114,7 @@ MODE={ #3,4
     '01':"CTF",
     '10':"Deathmatch"
 }
-SUBMODES = { 
+SUBMODES = {
     # '1':"no_teams", #13
     # "1":"base_attrition" #20
     'isTeams':13, #1 = yes, means u can swap teams only 0 in DM
@@ -131,7 +134,7 @@ def gamerulesParser(num):
     game_mode = MODE[num[3:5]] if num[3:5] in MODE else "Unknown Game Mode"
     isTeams = True if num[SUBMODES['isTeams']] == '1' else False
     isAttrition = True if num[SUBMODES['isAttrition']]== '1' else False
-    
+
     if game_mode == MODE['00']:
         game_type = "Attrition" if isAttrition else "Normal"
     elif game_mode == MODE['01']:
@@ -141,3 +144,26 @@ def gamerulesParser(num):
     else:
         game_type = "Game Type Not Found"
     return game_mode, game_type
+
+
+
+def get_clean_clan_tag_from_stats(tag: str):
+    tag = utils.hex_to_bytes(tag)[16:24].hex().upper()
+
+    clan_tag = [tag[i:i+4] for i in range(0,len(tag),4)]
+    result = []
+    for i in range(len(clan_tag)):
+        character = CLANTAG_ALLOWED_CHARACTERS[clan_tag[i]]
+        if len(character) == 1:
+            result.append(character)
+    result = ''.join(list(reversed(result)))
+    return result
+
+def parse_clanstats_wide(data: dict):
+    statswide = data['clan_statswide']
+    statswide = utils.hex_to_bytes(statswide)
+    data['kills'] = utils.bytes_to_int_little(statswide[0:4])
+    data['deaths'] = utils.bytes_to_int_little(statswide[4:8])
+    data['wins'] = utils.bytes_to_int_little(statswide[8:12])
+    data['losses'] = utils.bytes_to_int_little(statswide[12:16])
+    return data
