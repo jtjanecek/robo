@@ -360,11 +360,22 @@ class ClientManager:
         return self._db.get_all_user_info_from_username(username)
 
     def api_req_clan_id(self, clan_id):
-        return self._db.get_clan_info(clan_id)
+        data = self._db.get_clan_info(clan_id)
+        if data != {}:
+            account_ids = self._db.get_clan_member_account_ids(clan_id)
+            data['members'] = []
+            for account_id in account_ids:
+                data['members'].append(self._db.get_username(account_id=account_id))
+        return data
 
     def api_req_clan_name(self, clan_name):
-        return self._db.get_clan_info_from_name(clan_name)
-
+        data = self._db.get_clan_info_from_name(clan_name)
+        if data != {}:
+            account_ids = self._db.get_clan_member_account_ids(data['clan_id'])
+            data['members'] = []
+            for account_id in account_ids:
+                data['members'].append(self._db.get_username(account_id=account_id))
+        return data
 
     def clear_zombie_games(self):
         for dme_world_id in list(self._games.keys()):
