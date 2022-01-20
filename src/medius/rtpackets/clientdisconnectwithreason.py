@@ -8,10 +8,8 @@ class ClientDisconnectWithReasonSerializer:
     ]
 
     def serialize(self, data: bytes):
-        raise Exception('Unimplemented Handler: ClientDisconnectWithReasonSerializer')
-        return utils.serialize(data, self.data_dict)
+        return utils.serialize(data, self.data_dict, __name__)
 
 class ClientDisconnectWithReasonHandler:
     def process(self, serialized, monolith, con):
-        raise Exception('Unimplemented Handler: ClientDisconnectWithReasonHandler')
-
+        return []
