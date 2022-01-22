@@ -73,6 +73,7 @@ class Game:
         player.start_tcpflusher()
 
         self._status = MediusWorldStatus.WORLD_STAGING
+        player.set_player_status(MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD)
 
     def player_udp_connected(self, dme_player_id: int, udp_con) -> None:
         player = self._players[dme_player_id]
@@ -89,7 +90,7 @@ class Game:
 
         for dest_player in self._players.values():
             if dest_player != player:
-                # send server notify 
+                # send server notify
                 dest_player.send_dmetcp(packet)
 
     def send_server_notify_disconnected(self, player):
@@ -100,7 +101,7 @@ class Game:
 
         for dest_player in self._players.values():
             if dest_player != player:
-                # send server notify 
+                # send server notify
                 dest_player.send_dmetcp(packet)
 
     def dmetcp_single(self, player, data: bytes):
