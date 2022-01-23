@@ -305,3 +305,10 @@ class Monolith:
             return leaderboard[start_position-1:end_position-1]
         else:
             return leaderboard[start_position-1:end_position-1]
+
+    def get_player_ranking(self, account_id, stat_index):
+        leaderboard = self._leaderboards[stat_index]
+        for i in range(len(leaderboard)):
+            if leaderboard[i]['account_id'] == account_id:
+                return i+1
+        return 9999

@@ -5,7 +5,10 @@ from medius.mediuspackets.ladderposition_extrainforesponse import LadderPosition
 class LadderPosition_ExtraInfoSerializer:
     data_dict = [
         {'name': 'mediusid', 'n_bytes': 2, 'cast': None},
-        {'name': 'message_id', 'n_bytes': MediusEnum.MESSAGEID_MAXLEN, 'cast': None}
+        {'name': 'message_id', 'n_bytes': MediusEnum.MESSAGEID_MAXLEN, 'cast': None},
+        {'name': 'buf', 'n_bytes': 3, 'cast': None},
+        {'name': 'account_id', 'n_bytes': 4, 'cast': utils.bytes_to_int_little},
+        {'name': 'ladder_stat_index', 'n_bytes': 4, 'cast': utils.bytes_to_int_little},
     ]
 
 class LadderPosition_ExtraInfoHandler:
@@ -15,12 +18,14 @@ class LadderPosition_ExtraInfoHandler:
         player_account_id = player.get_account_id()
         username = player.get_username()
 
+        rank = monolith.get_player_ranking(serialized['account_id'], serialized['ladder_stat_index'])
+
         stats = monolith.get_client_manager().get_player_stats(player_account_id)
         return [LadderPosition_ExtraInfoResponseSerializer.build(
                 serialized['message_id'],
                 CallbackStatus.SUCCESS,
-                1, # ladder position,
-                1000, # total rankings,
+                rank, # ladder position,
+                99999, # total rankings,
         )]
         # return [LadderPosition_ExtraInfoResponseSerializer.build(
         #         serialized['message_id'],
