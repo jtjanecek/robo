@@ -1,5 +1,10 @@
 from enum import Enum
 
+
+
+
+
+
 class Symbols:
 	DEFAULT = b'\x08'
 	BLUE = b'\x09'
