@@ -7,6 +7,7 @@ from datetime import datetime
 from datetime import timedelta
 import time
 import pandas as pd
+from copy import deepcopy
 
 import bcrypt
 
@@ -112,13 +113,86 @@ class SqlLiteDb():
         self._default_clanstats = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
         self._default_clanstatswide = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 
-    def backup(self):
+    def dump_stats(self) -> list:
+        logger.info("Updating leaderboards ...")
+        start_time = time.time()
 
-        db_file = os.path.join(self._db_loc, self._db + '.backup')
+        c = self.conn.cursor()
+        select = """SELECT account_id, username, stats, ladderstatswide
+                    FROM users;
+                """
+        vals = c.execute(select).fetchall()
+        c.close()
+        if vals == []:
+            logger.warning("No accounts found! Leaderboards disabled")
+            return None
 
-        cmd = f'''sqlite3 {os.path.join(self._db_loc, self._db)} ".backup '{db_file}'"'''
-        logger.info(f"Backing up db: '{cmd}'...")
-        os.system(cmd)
+        accounts = []
+        for raw_account in vals:
+            ladder_stats_wide = raw_account[3]
+            account = {
+                'account_id': raw_account[0],
+                'username': raw_account[1],
+                'stats': raw_account[2],
+                'ladder_stats_wide': []
+            }
+            ladder_stats_split = [ladder_stats_wide[i:i+8] for i in range(0,len(ladder_stats_wide),8)]
+            for ladder_stat in ladder_stats_split:
+                # Convert to integer
+                if ladder_stat == 'FFFFFFFF':
+                    account['ladder_stats_wide'].append(-1)
+                else:
+                    account['ladder_stats_wide'].append(utils.bytes_to_int_little(utils.hex_to_bytes(ladder_stat)))
+            accounts.append(account)
+
+        #
+        final_account_map = {}
+
+        for ladder_stat_idx in range(100):
+            ac = sorted(accounts, key=lambda x: x['ladder_stats_wide'][ladder_stat_idx], reverse=True)
+            final_account_map[ladder_stat_idx] = deepcopy(ac)
+
+        # Now do clans...
+        c = self.conn.cursor()
+        select = """SELECT clan_id, clan_name, stats
+                    FROM clans;
+                """
+        vals = c.execute(select).fetchall()
+        c.close()
+
+        if vals != []:
+            clans = []
+            for raw_clan in vals:
+                clans_stats = raw_clan[2]
+                clan = {
+                    'clan_id': raw_clan[0],
+                    'clan_name': raw_clan[1],
+                    'stats': []
+                }
+                ladder_stats_split = [clans_stats[i:i+8] for i in range(0,len(clans_stats),8)]
+                for ladder_stat in ladder_stats_split:
+                    # Convert to integer
+                    if ladder_stat == 'FFFFFFFF':
+                        clan['stats'].append(-1)
+                    else:
+                        clan['stats'].append(utils.bytes_to_int_little(utils.hex_to_bytes(ladder_stat)))
+                clans.append(clan)
+
+            final_clan_map = {}
+            for ladder_stat_idx in range(20):
+                ac = sorted(clans, key=lambda x: x['stats'][ladder_stat_idx], reverse=True)
+                final_clan_map[ladder_stat_idx] = deepcopy(ac)
+        else:
+            final_clan_map = {}
+            logger.warning("No clans found! Clan leaderboards disabled")
+
+        end_time = time.time()
+        total_time = (end_time - start_time)
+
+        #logger.info(final_account_map)
+        logger.info(f"Leaderboards updated! Took {total_time} seconds!")
+        return final_account_map, final_clan_map
+
 
     def register_ip(self, username, ip):
         c = self.conn.cursor()

@@ -29,6 +29,9 @@ class Monolith:
 
         self._chat_messages = queue.Queue()
 
+        self._leaderboards = None
+        self._clan_leaderboards = None
+
     #################################################################################
     # UDP Pipeline
     #################################################################################
@@ -44,7 +47,7 @@ class Monolith:
                 port = utils.int_to_bytes_little(2, con.port)
                 con.send(ip_formatted + port)
             return []
-        # This means its dmeudp. 
+        # This means its dmeudp.
         # We need to tie this to a tcp connection to deframe if it's > 100 bytes
 
         player = self._client_manager.identify(con)
@@ -61,13 +64,13 @@ class Monolith:
         ## SERIALIZE
         serialized = [self._serialize(packetBytes) for packetBytes in packets]
         for serial in serialized:
-            logger.debug(f"{con} | Serialized | {serial}")        
+            logger.debug(f"{con} | Serialized | {serial}")
 
         ## RESPONSE
         responses = utils.flatten([self._rtresponse(con, packetBytes) for packetBytes in serialized])
         for response in responses:
             logger.debug(f"{con} | Response | {response}")
-        
+
         ## TO BYTES
         responses = [utils.rtpacket_to_bytes(packet) for packet in responses]
         # for response in responses:
@@ -152,13 +155,13 @@ class Monolith:
         return serialized
 
     def _rtresponse(self, con: Connection, serialized) -> [bytes]:
-        ''' 
+        '''
         1. Serialize the data coming in into an RT/Medius type
         2. Get the response
         '''
         rt_info = RtId.map[serialized['rtid'][0]]
 
-        responses = rt_info['handler'].process(serialized, self, con)        
+        responses = rt_info['handler'].process(serialized, self, con)
 
         return responses
 
@@ -201,7 +204,7 @@ class Monolith:
 
         if chat_message_type == MediusChatMessageType.BROADCAST:
             username = player.get_username()
-            self._chat_messages.put({"username":username, "message":text, "ts": datetime.now().timestamp()})        
+            self._chat_messages.put({"username":username, "message":text, "ts": datetime.now().timestamp()})
 
     def process_login(self, player):
         self._patch_manager.process_login(player)
@@ -284,3 +287,21 @@ class Monolith:
     def get_announcement(self) -> str:
         return self._config['announcement']
 
+    def update_leaderboards(self):
+        self._leaderboards, self._clan_leaderboards = self._client_manager.dump_stats()
+
+    def get_leaderboard_info(self, ladder_stat_index, sort_order, start_position, end_position):
+        leaderboard = self._leaderboards[ladder_stat_index]
+        if sort_order == 'DESC':
+            # standard order
+            return leaderboard[start_position-1:end_position-1]
+        else:
+            return leaderboard[start_position-1:end_position-1]
+
+    def get_clan_leaderboard_info(self, ladder_stat_index, sort_order, start_position, end_position):
+        leaderboard = self._clan_leaderboards[ladder_stat_index]
+        if sort_order == 'DESC':
+            # standard order
+            return leaderboard[start_position-1:end_position-1]
+        else:
+            return leaderboard[start_position-1:end_position-1]
