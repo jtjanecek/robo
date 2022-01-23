@@ -73,9 +73,9 @@ class Robo():
 
     async def update_leaderboards(self):
         while True:
-            # TODO: check if no players are online before updating leaderboards
-            self._monolith.update_leaderboards()
-            await asyncio.sleep(60 * 60) # 1 hour
+            if len(self._monolith.get_client_manager().get_games()) == 0:
+                self._monolith.update_leaderboards()
+            await asyncio.sleep(60 * 60 * 5) # 5 hours
 
 
 if __name__ == '__main__':

@@ -125,7 +125,7 @@ class SqlLiteDb():
         c.close()
         if vals == []:
             logger.warning("No accounts found! Leaderboards disabled")
-            return None
+            return None, None
 
         accounts = []
         for raw_account in vals:
