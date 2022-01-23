@@ -395,6 +395,8 @@ class MediusIdEnum():
     GameListResponse = b'\x01\x2A'
     ChannelList = b'\x01\x2B'
     ChannelListResponse = b'\x01\x2C'
+    ClanLadderListResponse = b'\x01\xD3'
+    ClanLadderListPositionResponse = b'\x01\xD5'
     LobbyWorldPlayerList = b'\x01\x2D'
     LobbyWorldPlayerListResponse = b'\x01\x2E'
     GameWorldPlayerList = b'\x01\x2F'

@@ -51,4 +51,3 @@ class JoinGameResponseSerializer:
 class JoinGameResponseHandler:
     def process(self, serialized, monolith, con):
         raise Exception('Unimplemented Handler: JoinGameResponseHandler')
-

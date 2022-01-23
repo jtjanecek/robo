@@ -263,6 +263,7 @@ class MediusId():
         b'\x01\xCF' : {'name': 'UpdateLadderStatsResponse', 'serializer': updateladderstatsresponse.UpdateLadderStatsResponseSerializer(), 'handler': updateladderstatsresponse.UpdateLadderStatsResponseHandler()},
         b'\x01\xD0' : {'name': 'GetLadderStats', 'serializer': getladderstats.GetLadderStatsSerializer(), 'handler': getladderstats.GetLadderStatsHandler()},
         b'\x01\xD1' : {'name': 'GetLadderStatsResponse', 'serializer': getladderstatsresponse.GetLadderStatsResponseSerializer(), 'handler': getladderstatsresponse.GetLadderStatsResponseHandler()},
+        b'\x01\xD2' : {'name': 'ClanLadderList', 'serializer': clanladderlist.ClanLadderListSerializer(), 'handler': clanladderlist.ClanLadderListHandler()},
         b'\x01\xD6' : {'name': 'GetBuddyList_ExtraInfo', 'serializer': getbuddylist_extrainfo.GetBuddyList_ExtraInfoSerializer(), 'handler': getbuddylist_extrainfo.GetBuddyList_ExtraInfoHandler()},
         b'\x01\xD7' : {'name': 'GetBuddyList_ExtraInfoResponse', 'serializer': getbuddylist_extrainforesponse.GetBuddyList_ExtraInfoResponseSerializer(), 'handler': getbuddylist_extrainforesponse.GetBuddyList_ExtraInfoResponseHandler()},
         b'\x01\xD8' : {'name': 'GetTotalRankings', 'serializer': gettotalrankings.GetTotalRankingsSerializer(), 'handler': gettotalrankings.GetTotalRankingsHandler()},

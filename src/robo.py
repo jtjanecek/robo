@@ -53,6 +53,7 @@ class Robo():
 
         # Misc functions
         self._loop.create_task(self.clear_zombie_games())
+        self._loop.create_task(self.update_leaderboards())
 
         self._loop.run_forever()
 
@@ -69,6 +70,13 @@ class Robo():
         while True:
             self._monolith.clear_zombie_games()
             await asyncio.sleep(60 * 2) # 2 minutes
+
+    async def update_leaderboards(self):
+        while True:
+            if len(self._monolith.get_client_manager().get_games()) == 0:
+                self._monolith.update_leaderboards()
+            await asyncio.sleep(60 * 60 * 5) # 5 hours
+
 
 if __name__ == '__main__':
     import argparse

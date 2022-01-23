@@ -1,6 +1,19 @@
 from utils import utils
 from enums.enums import CLANTAG_ALLOWED_CHARACTERS
 
+''' some clan notes:
+(assuming indexing starting at 1)
+Avg power rank idx: 11
+Avg overall rank: 7
+win/loss: 15
+kill/death: 16
+siege power rank: 12
+dm power rank: 13
+ctf power rank: 14
+avg siege rank: 8
+avg dm rank: 9
+avg clan rank: 10
+'''
 
 weapons = {
     0:"Lava Gun",

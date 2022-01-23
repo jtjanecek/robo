@@ -426,3 +426,6 @@ class ClientManager:
         for player in self._players.values():
             result += '\n' + str(player)
         return result
+
+    def dump_stats(self):
+        return self._db.dump_stats()
