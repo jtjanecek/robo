@@ -23,12 +23,19 @@ class GetClanByIDHandler:
         leader_account_id = client_manager.get_clan_leader_account_id(clan_id)
 
         clan_info = client_manager.get_clan_info(clan_id)
-        leader_account_name = clan_info['leader_account_name']
-        stats = clan_info['clan_stats']
+
+        if clan_info == {}:
+            leader_account_name = ''
+            stats = '0' * 512
+            callback = CallbackStatus.NO_RESULT
+        else:
+            callback = CallbackStatus.SUCCESS
+            leader_account_name = clan_info['leader_account_name']
+            stats = clan_info['clan_stats']
 
         return [GetClanByIDResponseSerializer.build(
             serialized['message_id'],
-            CallbackStatus.SUCCESS,
+            callback,
             app_id,
             clan_name,
             leader_account_id,
