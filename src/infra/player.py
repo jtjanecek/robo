@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger("robo.player")
 
 class Player():
-    def __init__(self, account_id, username, session_key, mls_world_id, mls_con):
+    def __init__(self, account_id, username, session_key, mls_world_id, mls_con, ladderstatswide):
         self._app_id = None
 
         # Basic info
@@ -39,6 +39,7 @@ class Player():
         self._clan = ''
         self._clan_tag = ''
 
+        self._ladderstatswide = ladderstatswide
 
     #############################################################
     # DME Sending data
@@ -206,6 +207,31 @@ class Player():
 
     def set_clan_tag(self, clan_tag):
         self._clan_tag = clan_tag
+
+    def get_player_skill(self, game_mode):
+
+        ladder_array = [self._ladderstatswide[i:i+8] for i in range(0, len(self._ladderstatswide), 8)]
+
+        def get_skill_from_games(games):
+            if games < 50:
+                return 1
+            if games < 150:
+                return 2
+            if games < 300:
+                return 3
+            else:
+                return 4
+
+        if game_mode == 'Siege': # 46
+            games_played = utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[46]))
+            return get_skill_from_games(games_played)
+        elif game_mode == 'CTF': # 64
+            games_played = utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[64]))
+            return get_skill_from_games(games_played)
+        elif game_mode == 'Deathmatch': # 53
+            games_played = utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[53]))
+            return get_skill_from_games(games_played)
+        return 1
 
     def to_json(self) -> dict:
         return {
