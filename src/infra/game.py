@@ -28,6 +28,8 @@ class Game:
         # Dict for dme player id -> Player
         self._players = {}
 
+        self._game_skill = 1
+
     def active(self):
         if self._status != MediusWorldStatus.WORLD_ACTIVE:
 
@@ -195,6 +197,9 @@ class Game:
                 'username': player.get_username()
             })
         return res
+
+    def get_game_skill(self):
+        return self._game_skill
 
     def to_json(self) -> dict:
         game_data = deepcopy(self._create_game_serialized)
