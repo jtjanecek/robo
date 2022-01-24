@@ -213,11 +213,11 @@ class Player():
         ladder_array = [self._ladderstatswide[i:i+8] for i in range(0, len(self._ladderstatswide), 8)]
 
         def get_skill_from_games(games):
-            if games < 50:
-                return 1
             if games < 150:
-                return 2
+                return 1
             if games < 300:
+                return 2
+            if games < 1000:
                 return 3
             else:
                 return 4
