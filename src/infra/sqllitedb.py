@@ -391,7 +391,11 @@ class SqlLiteDb():
         warn = False
         for i in range(len(stats)):
             if i < 8:
+<<<<<<< HEAD
+                if stats[i] in ['00C0A844', '0000AF43', '00000000']:
+=======
                 if stats[i] in ['00C0A844', '0000AF43']:
+>>>>>>> 4fba27588eb94b95af1b12e3b22bca7d583b5c29
                     # Ignore. Use current stats
                     warn = True
                     new_stats += current_stats[i]
@@ -402,7 +406,11 @@ class SqlLiteDb():
                 new_stats += stats[i]
 
         if warn:
+<<<<<<< HEAD
+            logger.warning(f"Using current stats: {current_stats} | {stats} | {new_stats}")
+=======
             logger.warning(f"Using current stats: {current_stats} | {stats}")
+>>>>>>> 4fba27588eb94b95af1b12e3b22bca7d583b5c29
 
         stats = new_stats
 
