@@ -1,6 +1,9 @@
 from enums.enums import MediusEnum, CallbackStatus
 from utils import utils
 from medius.mediuspackets.gameinforesponse0 import GameInfoResponse0Serializer
+from enums.enums import MediusWorldStatus
+
+from datetime import datetime
 
 class GameInfo0Serializer:
     data_dict = [
@@ -15,7 +18,7 @@ class GameInfo0Handler:
     def process(self, serialized, monolith, con):
 
         game = monolith.get_client_manager().get_game(serialized['dme_world_id'])
-        
+
         callback_status = CallbackStatus.SUCCESS
 
         if game == None:
@@ -27,7 +30,7 @@ class GameInfo0Handler:
                     0,
                     0,
                     0,
-                    0,
+                    '00000000',
                     0,
                     utils.hex_to_bytes(''.join(['00'] * MediusEnum.GAMESTATS_MAXLEN)),
                     utils.hex_to_bytes(''.join(['00'] * MediusEnum.GAMENAME_MAXLEN)),
@@ -41,6 +44,13 @@ class GameInfo0Handler:
 
         created_info = game.get_created_info()
 
+        if (datetime.now().timestamp() - game._created_date) > 1:
+            player_skill = utils.bytes_to_hex(utils.int_to_bytes_little(4, created_info['player_skill_level']))
+            player_skill = player_skill[:6] + utils.bytes_to_hex(utils.int_to_bytes_little(1, game.get_game_skill()))
+        else:
+            player_skill = utils.bytes_to_hex(utils.int_to_bytes_little(4, created_info['player_skill_level']))
+
+
         return [GameInfoResponse0Serializer.build(
             serialized['message_id'],
             callback_status,
@@ -48,7 +58,7 @@ class GameInfo0Handler:
             created_info['min_players'],
             created_info['max_players'],
             created_info['game_level'],
-            created_info['player_skill_level'],
+            player_skill,
             game.get_player_count(),
             game.get_stats(),
             created_info['game_name'],
@@ -59,4 +69,3 @@ class GameInfo0Handler:
             game.get_game_status(),
             created_info['game_host_type']
         )]
-

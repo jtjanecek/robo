@@ -71,7 +71,8 @@ class ClientManager:
         logged_in = account_id in self._players.keys()
 
         if not logged_in:
-            self._players[account_id] = Player(account_id, username, session_key, target_world_id, mls_con)
+            ladderstatswide = self.get_player_ladderstatswide(account_id)
+            self._players[account_id] = Player(account_id, username, session_key, target_world_id, mls_con, ladderstatswide)
             self._mls_cons[mls_con] = self._players[account_id]
         else:
             raise Exception("User is already logged in!")

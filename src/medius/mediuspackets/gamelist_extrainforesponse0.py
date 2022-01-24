@@ -40,7 +40,7 @@ class GameList_ExtraInfoResponse0Serializer:
             {'max_players': utils.int_to_bytes_little(2, max_players)},
             {'buf': utils.hex_to_bytes("0000")},
             {'game_level': utils.int_to_bytes_little(4, game_level)},
-            {'player_skill_level': utils.int_to_bytes_little(4, player_skill_level)},
+            {'player_skill_level': utils.hex_to_bytes(player_skill_level)},
             {'rules_set': utils.int_to_bytes_little(4, rules_set)},
             {'generic_field_1': utils.int_to_bytes_little(4, generic_field_1)},
             {'generic_field_2': utils.int_to_bytes_little(4, generic_field_2)},

@@ -7,6 +7,9 @@ from medius.rtpackets.serverdisconnectnotify import ServerDisconnectNotifySerial
 import base64
 from datetime import datetime
 
+from api.parser import gamerulesParser
+
+
 import logging
 logger = logging.getLogger('robo.game')
 
@@ -27,6 +30,8 @@ class Game:
         self._possible_dme_player_ids = {0,1,2,3,4,5,6,7}
         # Dict for dme player id -> Player
         self._players = {}
+
+        self._game_skill = 0
 
     def active(self):
         if self._status != MediusWorldStatus.WORLD_ACTIVE:
@@ -65,6 +70,11 @@ class Game:
 
         dme_player_id = self._generate_new_dme_player_id()
         self._players[dme_player_id] = player
+
+        if len(self._players.values()) == 1:
+            # Update the game skill
+            game_mode, submode = gamerulesParser(self._create_game_serialized['generic_field_3'])
+            self._game_skill = player.get_player_skill(game_mode)
 
         player.set_dmetcp_con(dmetcp_con)
         # Set the game to be referenced by this player
@@ -195,6 +205,9 @@ class Game:
                 'username': player.get_username()
             })
         return res
+
+    def get_game_skill(self):
+        return self._game_skill
 
     def to_json(self) -> dict:
         game_data = deepcopy(self._create_game_serialized)

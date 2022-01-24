@@ -35,6 +35,7 @@ class GameList_ExtraInfo0Handler:
             else:
                 security_type = WorldSecurityLevelType.WORLD_SECURITY_NONE
 
+            player_skill_level = utils.bytes_to_hex(utils.int_to_bytes_big(4, game.get_game_skill())) #
 
             packets.append(GameList_ExtraInfoResponse0Serializer.build(
                 serialized['message_id'],
@@ -44,7 +45,7 @@ class GameList_ExtraInfo0Handler:
                 serialized_game['min_players'],
                 serialized_game['max_players'],
                 serialized_game['game_level'],
-                serialized_game['player_skill_level'],
+                player_skill_level,
                 serialized_game['rules_set'],
                 serialized_game['generic_field_1'],
                 serialized_game['generic_field_2'],
@@ -65,7 +66,7 @@ class GameList_ExtraInfo0Handler:
                 0,
                 0,
                 0,
-                0,
+                '00000000',
                 0,
                 0,
                 0,
@@ -79,5 +80,3 @@ class GameList_ExtraInfo0Handler:
             ))
 
         return packets
-
-        

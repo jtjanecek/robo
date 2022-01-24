@@ -35,7 +35,7 @@ class GameInfoResponse0Serializer:
             {'min_players': utils.int_to_bytes_little(4, min_players)},
             {'max_players': utils.int_to_bytes_little(4, max_players)},
             {'game_level': utils.int_to_bytes_little(4, game_level)},
-            {'player_skill_level': utils.int_to_bytes_little(4, player_skill_level)},
+            {'player_skill_level': utils.hex_to_bytes(player_skill_level)},
             {'player_count': utils.int_to_bytes_little(4, player_count)},
             {'stats': stats},
             {'game_name': game_name},
@@ -52,4 +52,3 @@ class GameInfoResponse0Serializer:
 class GameInfoResponse0Handler:
     def process(self, serialized, monolith, con):
         raise Exception('Unimplemented Handler: GameInfoResponse0Handler')
-
