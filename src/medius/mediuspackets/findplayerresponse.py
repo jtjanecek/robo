@@ -29,7 +29,7 @@ class FindPlayerResponseSerializer:
             {'app_type': utils.int_to_bytes_little(4, app_type)},
             {'world_id': utils.int_to_bytes_little(4, world_id)},
             {'account_id': utils.int_to_bytes_little(4, account_id)},
-            {'account_name': account_name},
+            {'account_name': utils.str_to_bytes(account_name, MediusEnum.PLAYERNAME_MAXLEN)},
             {'end_of_list': utils.int_to_bytes_little(4, end_of_list)}
         ]
         return packet
