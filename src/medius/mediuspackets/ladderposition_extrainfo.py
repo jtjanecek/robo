@@ -25,7 +25,7 @@ class LadderPosition_ExtraInfoHandler:
                 serialized['message_id'],
                 CallbackStatus.SUCCESS,
                 rank, # ladder position,
-                99999, # total rankings,
+                monolith.get_total_rankings(), # total rankings,
         )]
         # return [LadderPosition_ExtraInfoResponseSerializer.build(
         #         serialized['message_id'],

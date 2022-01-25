@@ -311,4 +311,9 @@ class Monolith:
         for i in range(len(leaderboard)):
             if leaderboard[i]['account_id'] == account_id:
                 return i+1
-        return 9999
+        return self.get_total_rankings()
+
+    def get_total_rankings(self):
+        if self._leaderboards == None:
+            return 9999
+        return len(self._leaderboards[0])
