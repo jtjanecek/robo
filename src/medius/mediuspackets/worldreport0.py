@@ -1,5 +1,6 @@
 from enums.enums import MediusEnum
 from utils import utils
+from datetime import datetime
 
 class WorldReport0Serializer:
     data_dict = [
@@ -27,5 +28,6 @@ class WorldReport0Handler:
         if serialized['world_status'] == 2:
             # Update the dme world as "active". And then update the game name
             game = monolith.get_client_manager().get_game(serialized['dme_world_id'])
-            game.active()
+            if (datetime.now().timestamp() - game._created_date) > 5:
+                game.active()
         return []
