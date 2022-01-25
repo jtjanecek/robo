@@ -44,7 +44,7 @@ class GameInfo0Handler:
 
         created_info = game.get_created_info()
 
-        if (datetime.now().timestamp() - game._created_date) > 1:
+        if (datetime.now().timestamp() - game._created_date) > 3:
             player_skill = utils.bytes_to_hex(utils.int_to_bytes_little(4, created_info['player_skill_level']))
             player_skill = player_skill[:6] + utils.bytes_to_hex(utils.int_to_bytes_little(1, game.get_game_skill()))
         else:
