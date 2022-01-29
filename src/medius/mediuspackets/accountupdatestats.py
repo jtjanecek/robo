@@ -22,11 +22,6 @@ class AccountUpdateStatsHandler:
 
         client_manager.update_player_stats(player_account_id, serialized['stats'])
 
-        updated_at = client_manager.get_player_stats(player_account_id)
-
-        if serialized['stats'] != updated_at:
-            logger.warning(f"Player stats did not get updated (account_id: {player_account_id})! Expected: {serialized['stats']}, actual: {updated_at}")
-
         return [AccountUpdateStatsResponseSerializer.build(
             serialized['message_id'],
             CallbackStatus.SUCCESS

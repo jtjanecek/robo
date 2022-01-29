@@ -3,6 +3,7 @@ from utils import utils
 import asyncio
 from queue import Queue
 from enums.enums import MediusPlayerStatus
+from api.parser import get_skill_from_ladderstatswide
 import logging
 logger = logging.getLogger("robo.player")
 
@@ -209,29 +210,7 @@ class Player():
         self._clan_tag = clan_tag
 
     def get_player_skill(self, game_mode):
-
-        ladder_array = [self._ladderstatswide[i:i+8] for i in range(0, len(self._ladderstatswide), 8)]
-
-        def get_skill_from_games(games):
-            if games < 150:
-                return 1
-            if games < 300:
-                return 2
-            if games < 1000:
-                return 3
-            else:
-                return 4
-
-        if game_mode == 'Siege': # 46
-            games_played = utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[46]))
-            return get_skill_from_games(games_played)
-        elif game_mode == 'CTF': # 64
-            games_played = utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[64]))
-            return get_skill_from_games(games_played)
-        elif game_mode == 'Deathmatch': # 53
-            games_played = utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[53]))
-            return get_skill_from_games(games_played)
-        return 1
+        return get_skill_from_ladderstatswide(self._ladderstatswide)[game_mode]
 
     def to_json(self) -> dict:
         return {

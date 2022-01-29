@@ -11,6 +11,8 @@ from copy import deepcopy
 
 import bcrypt
 
+from api.parser import get_skill_from_ladderstatswide, generate_skill_bolt_stats
+
 from utils import utils
 logger = logging.getLogger('robo.sqllitedb')
 
@@ -384,27 +386,14 @@ class SqlLiteDb():
         # First get the players stats
         current_stats = self.get_stats(account_id)
         current_stats = [current_stats[i:i+8] for i in range(0,len(current_stats),8)]
+        second_half = ''.join(current_stats[8:])
 
-        stats = [stats[i:i+8] for i in range(0,len(stats),8)]
+        # Compute all their skill bolt ratings based on ladderstatswide
+        bolts = get_skill_from_ladderstatswide(self.get_ladderstatswide(account_id))
 
-        new_stats = ''
-        warn = False
-        for i in range(len(stats)):
-            if i < 8:
-                if stats[i] in ['00C0A844', '0000AF43', '00000000']:
-                    # Ignore. Use current stats
-                    warn = True
-                    new_stats += current_stats[i]
-                else:
-                    new_stats += stats[i]
-            else:
-                # Use new
-                new_stats += stats[i]
+        first_half = generate_skill_bolt_stats(bolts['Siege'], bolts['Deathmatch'], bolts['CTF'], bolts['Overall'])
 
-        if warn:
-            logger.warning(f"Using current stats: {current_stats} | {stats} | {new_stats}")
-
-        stats = new_stats
+        stats = first_half + second_half
 
         c = self.conn.cursor()
         update = '''

@@ -128,6 +128,39 @@ CLAN_STATS_BREAKDOWN = {
 20: '',
 }
 
+def generate_skill_bolt_stats(siege_bolt, dm_bolt, ctf_bolt, overall_bolt):
+    skill_bolt_codes = {
+        1: ['00C0A844', '0000AF43'],
+        2: ['00C0A844', '00808443'],
+        3: ['00C0A844', '00000000'],
+        4: ['C8C8D444', '00808943']
+    }
+    res = ''
+    for idx in range(2):
+        for rank in [siege_bolt, dm_bolt, ctf_bolt, overall_bolt]:
+            a = skill_bolt_codes[rank][idx]
+            res += a
+    return res
+
+def get_skill_from_ladderstatswide(ladderstatswide):
+    def get_skill_from_game(games):
+        if 0 <= games < 200:
+            return 1
+        if 200 <= games < 400:
+            return 2
+        if 400 <= games < 800:
+            return 3
+        else:
+            return 4
+    result = {}
+    ladder_array = [ladderstatswide[i:i+8] for i in range(0, len(ladderstatswide), 8)]
+
+    result['Siege'] = get_skill_from_game(utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[46])))
+    result['CTF'] = get_skill_from_game(utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[64])))
+    result['Deathmatch'] = get_skill_from_game(utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[53])))
+    result['Overall'] = get_skill_from_game(utils.bytes_to_int_little(utils.hex_to_bytes(ladder_array[11])))
+    return result
+
 weapons = {
     0:"Lava Gun",
     1:"Morph O' Ray",
