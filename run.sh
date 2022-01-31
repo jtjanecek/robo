@@ -8,6 +8,7 @@ docker run -it \
     -p 10070:10070/udp \
     -p 8281:8281/tcp \
     -p 8282:8282/tcp \
+    -p 8765:8765/tcp \
     -v $PWD/logs:/logs \
     --name robo \
     robo

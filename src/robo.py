@@ -12,6 +12,8 @@ import logging
 import asyncio
 from logging import handlers
 
+import asyncio
+import websockets
 
 class Robo():
     def __init__(self, config_file: str):
@@ -50,6 +52,8 @@ class Robo():
 
         # Start API
         self._loop.run_until_complete(self._api.start())
+
+        self._loop.run_until_complete(self._api.start_websocket())
 
         # Misc functions
         self._loop.create_task(self.clear_zombie_games())
