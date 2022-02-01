@@ -66,6 +66,28 @@ class Monolith:
         for serial in serialized:
             logger.debug(f"{con} | Serialized | {serial}")
 
+        for packet in serialized:
+            if packet['packet'] == 'medius.rtpackets.clientappsingle':
+                try:
+                    this_pkt = {'type':'udp.clientappsingle'}
+                    this_pkt['dme_world_id'] = 0
+                    this_pkt['src'] = player.get_game().get_dme_player_id(player)
+                    this_pkt['dst'] = utils.bytes_to_int_little(packet['data'][0:2])
+                    this_pkt['data'] = utils.bytes_to_hex(packet['data'][2:])
+                    self._api._dme_queue.put(this_pkt)
+                except:
+                    pass
+            elif packet['packet'] == 'medius.rtpackets.clientappbroadcast':
+                try:
+                    this_pkt = {'type':'udp.clientappbroadcast'}
+                    this_pkt['dme_world_id'] = player.get_game().get_dme_world_id()
+                    this_pkt['src'] = player.get_game().get_dme_player_id(player)
+                    this_pkt['dst'] = -1
+                    this_pkt['data'] = utils.bytes_to_hex(packet['data'])
+                    self._api._dme_queue.put(this_pkt)
+                except:
+                    pass
+
         ## RESPONSE
         responses = utils.flatten([self._rtresponse(con, packetBytes) for packetBytes in serialized])
         for response in responses:

@@ -54,6 +54,7 @@ class Robo():
         self._loop.run_until_complete(self._api.start())
 
         self._loop.run_until_complete(self._api.start_websocket())
+        self._loop.create_task(self._api.flush_api_data())
 
         # Misc functions
         self._loop.create_task(self.clear_zombie_games())

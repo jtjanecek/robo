@@ -18,7 +18,7 @@ from api.parser import gamerulesParser
 from api.parser import get_clean_clan_tag_from_stats
 from api.parser import parse_clanstats_wide
 
-
+import queue
 
 class Api():
     def __init__(self, monolith, port: int, sync_rate: int, log_max_mb, log_backup_count, log_location):
@@ -35,6 +35,9 @@ class Api():
         self._sync_rate = sync_rate
 
         self._chat_messages = []
+
+        self._dme_queue = queue.Queue()
+        self._monolith._api = self
 
     async def players(self, request):
         self._logger.debug("Players request!")
@@ -156,15 +159,32 @@ class Api():
     async def start_websocket(self):
         await websockets.serve(self.on_websocket_connection, '0.0.0.0', 8765)
         self._logger.info(f"Websocket serving on ('0.0.0.0', 8765) ...")
+        self._connected = set()
 
+    async def flush_api_data(self):
+        while True:
+            # Broadcast a message to all connected clients.
+            qsize = self._dme_queue.qsize()
+            for _ in range(qsize):
+                data = json.dumps(self._dme_queue.get())
+                if len(self._connected) > 0:
+                    await asyncio.wait([ws.send(data) for ws in self._connected])
+            await asyncio.sleep(.001)
+
+    # TODO: add co-routine to flush out packets if queue is
     async def on_websocket_connection(self, websocket, path):
         self._logger.info("Websocket connection!")
-        name = await websocket.recv()
-        print(f"< {name}")
-        greeting = f"Hello {name}!"
-        while True:
-            await websocket.send(greeting)
-            await asyncio.sleep(.001)
+        # Register.
+        self._connected.add(websocket)
+        try:
+            while True:
+                await asyncio.sleep(5)
+        except Exception:
+            self._logger.exception("message")
+        finally:
+            self._logger.info("Websocket disconnected!")
+            # Unregister.
+            self._connected.remove(websocket)
 
 if __name__ == '__main__':
     a = Api()
