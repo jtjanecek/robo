@@ -168,7 +168,11 @@ class Api():
             for _ in range(qsize):
                 data = json.dumps(self._dme_queue.get())
                 if len(self._connected) > 0:
-                    await asyncio.wait([ws.send(data) for ws in self._connected])
+                    for connection in self._connected:
+                        try:
+                            await connection.send(data)
+                        except Exception:
+                            connection.connected = False
             await asyncio.sleep(.001)
 
     # TODO: add co-routine to flush out packets if queue is
@@ -176,11 +180,12 @@ class Api():
         self._logger.info("Websocket connection!")
         # Register.
         self._connected.add(websocket)
+        websocket.connected = True
         try:
-            while True:
-                await asyncio.sleep(5)
-        except Exception:
-            self._logger.exception("message")
+            while websocket.connected:
+                await asyncio.sleep(.001)
+        # except Exception:
+        #     self._logger.exception("message2")
         finally:
             self._logger.info("Websocket disconnected!")
             # Unregister.
