@@ -70,7 +70,7 @@ class Monolith:
             if packet['packet'] == 'medius.rtpackets.clientappsingle':
                 try:
                     this_pkt = {'type':'udp'}
-                    this_pkt['dme_world_id'] = 0
+                    this_pkt['dme_world_id'] = player.get_game().get_dme_world_id()
                     this_pkt['src'] = player.get_game().get_dme_player_id(player)
                     this_pkt['dst'] = utils.bytes_to_int_little(packet['data'][0:2])
                     this_pkt['data'] = utils.bytes_to_hex(packet['data'][2:])
