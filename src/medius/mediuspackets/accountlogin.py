@@ -9,7 +9,7 @@ class AccountLoginSerializer:
         {'name': 'session_key', 'n_bytes': MediusEnum.SESSIONKEY_MAXLEN, 'cast': None},
         {'name': 'username', 'n_bytes': 14, 'cast': utils.bytes_to_str},
         {'name': 'buf', 'n_bytes': 18, 'cast': None},
-        {'name': 'password', 'n_bytes': 14, 'cast': utils.sha512_encrypt}
+        {'name': 'password', 'n_bytes': 14, 'cast': utils.Encrypter.sha512_encrypt_bcrypt}
     ]
 
 class AccountLoginHandler:

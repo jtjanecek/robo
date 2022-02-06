@@ -3,6 +3,8 @@ from collections import deque
 from enums.enums import MediusEnum, CLANTAG_ALLOWED_CHARACTERS
 from hashlib import sha512
 
+import bcrypt
+
 def rtpacket_to_bytes(packet: list):
     '''
     Create a byte array from an rt id and the
@@ -142,6 +144,16 @@ def sha512_encrypt(data):
     sha.update(password.encode())
     encrypted_password = bytes_to_hex(sha.digest())
     return encrypted_password
+
+class Encrypter:
+    bcrypt_salt = None
+
+    @classmethod
+    def sha512_encrypt_bcrypt(self, data):
+        sha512_encrypted = sha512_encrypt(data)
+        hash = bcrypt.hashpw(sha512_encrypted.encode(), self.bcrypt_salt.encode()).decode()
+        return hash
+
 
 def bytes_to_int_little(data):
     return int.from_bytes(data, byteorder='little')
