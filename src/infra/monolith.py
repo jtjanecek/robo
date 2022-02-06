@@ -32,6 +32,8 @@ class Monolith:
         self._leaderboards = None
         self._clan_leaderboards = None
 
+        utils.Encrypter.bcrypt_salt = self._config['bcrypt_salt']
+
     #################################################################################
     # UDP Pipeline
     #################################################################################

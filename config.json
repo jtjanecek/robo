@@ -3,7 +3,8 @@
     "patch": {
         "hook_addr": "0x00000000"
     },
-	"bcrypt_salt": "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
+	"bcrypt_salt" : "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
+	"bcrypt_salt2": "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
 	"policy": "Placeholder policy", 
 	"announcement": "Placeholder announcement",
 	"console_log_level": "INFO",
