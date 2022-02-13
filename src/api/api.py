@@ -21,11 +21,11 @@ from api.parser import parse_clanstats_wide
 import queue
 
 class Api():
-    def __init__(self, monolith, port: int, sync_rate: int, log_max_mb, log_backup_count, log_location):
+    def __init__(self, monolith, port: int, sync_rate: int, log_max_mb, log_backup_count, log_location, log_level, websocket_port, websocket_enabled):
         self._logger = logging.getLogger(f"robo.api")
         formatter = logging.Formatter('%(asctime)s API | %(levelname)s | %(message)s')
         filehandler = handlers.RotatingFileHandler(os.path.join(log_location,'api.log'), mode='w', maxBytes=log_max_mb*1000000, backupCount=log_backup_count)
-        filehandler.setLevel(logging.DEBUG)
+        filehandler.setLevel(logging.getLevelName(log_level))
         filehandler.setFormatter(formatter)
         self._logger.addHandler(filehandler)
 
@@ -38,6 +38,9 @@ class Api():
 
         self._dme_queue = queue.Queue()
         self._monolith._api = self
+
+        self._websocket_port = int(websocket_port)
+        self._websocket_enabled = websocket_enabled
 
     async def players(self, request):
         self._logger.debug("Players request!")
@@ -157,23 +160,25 @@ class Api():
         self._logger.info(f"Serving on ('{self._ip}', {self._port}) ...")
 
     async def start_websocket(self):
-        await websockets.serve(self.on_websocket_connection, '0.0.0.0', 8765)
-        self._logger.info(f"Websocket serving on ('0.0.0.0', 8765) ...")
-        self._connected = set()
+        if self._websocket_enabled == 'True':
+            await websockets.serve(self.on_websocket_connection, '0.0.0.0', self._websocket_port)
+            self._logger.info(f"Websocket serving on ('0.0.0.0', {self._websocket_port}) ...")
+            self._connected = set()
 
     async def flush_api_data(self):
-        while True:
-            # Broadcast a message to all connected clients.
-            qsize = self._dme_queue.qsize()
-            for _ in range(qsize):
-                data = json.dumps(self._dme_queue.get())
-                if len(self._connected) > 0:
-                    for connection in self._connected:
-                        try:
-                            await connection.send(data)
-                        except Exception:
-                            connection.connected = False
-            await asyncio.sleep(.001)
+        if self._websocket_enabled == 'True':
+            while True:
+                # Broadcast a message to all connected clients.
+                qsize = self._dme_queue.qsize()
+                for _ in range(qsize):
+                    data = json.dumps(self._dme_queue.get())
+                    if len(self._connected) > 0:
+                        for connection in self._connected:
+                            try:
+                                await connection.send(data)
+                            except Exception:
+                                connection.connected = False
+                await asyncio.sleep(.001)
 
     # TODO: add co-routine to flush out packets if queue is
     async def on_websocket_connection(self, websocket, path):

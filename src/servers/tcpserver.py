@@ -10,13 +10,13 @@ from logging import handlers
 
 
 class TCPServer:
-    def __init__(self, monolith, name, port, log_max_mb, log_backup_count, log_location):
+    def __init__(self, monolith, name, port, log_max_mb, log_backup_count, log_location, log_level):
 
         self._logger = logging.getLogger(f"robo.{name}")
         formatter = logging.Formatter('%(asctime)s %(name)s | %(levelname)s | %(message)s')
         filehandler = handlers.RotatingFileHandler(os.path.join(log_location,f'{name}.log'), mode='w', maxBytes=log_max_mb*1000000, backupCount=log_backup_count)
 
-        filehandler.setLevel(logging.DEBUG)
+        filehandler.setLevel(logging.getLevelName(log_level))
         filehandler.setFormatter(formatter)
         self._logger.addHandler(filehandler)
 

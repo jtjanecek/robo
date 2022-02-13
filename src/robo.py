@@ -28,6 +28,7 @@ class Robo():
         logger.addHandler(sh)
         filehandler = handlers.RotatingFileHandler(os.path.join(config['log_location'],'main.log'), mode='w', maxBytes=config['mls']['log_max_mb']*1000000, backupCount=5)
         filehandler.setFormatter(formatter)
+        filehandler.setLevel(logging.getLevelName(config['file_log_level']))
         logger.setLevel(logging.DEBUG)
         logger.addHandler(filehandler)
 
@@ -36,12 +37,12 @@ class Robo():
         self._pcap = RoboPacketSniffer(config)
 
         self._loop = asyncio.get_event_loop()
-        self._mas = TCPServer(self._monolith, 'mas', config['mas']['port'], config['mas']['log_max_mb'], config['mas']['log_backup_count'], config['log_location'])
-        self._mls = TCPServer(self._monolith, 'mls', config['mls']['port'], config['mls']['log_max_mb'], config['mls']['log_backup_count'], config['log_location'])
-        self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['dmetcp']['port'], config['dmetcp']['log_max_mb'], config['dmetcp']['log_backup_count'], config['log_location'])
-        self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['dmeudp']['port'], config['dmeudp']['log_max_mb'], config['dmeudp']['log_backup_count'], config['log_location'])
-        self._nat = UDPServer(self._monolith, 'nat', config['nat']['port'], config['nat']['log_max_mb'], config['nat']['log_backup_count'], config['log_location'])
-        self._api = Api(self._monolith, config['api']['port'], config['api']['sync_rate'], config['api']['log_max_mb'], config['api']['log_backup_count'], config['log_location'])
+        self._mas = TCPServer(self._monolith, 'mas', config['mas']['port'], config['mas']['log_max_mb'], config['mas']['log_backup_count'], config['log_location'], config['file_log_level'])
+        self._mls = TCPServer(self._monolith, 'mls', config['mls']['port'], config['mls']['log_max_mb'], config['mls']['log_backup_count'], config['log_location'], config['file_log_level'])
+        self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['dmetcp']['port'], config['dmetcp']['log_max_mb'], config['dmetcp']['log_backup_count'], config['log_location'], config['file_log_level'])
+        self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['dmeudp']['port'], config['dmeudp']['log_max_mb'], config['dmeudp']['log_backup_count'], config['log_location'], config['file_log_level'])
+        self._nat = UDPServer(self._monolith, 'nat', config['nat']['port'], config['nat']['log_max_mb'], config['nat']['log_backup_count'], config['log_location'], config['file_log_level'])
+        self._api = Api(self._monolith, config['api']['port'], config['api']['sync_rate'], config['api']['log_max_mb'], config['api']['log_backup_count'], config['log_location'], config['file_log_level'], config['websocket']['port'], config['websocket']['enabled'])
 
         # Start the servers
         self._loop.create_task(self._mas.start())
