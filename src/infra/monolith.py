@@ -68,6 +68,28 @@ class Monolith:
         for serial in serialized:
             logger.debug(f"{con} | Serialized | {serial}")
 
+        for packet in serialized:
+            if packet['packet'] == 'medius.rtpackets.clientappsingle':
+                try:
+                    this_pkt = {'type':'udp'}
+                    this_pkt['dme_world_id'] = player.get_game().get_dme_world_id()
+                    this_pkt['src'] = player.get_game().get_dme_player_id(player)
+                    this_pkt['dst'] = utils.bytes_to_int_little(packet['data'][0:2])
+                    this_pkt['data'] = utils.bytes_to_hex(packet['data'][2:])
+                    self._api._dme_queue.put(this_pkt)
+                except Exception:
+                    logger.exception()
+            elif packet['packet'] == 'medius.rtpackets.clientappbroadcast':
+                try:
+                    this_pkt = {'type':'udp'}
+                    this_pkt['dme_world_id'] = player.get_game().get_dme_world_id()
+                    this_pkt['src'] = player.get_game().get_dme_player_id(player)
+                    this_pkt['dst'] = -1
+                    this_pkt['data'] = utils.bytes_to_hex(packet['data'])
+                    self._api._dme_queue.put(this_pkt)
+                except Exception:
+                    logger.exception()
+
         ## RESPONSE
         responses = utils.flatten([self._rtresponse(con, packetBytes) for packetBytes in serialized])
         for response in responses:
@@ -108,6 +130,28 @@ class Monolith:
         packets = [self._serialize(packet) for packet in packets]
         for serial in packets:
             logger.debug(f"{con} | Serialized | {serial}")
+
+        for packet in packets:
+            if packet['packet'] == 'medius.rtpackets.clientappsingle':
+                try:
+                    this_pkt = {'type':'tcp'}
+                    this_pkt['dme_world_id'] = player.get_game().get_dme_world_id()
+                    this_pkt['src'] = player.get_game().get_dme_player_id(player)
+                    this_pkt['dst'] = utils.bytes_to_int_little(packet['data'][0:2])
+                    this_pkt['data'] = utils.bytes_to_hex(packet['data'][2:])
+                    self._api._dme_queue.put(this_pkt)
+                except Exception:
+                    logger.exception()
+            elif packet['packet'] == 'medius.rtpackets.clientappbroadcast':
+                try:
+                    this_pkt = {'type':'tcp'}
+                    this_pkt['dme_world_id'] = player.get_game().get_dme_world_id()
+                    this_pkt['src'] = player.get_game().get_dme_player_id(player)
+                    this_pkt['dst'] = -1
+                    this_pkt['data'] = utils.bytes_to_hex(packet['data'])
+                    self._api._dme_queue.put(this_pkt)
+                except Exception:
+                    logger.exception()
 
         ## RESPONSE
         responses = utils.flatten([self._rtresponse(con, packetBytes) for packetBytes in packets])

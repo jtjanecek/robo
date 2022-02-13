@@ -8,6 +8,7 @@ import json
 from logging import handlers
 from datetime import datetime
 
+import websockets
 
 from api.parser import weaponParser
 from api.parser import advancedRulesParser
@@ -16,6 +17,8 @@ from api.parser import timeParser
 from api.parser import gamerulesParser
 from api.parser import get_clean_clan_tag_from_stats
 from api.parser import parse_clanstats_wide
+
+import queue
 
 class Api():
     def __init__(self, monolith, port: int, sync_rate: int, log_max_mb, log_backup_count, log_location):
@@ -32,6 +35,9 @@ class Api():
         self._sync_rate = sync_rate
 
         self._chat_messages = []
+
+        self._dme_queue = queue.Queue()
+        self._monolith._api = self
 
     async def players(self, request):
         self._logger.debug("Players request!")
@@ -150,6 +156,40 @@ class Api():
 
         self._logger.info(f"Serving on ('{self._ip}', {self._port}) ...")
 
+    async def start_websocket(self):
+        await websockets.serve(self.on_websocket_connection, '0.0.0.0', 8765)
+        self._logger.info(f"Websocket serving on ('0.0.0.0', 8765) ...")
+        self._connected = set()
+
+    async def flush_api_data(self):
+        while True:
+            # Broadcast a message to all connected clients.
+            qsize = self._dme_queue.qsize()
+            for _ in range(qsize):
+                data = json.dumps(self._dme_queue.get())
+                if len(self._connected) > 0:
+                    for connection in self._connected:
+                        try:
+                            await connection.send(data)
+                        except Exception:
+                            connection.connected = False
+            await asyncio.sleep(.001)
+
+    # TODO: add co-routine to flush out packets if queue is
+    async def on_websocket_connection(self, websocket, path):
+        self._logger.info("Websocket connection!")
+        # Register.
+        self._connected.add(websocket)
+        websocket.connected = True
+        try:
+            while websocket.connected:
+                await asyncio.sleep(.001)
+        # except Exception:
+        #     self._logger.exception("message2")
+        finally:
+            self._logger.info("Websocket disconnected!")
+            # Unregister.
+            self._connected.remove(websocket)
 
 if __name__ == '__main__':
     a = Api()

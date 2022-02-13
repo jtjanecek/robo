@@ -21,3 +21,4 @@ requests==2.25.1
 six==1.16.0
 urllib3==1.26.6
 yarl==1.7.2
+websockets==10.1.0
