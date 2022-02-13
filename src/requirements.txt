@@ -12,7 +12,7 @@ idna==2.10
 llvmlite==0.37.0
 multidict==5.2.0
 numba==0.54.1
-numpy==1.20.3
+numpy==1.21.0
 pandas==1.3.0
 pycparser==2.21
 python-dateutil==2.8.1
