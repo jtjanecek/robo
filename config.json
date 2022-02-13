@@ -4,13 +4,25 @@
         "hook_addr": "0x00000000"
     },
 	"bcrypt_salt" : "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
-	"policy": "Placeholder policy", 
+	"policy": "Placeholder policy",
 	"announcement": "Placeholder announcement",
-	"console_log_level": "INFO",
+  "console_log_level": "INFO",
+  "file_log_level": "DEBUG",
 	"pcap": {
+    "enabled": "True",
 		"log_max_mb": 250,
 		"log_backup_count": 5
 	},
+  "websocket": {
+    "port": 8765,
+    "enabled": "True"
+  },
+  "api": {
+    "port": 8281,
+    "sync_rate": 30,
+    "log_max_mb": 50,
+    "log_backup_count": 5
+  },
 	"log_location": "/logs",
 	"mas": {
 		"port": 10075,
@@ -31,17 +43,9 @@
 		"port": 51000,
 		"log_max_mb": 50,
 		"log_backup_count": 5
-	
 	},
 	"nat": {
 		"port": 10070,
-		"log_max_mb": 50,
-		"log_backup_count": 5
-	
-	},
-	"api": {
-		"port": 8281,
-		"sync_rate": 30,
 		"log_max_mb": 50,
 		"log_backup_count": 5
 	},
@@ -66,7 +70,6 @@
             "generic_field_3": 0,
             "generic_field_4": 0,
             "generic_field_filter": 32
- 
         },
         {
             "id": 125,
