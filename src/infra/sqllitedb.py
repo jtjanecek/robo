@@ -176,15 +176,6 @@ class SqlLiteDb():
             self.conn.commit()
             c.close()
 
-            # delete from alts
-            c = self.conn.cursor()
-            select = """DELETE
-                        FROM alts WHERE lower(username) = lower(?);
-                    """
-            vals = c.execute(select, [username]).fetchone()
-            self.conn.commit()
-            c.close()
-
             raise Exception('disconnecting user from account deletion!')
 
     def dump_stats(self) -> list:
