@@ -312,6 +312,10 @@ class ClientManager:
     def remove_buddy(self, account_id, buddy_id):
         return self._db.remove_buddy(account_id, buddy_id)
 
+    def delete_user(self, session_key: str, password: str):
+        self._db.delete_user(session_key, password)
+
+
     # =============== Clans ===============
     def create_channel(self, serialized_channel):
         clan_id = serialized_channel['generic_field_1']
