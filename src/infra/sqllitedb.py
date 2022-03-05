@@ -119,64 +119,6 @@ class SqlLiteDb():
         account_id = self.get_account_id(session_key=session_key)
         username = self.get_username(account_id=account_id)
 
-        if self._password_match(account_id, password):
-            # first, delete this account id from users
-            c = self.conn.cursor()
-            select = """DELETE
-                        FROM users WHERE account_id = ?;
-                    """
-            vals = c.execute(select, [account_id]).fetchone()
-            self.conn.commit()
-            c.close()
-
-            # second, remove any buddies that reference this id
-            c = self.conn.cursor()
-            select = """DELETE
-                        FROM buddies WHERE account_id = ?;
-                    """
-            vals = c.execute(select, [account_id]).fetchone()
-            self.conn.commit()
-            c.close()
-
-            # third, remove any buddies that this user has
-            c = self.conn.cursor()
-            select = """DELETE
-                        FROM buddies WHERE buddy_id = ?;
-                    """
-            vals = c.execute(select, [account_id]).fetchone()
-            self.conn.commit()
-            c.close()
-
-            # delete from clan invites
-            c = self.conn.cursor()
-            select = """DELETE
-                        FROM clan_invites WHERE account_id_invited = ?;
-                    """
-            vals = c.execute(select, [account_id]).fetchone()
-            self.conn.commit()
-            c.close()
-
-            # fourth, if this user is a clan leader, disband the clan
-            c = self.conn.cursor()
-            select = """SELECT clan_id
-                        FROM clans WHERE leader_account_id = ?;
-                    """
-            vals = c.execute(select, [account_id]).fetchone()
-            self.conn.commit()
-            c.close()
-            if vals != None:
-                self.disband_clan(vals[0])
-
-            # delete clan member
-            c = self.conn.cursor()
-            select = """DELETE
-                        FROM clan_users WHERE account_id = ?;
-                    """
-            vals = c.execute(select, [account_id]).fetchone()
-            self.conn.commit()
-            c.close()
-
-            raise Exception('disconnecting user from account deletion!')
 
     def dump_stats(self) -> list:
         logger.info("Updating leaderboards ...")
