@@ -32,8 +32,8 @@ class Player():
         self._game = None
         self._dmetcp_queue = Queue()
         self._dmeudp_queue = Queue()
-        self._dmetcp_aggtime = 0.01
-        self._dmeudp_aggtime = 0.01
+        self._dmetcp_aggtime = 0.02
+        self._dmeudp_aggtime = 0.02
         self._dmetcp_flush_task = None
         self._dmeudp_flush_task = None
 
