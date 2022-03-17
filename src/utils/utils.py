@@ -119,6 +119,10 @@ def check_ctag_valid(byte_data: str):
 
 def check_username_valid(username: str) -> bool:
     # First or last characters are spaces
+    if len(username) >= 3 and username[0:3].lower() == 'cpu':
+        return False
+
+
     if username[0] == ' ' or username[-1] == ' ':
         return False
 
