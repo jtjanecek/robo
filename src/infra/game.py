@@ -33,6 +33,8 @@ class Game:
 
         self._game_skill = 0
 
+        self._is_cpu_game = False
+
     def active(self):
         if self._status != MediusWorldStatus.WORLD_ACTIVE:
 
@@ -146,6 +148,7 @@ class Game:
 
     def player_disconnected(self, player):
         player.close()
+        player._last_game_cpu = False
         dme_player_id = self.get_dme_player_id(player)
         self.send_server_notify_disconnected(player)
         del self._players[dme_player_id]
@@ -209,6 +212,11 @@ class Game:
     def get_game_skill(self):
         return self._game_skill
 
+    def cpu_game(self):
+        self._is_cpu_game = True
+        for player in self._players.values():
+            player.set_cpu_game()
+
     def to_json(self) -> dict:
         game_data = deepcopy(self._create_game_serialized)
         result = {
@@ -228,6 +236,7 @@ class Game:
             'game_host_type': game_data['game_host_type'],
             'dmetcp_aggtime': self._dmetcp_aggtime,
             'dmeudp_aggtime': self._dmeudp_aggtime,
-            'players': [player.to_json() for player in self._players.values()]
+            'players': [player.to_json() for player in self._players.values()],
+            'is_cpu_game': self._is_cpu_game
         }
         return result

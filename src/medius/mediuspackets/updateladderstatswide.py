@@ -17,6 +17,12 @@ class UpdateLadderStatsWideHandler:
 
         account_id = client_manager.get_player_from_mls_con(con).get_account_id()
 
+        if client_manager.get_player_from_mls_con(con).is_cpu_last_game():
+            return [UpdateLadderStatsWideResponseSerializer.build(
+                serialized['message_id'],
+                CallbackStatus.SUCCESS
+            )]
+
         if serialized['ladder_type'] == 0:
             client_manager.update_player_ladderstatswide(account_id, serialized['ladderstatswide'])
         elif serialized['ladder_type'] == 1:

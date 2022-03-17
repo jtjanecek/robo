@@ -102,7 +102,6 @@ class SqlLiteDb():
         c.execute(sql)
 
 
-
         self.conn.commit()
         c.close()
 
@@ -248,6 +247,7 @@ class SqlLiteDb():
             select = """SELECT account_id
                         FROM users WHERE session_key = ?;
                     """
+
             vals = c.execute(select, [session_key.decode()]).fetchone()
         c.close()
 

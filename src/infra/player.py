@@ -40,6 +40,8 @@ class Player():
         self._clan = ''
         self._clan_tag = ''
 
+        self._last_game_cpu = False
+
         self._ladderstatswide = ladderstatswide
 
     #############################################################
@@ -212,6 +214,12 @@ class Player():
     def get_player_skill(self, game_mode):
         return get_skill_from_ladderstatswide(self._ladderstatswide)[game_mode]
 
+    def set_cpu_game(self):
+        self._last_game_cpu = True
+
+    def is_cpu_last_game(self):
+        return self._last_game_cpu
+
     def to_json(self) -> dict:
         return {
             'clan': self._clan,
@@ -222,5 +230,6 @@ class Player():
             'username': self._username,
             'mls_world_id': self._mls_world_id,
             'dmetcp_aggtime': self._dmetcp_aggtime,
-            'dmeudp_aggtime': self._dmeudp_aggtime
+            'dmeudp_aggtime': self._dmeudp_aggtime,
+            'in_cpu_game': self._last_game_cpu
         }

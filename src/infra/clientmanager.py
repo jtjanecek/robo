@@ -92,6 +92,10 @@ class ClientManager:
         # update the game
         self._games[dme_world_id].player_tcp_connected(player, con)
 
+        username = self._db.get_username(account_id)
+        if username[0:3].lower() == 'cpu':
+            self._games[dme_world_id].cpu_game()
+
         return True
 
     def dmeudp_connected(self, con: UdpConnection, serialized: dict) -> bool:
