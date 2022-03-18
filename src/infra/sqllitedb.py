@@ -256,6 +256,19 @@ class SqlLiteDb():
             return vals[0]
         return None
 
+    def get_session_key(self, account_id):
+        c = self.conn.cursor()
+        select = """SELECT session_key
+                    FROM users WHERE account_id = ?;
+                """
+        vals = c.execute(select, [account_id]).fetchone()
+        c.close()
+
+        # Check if it exists first
+        if vals:
+            return vals[0]
+        return None
+
     def get_all_user_info_from_account_id(self, account_id: int):
         c = self.conn.cursor()
         select = """SELECT account_id, account_type, username, stats, ladderstatswide

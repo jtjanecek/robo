@@ -8,6 +8,12 @@
 	"announcement": "Placeholder announcement",
   "console_log_level": "INFO",
   "file_log_level": "DEBUG",
+  "cpus": {
+    "enabled": "False",
+    "aws_access_key_id": "",
+    "aws_secret_access_key": "",
+    "region_name": ""
+  },
 	"pcap": {
     "enabled": "True",
 		"log_max_mb": 250,
