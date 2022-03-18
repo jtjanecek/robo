@@ -469,10 +469,10 @@ class ClientManager:
         # - username
         # - session_key
         # While this CPU is not online
-        username = f"CPU-{int(random.random() * 499) + 1}"
+        username = f"CPU-{int(random.random() * 997) + 1}"
         account_id = self._db.get_account_id(username)
         while account_id in self._players.keys():
-            username = f"CPU-{int(random.random() * 499) + 1}"
+            username = f"CPU-{int(random.random() * 997) + 1}"
             account_id = self._db.get_account_id(username)
 
         session_key = self._db.get_session_key(account_id).strip("\x00")
