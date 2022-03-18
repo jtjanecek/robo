@@ -498,7 +498,7 @@ class ClientManager:
             "dmeudp_port": self._config['dmeudp']['port']
         }
         logger.info(f"Invoking ... {config}")
-        lambda_client.invoke(FunctionName='Thug', Payload=json.dumps(config), InvocationType='Event')
+        lambda_client.invoke(FunctionName=self._config['cpus']['function_name'], Payload=json.dumps(config), InvocationType='Event')
         logger.info("Started.")
 
     def __str__(self):
