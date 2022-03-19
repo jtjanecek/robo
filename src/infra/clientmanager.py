@@ -454,7 +454,7 @@ class ClientManager:
             'cpu0': 1,
             'cpu1': 1,
             'cpu2': 2,
-            'cpu3': 3',
+            'cpu3': 3,
             'cpu4': 4,
             'cpug': 4
         }
