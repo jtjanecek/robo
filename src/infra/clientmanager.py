@@ -483,10 +483,10 @@ class ClientManager:
         # - username
         # - session_key
         # While this CPU is not online
-        username = f"CPU-{int(random.random() * 997) + 1}"
+        username = f"CPU-{str(int(random.random() * 997) + 1).zfill(3)}"
         account_id = self._db.get_account_id(username)
         while account_id in self._players.keys():
-            username = f"CPU-{int(random.random() * 997) + 1}"
+            username = f"CPU-{str(int(random.random() * 997) + 1).zfill(3)}"
             account_id = self._db.get_account_id(username)
 
         logger.info(f"CPU username/account id: {username} | {account_id}")
