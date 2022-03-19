@@ -442,7 +442,21 @@ class ClientManager:
             return
 
         cpu_type_translation = {
-            'cpu': 'prototype'
+            'cpu0': 'bot0',
+            'cpu1': 'bot1',
+            'cpu2': 'bot2',
+            'cpu3': 'bot3',
+            'cpu4': 'bot4',
+            'cpug': 'botg'
+        }
+
+        bolt_translation = {
+            'cpu0': 1,
+            'cpu1': 1,
+            'cpu2': 2,
+            'cpu3': 3',
+            'cpu4': 4,
+            'cpug': 4
         }
 
         if cpu_type not in cpu_type_translation.keys():
@@ -485,7 +499,7 @@ class ClientManager:
             "username": username,
             "world_id": world_id,
             "skin": "random",
-            "bolt": 4,
+            "bolt": bolt_translation[cpu_type],
             "clan_tag": "",
             "team": "blue",
             "autojoin": "False",

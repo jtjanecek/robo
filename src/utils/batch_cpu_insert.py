@@ -3,7 +3,7 @@ import random
 
 n_cpus = 999
 
-db_file = "../../robo/logs/database.db"
+db_file = "../../logs/database.db"
 db_file = "file:" + db_file + "?mode=" + "rwc"
 print("Using DB: {}".format(db_file))
 
