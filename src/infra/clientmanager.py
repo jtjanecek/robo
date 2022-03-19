@@ -489,6 +489,8 @@ class ClientManager:
             username = f"CPU-{int(random.random() * 997) + 1}"
             account_id = self._db.get_account_id(username)
 
+        logger.info(f"CPU username/account id: {username} | {account_id}")
+
         session_key = self._db.get_session_key(account_id).strip("\x00")
 
         logger.info(f"Using: {username}")
@@ -511,8 +513,9 @@ class ClientManager:
             "dmeudp_ip": self._config['public_ip'],
             "dmeudp_port": self._config['dmeudp']['port']
         }
+        config = json.dumps(config)
         logger.info(f"Invoking ... {config}")
-        lambda_client.invoke(FunctionName=self._config['cpus']['function_name'], Payload=json.dumps(config), InvocationType='Event')
+        lambda_client.invoke(FunctionName=self._config['cpus']['function_name'], Payload=config, InvocationType='Event')
         logger.info("Started.")
 
     def __str__(self):
