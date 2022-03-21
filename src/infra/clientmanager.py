@@ -1,11 +1,14 @@
 import threading
 import random
+import boto3
+from datetime import datetime
+import json
+
 from enums.enums import MediusEnum, MediusPlayerStatus, MediusWorldStatus, CLANTAG_ALLOWED_CHARACTERS
 from infra.sqllitedb import SqlLiteDb
 from infra.game import Game
 from infra.connection import UdpConnection, Connection
 from infra.player import Player
-from datetime import datetime
 from utils import utils
 from api.parser import get_clean_clan_tag_from_stats
 
@@ -16,6 +19,8 @@ logger = logging.getLogger("robo.clientmanager")
 class ClientManager:
     def __init__(self, config):
         self._db = SqlLiteDb(db_loc=config['log_location'], salt=config['bcrypt_salt'])
+
+        self._config = config
 
         # Used in Mas only
         self._new_session_keys = set()
@@ -41,6 +46,8 @@ class ClientManager:
 
         # ======================================================
         self._channels = config['channels']
+
+
 
 
     def identify(self, connection):
@@ -429,6 +436,87 @@ class ClientManager:
         login_success = self._db.check_login(username, password, session_key)
 
         return login_success
+
+    def trigger_cpu(self, player, cpu_type):
+        if self._config['cpus']['enabled'] != 'True':
+            return
+
+        cpu_type_translation = {
+            'cpu0': 'bot0',
+            'cpu1': 'bot1',
+            'cpu2': 'bot2',
+            'cpu3': 'bot3',
+            'cpu4': 'bot4',
+            'cpug': 'botg'
+        }
+
+        bolt_translation = {
+            'cpu0': 1,
+            'cpu1': 1,
+            'cpu2': 2,
+            'cpu3': 3,
+            'cpu4': 4,
+            'cpug': 4
+        }
+
+        if cpu_type not in cpu_type_translation.keys():
+            return
+
+        logger.info(f"Triggering lambda: cpu_type: {cpu_type}")
+
+        game = player.get_game()
+        if game == None:
+            return
+
+        if game.get_player_by_dme_player_id(0) != player:
+            return
+
+        # Get dme world id
+        world_id = game.get_dme_world_id()
+        # first, check if the player is a host of a game
+
+        session = boto3.session.Session(aws_access_key_id=self._config['cpus']['aws_access_key_id'],aws_secret_access_key=self._config['cpus']['aws_secret_access_key'],region_name=self._config['cpus']['region_name'])
+        lambda_client = session.client('lambda')
+
+        # Get the following for the CPU:
+        # - account id
+        # - username
+        # - session_key
+        # While this CPU is not online
+        username = f"CPU-{str(int(random.random() * 997) + 1).zfill(3)}"
+        account_id = self._db.get_account_id(username)
+        while account_id in self._players.keys():
+            username = f"CPU-{str(int(random.random() * 997) + 1).zfill(3)}"
+            account_id = self._db.get_account_id(username)
+
+        logger.info(f"CPU username/account id: {username} | {account_id}")
+
+        session_key = self._db.get_session_key(account_id).strip("\x00")
+
+        logger.info(f"Using: {username}")
+
+        config = {
+            "bot_class": cpu_type_translation[cpu_type],
+            "account_id": account_id,
+            "username": username,
+            "world_id": world_id,
+            "skin": "random",
+            "bolt": bolt_translation[cpu_type],
+            "clan_tag": "",
+            "team": "blue",
+            "autojoin": "False",
+            "session_key": session_key,
+            "mls_ip": self._config['public_ip'],
+            "mls_port": self._config['mls']['port'],
+            "dmetcp_ip": self._config['public_ip'],
+            "dmetcp_port": self._config['dmetcp']['port'],
+            "dmeudp_ip": self._config['public_ip'],
+            "dmeudp_port": self._config['dmeudp']['port']
+        }
+        config = json.dumps(config)
+        logger.info(f"Invoking ... {config}")
+        lambda_client.invoke(FunctionName=self._config['cpus']['function_name'], Payload=config, InvocationType='Event')
+        logger.info("Started.")
 
     def __str__(self):
         result = '========================== Client Manager =========================='

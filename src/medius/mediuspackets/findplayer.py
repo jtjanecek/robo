@@ -16,10 +16,45 @@ class FindPlayerSerializer:
 class FindPlayerHandler:
     def process(self, serialized, monolith, con):
         client_manager = monolith.get_client_manager()
-        if serialized['account_id'] == 0:
-            account_id = client_manager.get_account_id(username=serialized['account_name'])
-        else:
+        if serialized['search_type'] == 1:
+            if serialized['account_name'][0:3].lower() == 'cpu':
+                # SPECIAL CASE
+                account_id = 0
+                # trigger lambda if the player is in staging and is host (id 0)
+                client_manager.trigger_cpu(client_manager.get_player_from_mls_con(con) , serialized['account_name'].lower())
+
+                return [FindPlayerResponseSerializer.build(
+                    serialized['message_id'],
+                    CallbackStatus.SUCCESS,
+                    0,
+                    '',
+                    0,
+                    0,
+                    account_id,
+                    '',
+                    1 # end of list
+                )]
+            else:
+                account_id = client_manager.get_account_id(username=serialized['account_name'])
+                if account_id == None:
+                    account_id = 0
+        else: ## serialized['search_type'] == 0
             account_id = serialized['account_id']
+
+            if account_id == 0:
+                # Return successful
+                return [FindPlayerResponseSerializer.build(
+                    serialized['message_id'],
+                    CallbackStatus.SUCCESS,
+                    0,
+                    '',
+                    MediusApplicationType.LOBBY_CHAT_CHANNEL,
+                    0,
+                    0,
+                    '',
+                    1 # end of list
+                )]
+
 
         player = client_manager.get_player(account_id)
 
@@ -29,6 +64,7 @@ class FindPlayerHandler:
         app_id = 0
         account_name = ''
         callback_status = CallbackStatus.NO_RESULT
+
 
         if player != None:
             account_name = player.get_username()
