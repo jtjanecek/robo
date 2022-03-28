@@ -208,6 +208,7 @@ class ClientManager:
     # =============== DB Access Methods ===============
 
     def register_ip(self, username, ip):
+        logger.info(f"User IP logged: {username} {ip}")
         self._db.register_ip(username, ip)
 
     def get_account_id(self, username=None, session_key=None):
