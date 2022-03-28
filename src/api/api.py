@@ -182,7 +182,7 @@ class Api():
 
     # TODO: add co-routine to flush out packets if queue is
     async def on_websocket_connection(self, websocket, path):
-        self._logger.info("Websocket connection!")
+        self._logger.info(f"Websocket connection: {websocket.remote_address}")
         # Register.
         self._connected.add(websocket)
         websocket.connected = True
