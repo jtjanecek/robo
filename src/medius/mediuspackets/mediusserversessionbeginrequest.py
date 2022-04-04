@@ -16,6 +16,8 @@ class MediusServerSessionBeginRequestSerializer:
 
 class MediusServerSessionBeginRequestHandler:
     def process(self, serialized, monolith, con):
+        if monolith._config['betas'] != 'enabled':
+            return
 
         if con.server_name != 'mas':
             raise Exception(f'Cannot begin session from any server except mas: {con}, {serialized}')

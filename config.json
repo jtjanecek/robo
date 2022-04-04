@@ -1,5 +1,6 @@
 {
-    "public_ip": "0.0.0.0",
+    "public_ip": "",
+    "betas": "disabled",
     "patch": {
         "hook_addr": "0x00000000"
     },
