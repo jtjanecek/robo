@@ -44,7 +44,8 @@ class JoinGameResponseSerializer:
             {'dme_world_id': utils.int_to_bytes_little(4, dme_world_id)},
             {'encryption_key': encryption_key},
             {'session_key': session_key},
-            {'access_key': access_key}
+            {'access_key': access_key},
+            {'buf': utils.hex_to_bytes('0000')}
         ]
         return packet
 

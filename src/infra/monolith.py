@@ -124,8 +124,8 @@ class Monolith:
         # We only need to decrypt in mas
         if con.server_name == 'mas':
             packets = [self._decrypt(con, packet) for packet in packets]
-            #for decrypt in decrypted:
-            #    logger.debug(f"{con} | Decrypted | {utils.bytes_to_hex(decrypt)}")
+            for decrypt in packets:
+               logger.debug(f"{con} | Decrypted | {utils.bytes_to_hex(decrypt)}")
 
         ## SERIALIZE
         packets = [self._serialize(packet) for packet in packets]
