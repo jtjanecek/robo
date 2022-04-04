@@ -21,7 +21,8 @@ class GameList_ExtraInfo0Handler:
         if lobby_world_id == 0:
             lobby_world_id = monolith.get_client_manager().get_channels()[0]['id']
 
-        games = [game for game in games if game.get_created_info()['game_level'] == lobby_world_id]
+        if monolith._config['betas'] != 'enabled':
+            games = [game for game in games if game.get_created_info()['game_level'] == lobby_world_id]
 
         # We need to filter for the games that are only in the current players lobby world
         # This is stored in the "gameLevel" field
