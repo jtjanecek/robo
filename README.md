@@ -23,3 +23,6 @@ Bug fixes:
 ## Code adapted from and inspired by:
 https://github.com/hashsploit/clank    
 https://github.com/Dnawrkshp/deadlocked-server/
+
+## App ids:
+June 20th, 2004 Beta/Prototype: 10680
