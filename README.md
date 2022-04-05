@@ -24,5 +24,9 @@ Bug fixes:
 https://github.com/hashsploit/clank    
 https://github.com/Dnawrkshp/deadlocked-server/
 
-## App ids:
-June 20th, 2004 Beta/Prototype: 10680
+## Prototypes:
+June 20th, 2004 Beta/Prototype: 10680 | ratchet3-pubeta.pdonline.scea.com
+
+June 23rd, 2004 Beta/Prototype: 10681 | ratchet3-press.pdonline.scea.com
+
+Aug 11th, 2004 Beta/Prototype: 10683 | ratchet3-qa.pdonline.scea.com

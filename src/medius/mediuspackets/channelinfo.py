@@ -10,7 +10,7 @@ class ChannelInfoSerializer:
         {'name': 'buf', 'n_bytes': 2, 'cast': None},
         {'name': 'world_id', 'n_bytes': 4, 'cast': utils.bytes_to_int_little}
     ]
-    
+
 class ChannelInfoHandler:
     def process(self, serialized, monolith, con):
 
@@ -22,6 +22,10 @@ class ChannelInfoHandler:
                 lobby_name = channel['lobby_name']
                 max_players = channel['max_players']
                 break
+
+        if lobby_name == None:
+            lobby_name = ''
+            max_players = 8
 
         return [ChannelInfoResponseSerializer.build(
             serialized['message_id'],
