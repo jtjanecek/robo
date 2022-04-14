@@ -1,1 +1,1 @@
-docker build -t robo .;
+docker build -t robo .

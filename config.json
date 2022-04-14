@@ -33,6 +33,7 @@
 	"log_location": "/logs",
 	"mas": {
 		"port": 10075,
+		"extra_port": 10055,
 		"log_max_mb": 50,
 		"log_backup_count": 5
 	},

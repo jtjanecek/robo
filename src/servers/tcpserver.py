@@ -10,7 +10,7 @@ from logging import handlers
 
 
 class TCPServer:
-    def __init__(self, monolith, name, port, log_max_mb, log_backup_count, log_location, log_level):
+    def __init__(self, monolith, name, port, log_max_mb, log_backup_count, log_location, log_level, extra_port=None):
 
         self._logger = logging.getLogger(f"robo.{name}")
         formatter = logging.Formatter('%(asctime)s %(name)s | %(levelname)s | %(message)s')
@@ -24,6 +24,7 @@ class TCPServer:
         self._name = name
         self._ip = '0.0.0.0'
         self._port = port
+        self._extra_port = extra_port
 
 
     async def handle_incoming(self, reader, writer):
@@ -76,3 +77,15 @@ class TCPServer:
 
         async with server:
             await server.serve_forever()
+
+    async def start_extra(self):
+
+        if self._extra_port != None:
+            server = await asyncio.start_server(
+            self.handle_incoming, self._ip, self._extra_port)
+
+            addr = server.sockets[0].getsockname()
+            self._logger.info(f'Serving extra port on {addr} ...')
+
+            async with server:
+                await server.serve_forever()

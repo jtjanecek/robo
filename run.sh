@@ -1,6 +1,7 @@
 docker run -it \
     --rm \
     --log-opt max-size=50m \
+    -p 10055:10055/tcp \
     -p 10075:10075/tcp \
     -p 10078:10078/tcp \
     -p 10079:10079/tcp \
