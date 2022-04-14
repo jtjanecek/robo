@@ -37,7 +37,7 @@ class Robo():
         self._pcap = RoboPacketSniffer(config)
 
         self._loop = asyncio.get_event_loop()
-        self._mas = TCPServer(self._monolith, 'mas', config['mas']['port'], config['mas']['log_max_mb'], config['mas']['log_backup_count'], config['log_location'], config['file_log_level'])
+        self._mas = TCPServer(self._monolith, 'mas', config['mas']['port'], config['mas']['log_max_mb'], config['mas']['log_backup_count'], config['log_location'], config['file_log_level'], extra_port=config['mas']['extra_port'])
         self._mls = TCPServer(self._monolith, 'mls', config['mls']['port'], config['mls']['log_max_mb'], config['mls']['log_backup_count'], config['log_location'], config['file_log_level'])
         self._dmetcp = TCPServer(self._monolith, 'dmetcp', config['dmetcp']['port'], config['dmetcp']['log_max_mb'], config['dmetcp']['log_backup_count'], config['log_location'], config['file_log_level'])
         self._dmeudp = UDPServer(self._monolith, 'dmeudp', config['dmeudp']['port'], config['dmeudp']['log_max_mb'], config['dmeudp']['log_backup_count'], config['log_location'], config['file_log_level'])
@@ -46,6 +46,7 @@ class Robo():
 
         # Start the servers
         self._loop.create_task(self._mas.start())
+        self._loop.create_task(self._mas.start_extra())
         self._loop.create_task(self._mls.start())
         self._loop.create_task(self._dmetcp.start())
         self._loop.create_task(self._dmeudp.start())
