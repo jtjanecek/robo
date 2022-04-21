@@ -110,8 +110,8 @@ class Player():
             self._dmeudp_flush_task = None
 
     async def send_patch(self, packets: [bytes]):
-        max_packet_size = 500
-        packet_delay = .005
+        max_packet_size = 512
+        packet_delay = .00001
 
         for packet in packets:
             while len(packet) > max_packet_size:
@@ -133,7 +133,10 @@ class Player():
         asyncio.create_task(self.mlsflusher())
 
     async def mlsflusher(self):
+        logger.info(f"Flushing mls...")
         await self._mls_connection.writer.drain()
+        logger.info(f"Done...")
+
 
     def set_dmetcp_con(self, dmetcp_con):
         self._dmetcp_connection = dmetcp_con
