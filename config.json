@@ -24,6 +24,8 @@
     "port": 8765,
     "enabled": "True"
   },
+  "blacklist": [
+  ],
   "api": {
     "port": 8281,
     "sync_rate": 30,
