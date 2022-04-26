@@ -24,6 +24,9 @@ class ClientConnectTcpSerializer:
 class ClientConnectTcpHandler:
     def process(self, serialized, monolith, con):
 
+        if con.addr in monolith.get_blacklist():
+            raise Exception(f'Blacklisted IP Blocked: {con.addr}')
+
         # mls
         if 'access_key' in serialized.keys() or 'session_key' in serialized.keys():
             if con.server_name != 'mls':

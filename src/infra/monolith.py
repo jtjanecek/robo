@@ -34,6 +34,8 @@ class Monolith:
 
         utils.Encrypter.bcrypt_salt = self._config['bcrypt_salt']
 
+        self._blacklist = set(config['blacklist'])
+
     #################################################################################
     # UDP Pipeline
     #################################################################################
@@ -334,6 +336,9 @@ class Monolith:
 
     def get_announcement(self) -> str:
         return self._config['announcement']
+
+    def get_blacklist(self) -> set:
+        return self._blacklist
 
     def update_leaderboards(self):
         self._leaderboards, self._clan_leaderboards = self._client_manager.dump_stats()
