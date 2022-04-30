@@ -1,65 +1,65 @@
 {
+    "blacklist": [
+    ],
     "public_ip": "0.0.0.0",
     "patch": {
         "hook_addr": "0x00000000"
     },
-	"bcrypt_salt" : "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
-	"policy": "Placeholder policy",
-	"announcement": "Placeholder announcement",
-  "console_log_level": "INFO",
-  "file_log_level": "DEBUG",
-  "cpus": {
-    "enabled": "False",
-    "aws_access_key_id": "",
-    "aws_secret_access_key": "",
-    "region_name": "",
-    "function_name": ""
-  },
-	"pcap": {
-    "enabled": "True",
-		"log_max_mb": 250,
-		"log_backup_count": 5
-	},
-  "websocket": {
-    "port": 8765,
-    "enabled": "True"
-  },
-  "blacklist": [
-  ],
-  "api": {
-    "port": 8281,
-    "sync_rate": 30,
-    "log_max_mb": 50,
-    "log_backup_count": 5
-  },
-	"log_location": "/logs",
-	"mas": {
-		"port": 10075,
-		"extra_port": 10055,
-		"log_max_mb": 50,
-		"log_backup_count": 5
-	},
-	"mls": {
-		"port": 10078,
-		"log_max_mb": 50,
-		"log_backup_count": 5
-	},
-	"dmetcp": {
-		"port": 10079,
-		"log_max_mb": 50,
-		"log_backup_count": 5
-	},
-	"dmeudp": {
-		"port": 51000,
-		"log_max_mb": 50,
-		"log_backup_count": 5
-	},
-	"nat": {
-		"port": 10070,
-		"log_max_mb": 50,
-		"log_backup_count": 5
-	},
-	"app_id": 10684,
+    "cpus": {
+        "enabled": "False",
+        "aws_access_key_id": "",
+        "aws_secret_access_key": "",
+        "region_name": "",
+        "function_name": ""
+    },
+    "bcrypt_salt": "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
+    "policy": "Placeholder policy",
+    "announcement": "Placeholder announcement",
+    "console_log_level": "INFO",
+    "file_log_level": "INFO",
+    "pcap": {
+        "enabled": "False",
+        "log_max_mb": 250,
+        "log_backup_count": 5
+    },
+    "websocket": {
+        "port": 8765,
+        "enabled": "True"
+    },
+    "api": {
+        "port": 8281,
+        "sync_rate": 30,
+        "log_max_mb": 50,
+        "log_backup_count": 5
+    },
+    "log_location": "/logs",
+    "mas": {
+        "port": 10075,
+        "extra_port": 10055,
+        "log_max_mb": 50,
+        "log_backup_count": 5
+    },
+    "mls": {
+        "port": 10078,
+        "log_max_mb": 50,
+        "log_backup_count": 5
+    },
+    "dmetcp": {
+        "port": 10079,
+        "log_max_mb": 50,
+        "log_backup_count": 5
+    },
+    "dmeudp": {
+        "port": 51000,
+        "log_max_mb": 50,
+        "log_backup_count": 5
+    },
+    "nat": {
+        "port": 10072,
+        "log_max_mb": 50,
+        "log_backup_count": 5
+    },
+    "app_id": 10684,
     "channels": [
         {
             "id": 123,
@@ -110,7 +110,7 @@
             "generic_field_3": 0,
             "generic_field_4": 0,
             "generic_field_filter": 32
-      }
+        }
     ],
     "locations": [
         {
@@ -124,11 +124,11 @@
         {
             "id": 42,
             "name": "Novalis"
-  		},
+        },
         {
             "id": 43,
             "name": "Tyhrranosis"
-  		},
+        },
         {
             "id": 44,
             "name": "Veldin"
