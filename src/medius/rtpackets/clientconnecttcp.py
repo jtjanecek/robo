@@ -4,7 +4,10 @@ from crypto.rc4 import RC4
 from medius.rtpackets.serverconnectaccepttcp import ServerConnectAcceptTcpSerializer
 from medius.rtpackets.serverconnectcomplete import ServerConnectCompleteSerializer
 from medius.rtpackets.servercryptkeygame import ServerCryptkeyGameSerializer
+import ipaddress
 
+import logging
+logger = logging.getLogger('robo.monolith')
 
 class ClientConnectTcpSerializer:
     data_dict = [
@@ -24,8 +27,12 @@ class ClientConnectTcpSerializer:
 class ClientConnectTcpHandler:
     def process(self, serialized, monolith, con):
 
-        if con.addr in monolith.get_blacklist():
-            raise Exception(f'Blacklisted IP Blocked: {con.addr}')
+        if monolith.get_blacklist() != []:
+            addr = ipaddress.ip_address(con.addr)
+            for begin, end in monolith.get_blacklist():
+                if begin <= addr <= end:
+                    logger.info(f'Blacklisted IP Blocked: {con.addr}')
+                    raise Exception(f'Blacklisted IP Blocked: {con.addr}')
 
         # mls
         if 'access_key' in serialized.keys() or 'session_key' in serialized.keys():

@@ -17,6 +17,7 @@ from enums.enums import MediusChatMessageType
 import queue
 from datetime import datetime
 
+import ipaddress
 
 class Monolith:
 
@@ -34,7 +35,9 @@ class Monolith:
 
         utils.Encrypter.bcrypt_salt = self._config['bcrypt_salt']
 
-        self._blacklist = set(config['blacklist'])
+        self._blacklist = []
+        for begin, end in config['blacklist']:
+            self._blacklist.append([ipaddress.ip_address(begin), ipaddress.ip_address(end)])
 
     #################################################################################
     # UDP Pipeline
