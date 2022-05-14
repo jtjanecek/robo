@@ -39,11 +39,15 @@ class TCPServer:
                 if data == b'':
                     break;
 
+
                 # Analyze incoming data
                 message = data.hex().upper()
                 self._logger.debug(f"{connection} | I | {message}")
 
                 packets = self._monolith.process_tcp(connection, data, self._logger)
+
+                while connection.patch_downloading:
+                    await asyncio.sleep(1)
 
                 framed = b''
                 for packet in packets:

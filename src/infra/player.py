@@ -111,7 +111,9 @@ class Player():
 
     async def send_patch(self, packets: [bytes]):
         max_packet_size = 512
-        packet_delay = .00001
+        packet_delay = .0001
+
+        self._mls_connection.patch_downloading = True
 
         for packet in packets:
             while len(packet) > max_packet_size:
@@ -122,6 +124,7 @@ class Player():
             self.send_mls(packet)
             await asyncio.sleep(packet_delay)
 
+        self._mls_connection.patch_downloading = False
 
     #############################################################
     # MLS Sending data
