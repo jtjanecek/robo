@@ -29,4 +29,10 @@ class PolicyHandler:
                 policy_substr,
                 end_of_list
             ))
+
+
+        player = monolith.get_client_manager().get_player_from_mls_con(con)
+        if player is not None:
+            monolith.process_login(player)
+
         return packets
