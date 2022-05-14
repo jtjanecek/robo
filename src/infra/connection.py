@@ -19,6 +19,8 @@ class Connection:
         self._rc4 = None
         self._server_rc4 = None
 
+        self.patch_downloading = False
+
     def set_rsa(self, client_rsa):
         self._rsa = client_rsa
 
