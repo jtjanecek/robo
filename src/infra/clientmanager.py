@@ -9,6 +9,7 @@ from infra.sqllitedb import SqlLiteDb
 from infra.game import Game
 from infra.connection import UdpConnection, Connection
 from infra.player import Player
+from infra.blarg_filter import blarg_filter
 from utils import utils
 from api.parser import get_clean_clan_tag_from_stats
 
@@ -155,11 +156,17 @@ class ClientManager:
     def dmetcp_broadcast(self, con: Connection, data: bytes):
         source_player = self._dmetcp_cons[con]
         game = source_player.get_game()
+
+        data = blarg_filter('tcp', game.get_dme_player_id(source_player), 'B', data)
+
         game.dmetcp_broadcast(source_player, data)
 
     def dmeudp_broadcast(self, con: UdpConnection, data: bytes):
         source_player = self._dmeudp_cons[con.hash()]
         game = source_player.get_game()
+
+        data = blarg_filter('udp', game.get_dme_player_id(source_player), 'B', data)
+
         game.dmeudp_broadcast(source_player, data)
 
     # =============== Dme ===============

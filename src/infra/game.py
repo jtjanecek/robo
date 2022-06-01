@@ -9,6 +9,7 @@ from datetime import datetime
 
 from api.parser import gamerulesParser
 
+from infra.blarg_filter import blarg_filter
 
 import logging
 logger = logging.getLogger('robo.game')
@@ -125,6 +126,9 @@ class Game:
 
         data = bytes(data)
 
+        real_data = blarg_filter('tcp', self.get_dme_player_id(player), target_player_id, data[2:])
+        data = data[0:2] + real_data
+
         packet_data = utils.rtpacket_to_bytes(ClientAppSingleSerializer.build(data))
 
         try:
@@ -138,6 +142,9 @@ class Game:
 
         # Change the source to be that player
         data[0] = self.get_dme_player_id(player)
+
+        real_data = blarg_filter('udp', self.get_dme_player_id(player), target_player_id, data[2:])
+        data = data[0:2] + real_data
 
         packet_data = utils.rtpacket_to_bytes(ClientAppSingleSerializer.build(data))
 
