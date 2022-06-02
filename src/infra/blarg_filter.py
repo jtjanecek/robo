@@ -8,6 +8,8 @@ from utils.utils import *
 
 
 def blarg_filter(packet_type, src, dst, data_input: bytes) -> bytes:
+    return data_input
+
     if src == 0:
         return data_input
 
@@ -33,7 +35,13 @@ def blarg_filter(packet_type, src, dst, data_input: bytes) -> bytes:
                 serialized = udp_map[packet_id].serialize(data)
 
 
-            if serialized.id not in [hex_to_bytes('0001'), hex_to_bytes('0213'), hex_to_bytes('0003'), hex_to_bytes('0018'), hex_to_bytes('0205'), hex_to_bytes('020C')]:
+            # if serialized.id not in [hex_to_bytes('0001'), hex_to_bytes('0213'), hex_to_bytes('0003'), hex_to_bytes('0018'), hex_to_bytes('0205'), hex_to_bytes('020C')]:
+            #     packets.append(serialized)
+            # if serialized.id not in [hex_to_bytes('020C')]:
+            #     packets.append(serialized)
+            if serialized.id == hex_to_bytes('020C') and serialized.subtype == 'p1_confirm':
+                pass
+            else:
                 packets.append(serialized)
 
         for packet in packets:
