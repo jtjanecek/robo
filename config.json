@@ -1,7 +1,7 @@
 {
     "blacklist": [
     ],
-    "public_ip": "0.0.0.0",
+    "public_ip": "192.168.1.2",
     "patch": {
         "hook_addr": "0x00000000"
     },
@@ -10,13 +10,17 @@
         "aws_access_key_id": "",
         "aws_secret_access_key": "",
         "region_name": "",
-        "function_name": ""
+        "taskDefinition": "",
+	"cluster": "",
+	"container": "",
+	"network": "",
+	"tag": ""
     },
     "bcrypt_salt": "$2b$12$YHsqcQVMHaqkpapmbmPZ8.",
     "policy": "Placeholder policy",
     "announcement": "Placeholder announcement",
     "console_log_level": "INFO",
-    "file_log_level": "INFO",
+    "file_log_level": "DEBUG",
     "pcap": {
         "enabled": "False",
         "log_max_mb": 250,
@@ -32,7 +36,7 @@
         "log_max_mb": 50,
         "log_backup_count": 5
     },
-    "log_location": "/logs",
+    "log_location": "logs",
     "mas": {
         "port": 10075,
         "extra_port": 10055,
