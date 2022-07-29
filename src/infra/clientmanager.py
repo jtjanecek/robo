@@ -514,7 +514,6 @@ class ClientManager:
             "dmeudp_ip": self._config['public_ip'],
             "dmeudp_port": self._config['dmeudp']['port']
         }
-        config = json.dumps(config)
         logger.info(f"Invoking ... {config}")
 
         client.run_task(
