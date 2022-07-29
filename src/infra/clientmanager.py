@@ -477,7 +477,7 @@ class ClientManager:
         # first, check if the player is a host of a game
 
         session = boto3.session.Session(aws_access_key_id=self._config['cpus']['aws_access_key_id'],aws_secret_access_key=self._config['cpus']['aws_secret_access_key'],region_name=self._config['cpus']['region_name'])
-        lambda_client = session.client('lambda')
+        client = session.client('ecs',region_name=self._config['cpus']['region_name'])
 
         # Get the following for the CPU:
         # - account id
@@ -516,7 +516,38 @@ class ClientManager:
         }
         config = json.dumps(config)
         logger.info(f"Invoking ... {config}")
-        lambda_client.invoke(FunctionName=self._config['cpus']['function_name'], Payload=config, InvocationType='Event')
+
+        client.run_task(
+            taskDefinition=self._config['cpus']['taskDefinition'],
+            launchType='FARGATE',
+            cluster=self._config['cpus']['cluster'],
+            networkConfiguration=self._config['cpus']['network'],
+            overrides={
+                'containerOverrides': [{
+                    'name': self._config['cpus']['container'],
+                    'environment': [
+                        {'name': 'ACCOUNT_ID', 'value': str(config['account_id'])},
+                        {'name': 'WORLD_ID', 'value': str(config['world_id'])},
+                        {'name': 'USERNAME', 'value': config['username']},
+                        {'name': 'BOLT', 'value': str(config['bolt'])},
+                        {'name': 'SKIN', 'value': config['skin']},
+                        {'name': 'AUTOJOIN', 'value': config['autojoin']},
+                        {'name': 'CLAN_TAG', 'value': config['clan_tag']},
+                        {'name': 'TEAM', 'value': config['team']},
+                        {'name': 'SESSION_KEY', 'value': config['session_key']},
+                        {'name': 'BOT_CLASS', 'value': config['bot_class']},
+                        {'name': 'MLS_IP', 'value': config['mls_ip']},
+                        {'name': 'MLS_PORT', 'value': str(config['mls_port'])},
+                        {'name': 'DMETCP_IP', 'value': config['dmetcp_ip']},
+                        {'name': 'DMEUDP_IP', 'value': config['dmeudp_ip']},
+                        {'name': 'DMETCP_PORT', 'value': str(config['dmetcp_port'])},
+                        {'name': 'DMEUDP_PORT', 'value': str(config['dmeudp_port'])},
+                    ]
+                }],
+            },
+            tags=[{'key':'Name', 'value': self._config['cpus']['tag']}]
+        )
+
         logger.info("Started.")
 
     def __str__(self):
