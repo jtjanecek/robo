@@ -460,8 +460,18 @@ class ClientManager:
             'cpug': 4
         }
 
-        if cpu_type not in cpu_type_translation.keys():
+        if cpu_type.split("-")[0] not in cpu_type_translation.keys():
             return
+
+        if len(cpu_type.split("-")) > 1:
+            cpu_time = cpu_type.split("-")[1]
+        else:
+            cpu_time = "2"
+
+        if not cpu_time.replace('.','',1).isdigit():
+            return
+
+        cpu_type = cpu_type.split("-")[0]
 
         logger.info(f"Triggering lambda: cpu_type: {cpu_type}")
 
@@ -507,6 +517,7 @@ class ClientManager:
             "team": "blue",
             "autojoin": "False",
             "session_key": session_key,
+            "timeout": cpu_time,
             "mls_ip": self._config['public_ip'],
             "mls_port": self._config['mls']['port'],
             "dmetcp_ip": self._config['public_ip'],
@@ -541,6 +552,7 @@ class ClientManager:
                         {'name': 'DMEUDP_IP', 'value': config['dmeudp_ip']},
                         {'name': 'DMETCP_PORT', 'value': str(config['dmetcp_port'])},
                         {'name': 'DMEUDP_PORT', 'value': str(config['dmeudp_port'])},
+                        {'name': 'TIMEOUT', 'value': config['timeout']},
                     ]
                 }],
             },
