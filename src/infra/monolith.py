@@ -82,6 +82,7 @@ class Monolith:
                         this_pkt['src'] = player.get_game().get_dme_player_id(player)
                         this_pkt['dst'] = utils.bytes_to_int_little(packet['data'][0:2])
                         this_pkt['data'] = utils.bytes_to_hex(packet['data'][2:])
+                        this_pkt['ts'] = datetime.now().timestamp()
                         self._api._dme_queue.put(this_pkt)
                     except Exception:
                         logger.exception()
@@ -92,6 +93,7 @@ class Monolith:
                         this_pkt['src'] = player.get_game().get_dme_player_id(player)
                         this_pkt['dst'] = -1
                         this_pkt['data'] = utils.bytes_to_hex(packet['data'])
+                        this_pkt['ts'] = datetime.now().timestamp()
                         self._api._dme_queue.put(this_pkt)
                     except Exception:
                         logger.exception()
@@ -146,6 +148,7 @@ class Monolith:
                         this_pkt['src'] = player.get_game().get_dme_player_id(player)
                         this_pkt['dst'] = utils.bytes_to_int_little(packet['data'][0:2])
                         this_pkt['data'] = utils.bytes_to_hex(packet['data'][2:])
+                        this_pkt['ts'] = datetime.now().timestamp()
                         self._api._dme_queue.put(this_pkt)
                     except Exception:
                         logger.exception()
@@ -156,6 +159,7 @@ class Monolith:
                         this_pkt['src'] = player.get_game().get_dme_player_id(player)
                         this_pkt['dst'] = -1
                         this_pkt['data'] = utils.bytes_to_hex(packet['data'])
+                        this_pkt['ts'] = datetime.now().timestamp()
                         self._api._dme_queue.put(this_pkt)
                     except Exception:
                         logger.exception()
