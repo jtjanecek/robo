@@ -42,6 +42,8 @@ class Api():
         self._websocket_port = int(websocket_port)
         self._websocket_enabled = websocket_enabled
 
+        self._websocket_delay = 30
+
     async def players(self, request):
         self._logger.debug("Players request!")
 
@@ -171,7 +173,14 @@ class Api():
                 # Broadcast a message to all connected clients.
                 qsize = self._dme_queue.qsize()
                 for _ in range(qsize):
-                    data = json.dumps(self._dme_queue.get())
+                    data = self._dme_queue.get()
+
+                    # 30 second delay to websocket
+                    while data['ts'] + self._websocket_delay > datetime.now().timestamp():
+                        await asyncio.sleep(.01)
+
+                    data = json.dumps(data)
+
                     if len(self._connected) > 0:
                         for connection in self._connected:
                             try:
