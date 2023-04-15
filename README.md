@@ -20,6 +20,12 @@ Bug fixes:
 - ![Running Robo on Windows](https://github.com/jtjanecek/robo/blob/master/docs/windows.md)
 - ![Running Robo on Linux (recommended)](https://github.com/jtjanecek/robo/blob/master/docs/linux.md)
 
+## Prototypes:
+- June 20th, 2004 Beta/Prototype: 10680 | ratchet3-pubeta.pdonline.scea.com
+- June 23rd, 2004 Beta/Prototype: 10681 | ratchet3-press.pdonline.scea.com
+- Aug 11th, 2004 Beta/Prototype: 10683 | ratchet3-qa.pdonline.scea.com
+- Ratchet & Clank: Up Your Arsenal: App id: 10684
+
 ## Code adapted from and inspired by:
 https://github.com/hashsploit/clank    
 https://github.com/Dnawrkshp/deadlocked-server/
